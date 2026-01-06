@@ -1,25 +1,35 @@
-name: Deploy to Homelab
+name: Deploy React App to Homelab
 
 on:
   push:
     branches:
-      - main  # lub 'master' - sprawdź jak nazywa się Twoja główna gałąź!
+      - main
 
 jobs:
-  deploy:
-    # To mówi GitHubowi: "Nie szukaj serwerów w chmurze, użyj tego, który się zgłosił jako self-hosted"
-    runs-on: [self-hosted, linux, homelab] 
+  build-and-deploy:
+    runs-on: [self-hosted, linux, homelab]
 
     steps:
-      - name: Pobierz kod z repozytorium (Checkout)
+      # 1. Pobieramy kod
+      - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Wyczyść stary content (opcjonalne, ale zalecane)
+      # 2. Instalujemy zależności (biblioteki z package.json)
+      - name: Install Dependencies
+        run: npm install
+
+      # 3. Budujemy aplikację (To zamieni TSX na czysty HTML/JS w folderze 'dist')
+      - name: Build Project
+        run: npm run build
+
+      # 4. Czyścimy folder serwera WWW
+      - name: Clean Nginx Folder
         run: rm -rf /var/www/html/*
 
-      - name: Kopiuj nowe pliki bloga
+      # 5. Kopiujemy TYLKO zbudowaną aplikację (folder dist)
+      - name: Deploy to Nginx
         run: |
-          echo "🚀 Rozpoczynam deployment na Homelab..."
-          # Kopiujemy wszystko z bieżącego folderu repozytorium do katalogu Nginxa
-          cp -r ./* /var/www/html/
-          echo "✅ Deployment zakończony!"
+          echo "🚀 Wgrywanie zbudowanej aplikacji..."
+          # Vite domyślnie buduje do folderu 'dist'. Kopiujemy JEGO ZAWARTOŚĆ.
+          cp -r dist/* /var/www/html/
+          echo "✅ Gotowe!"
