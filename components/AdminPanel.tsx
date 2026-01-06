@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BlogPost } from '../types';
 import { generateArticle } from '../services/geminiService';
-import { Plus, Trash2, Edit2, Sparkles, Save, X, Loader2, Lock, LogOut, KeyRound } from 'lucide-react';
+import { Trash2, Edit2, Sparkles, Save, X, Loader2, Lock, LogOut, KeyRound } from 'lucide-react';
 
 interface AdminPanelProps {
   posts: BlogPost[];
@@ -32,13 +32,13 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simple client-side check. In a real app, this would be a backend call.
+    // Logic: checking against the hidden hardcoded password
     if (passwordInput === 'admin123') {
       setIsAuthenticated(true);
       setAuthError('');
       setPasswordInput('');
     } else {
-      setAuthError('Odmowa dostępu: Nieprawidłowe hasło');
+      setAuthError('Odmowa dostępu: Nieprawidłowe poświadczenia');
     }
   };
 
@@ -122,8 +122,8 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
             </div>
           </div>
           
-          <h2 className="text-2xl font-bold text-white text-center mb-2">Autoryzacja</h2>
-          <p className="text-slate-400 text-center mb-6 text-sm">Wymagany dostęp root lub sudoers.</p>
+          <h2 className="text-2xl font-bold text-white text-center mb-2">Autoryzacja Systemu</h2>
+          <p className="text-slate-400 text-center mb-6 text-sm">Sesja administracyjna wymaga klucza dostępu.</p>
           
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
@@ -133,7 +133,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
                   type="password"
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
-                  placeholder="Hasło (admin123)"
+                  placeholder="Wprowadź hasło..."
                   className="w-full bg-slate-950 border border-slate-700 rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all"
                   autoFocus
                 />
@@ -149,7 +149,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
               type="submit"
               className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-emerald-900/20"
             >
-              Zaloguj do Systemu
+              Zaloguj do Terminala
             </button>
           </form>
         </div>
@@ -194,7 +194,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
 
       {activeTab === 'create' && (
         <div className="space-y-6">
-          {/* AI Generator Section (Only for new posts) */}
           {!editingId && (
             <div className="bg-slate-900 border border-emerald-500/30 p-6 rounded-xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-4 opacity-10">
@@ -223,7 +222,6 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
             </div>
           )}
 
-          {/* Editor Form */}
           <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 p-6 rounded-xl space-y-4">
             <div>
               <label className="block text-sm font-medium text-slate-400 mb-1">Tytuł</label>

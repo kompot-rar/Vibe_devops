@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Terminal, Menu, X, ShieldCheck } from 'lucide-react';
+import { Terminal, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const Navbar: React.FC = () => {
@@ -44,17 +44,6 @@ const Navbar: React.FC = () => {
                   {item.name}
                 </Link>
               ))}
-              <Link
-                to="/admin"
-                className={`px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 flex items-center gap-1 ${
-                    isActive('/admin')
-                      ? 'bg-slate-800 text-emerald-400'
-                      : 'text-slate-500 hover:bg-slate-800 hover:text-white'
-                  }`}
-              >
-                <ShieldCheck size={14} />
-                Admin
-              </Link>
             </div>
           </div>
 
@@ -86,17 +75,6 @@ const Navbar: React.FC = () => {
                 {item.name}
               </Link>
             ))}
-             <Link
-                to="/admin"
-                onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive('/admin')
-                    ? 'bg-slate-800 text-emerald-400'
-                    : 'text-slate-500 hover:bg-slate-800 hover:text-white'
-                }`}
-              >
-                Panel Admina
-              </Link>
           </div>
         </div>
       )}
