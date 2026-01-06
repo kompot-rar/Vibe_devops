@@ -22,15 +22,19 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      # --- TU JEST KLUCZOWA ZMIANA ---
       - name: Build Project
+        env:
+          # To przekazuje sekret z GitHuba do procesu Vite
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: npm run build
+      # -------------------------------
 
       - name: Debug Build Output
         run: |
           echo "📂 Zawartość folderu dist:"
           ls -R dist/
 
-      # --- TU JEST ZMIANA (SUDO) ---
       - name: Clean Nginx Folder
         run: sudo rm -rf /var/www/html/*
 
