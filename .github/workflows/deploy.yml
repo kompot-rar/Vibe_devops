@@ -38,7 +38,7 @@ jobs:
 
       # 6. Czyszczenie serwera WWW
       - name: Clean Nginx Folder
-        run: rm -rf /var/www/html/*
+        run: sudo rm -rf /var/www/html/*
 
       # 7. Kopiowanie plików
       - name: Deploy to Nginx
