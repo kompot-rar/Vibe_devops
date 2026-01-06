@@ -1,27 +1,53 @@
-steps:
+name: Deploy React App to Homelab
+
+on:
+  push:
+    branches:
+      - main  # Upewnij się, że to nazwa Twojej głównej gałęzi (może być 'master')
+
+jobs:
+  build-and-deploy:
+    runs-on: [self-hosted, linux, homelab]
+
+    steps:
+      # 1. Pobieramy kod
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # 2. Diagnostyka środowiska (Czy Runner widzi Node'a?)
+      - name: Check Environment
+        run: |
+          echo "🔍 Sprawdzam wersje narzędzi..."
+          node -v
+          npm -v
+
+      # 3. Instalacja zależności
       - name: Install Dependencies
         run: npm install
 
+      # 4. Budowanie aplikacji (Vite)
       - name: Build Project
         run: npm run build
 
-      # --- DIAGNOSTYKA: Zobaczmy co powstało w folderze dist ---
+      # 5. DIAGNOSTYKA: Pokaż co zbudowałeś (To nam powie, czy jest folder assets!)
       - name: Debug Build Output
         run: |
-          echo "📂 Zawartość folderu dist:"
+          echo "📂 Zawartość folderu dist (to co leci na serwer):"
           ls -R dist/
-      # ---------------------------------------------------------
 
+      # 6. Czyszczenie serwera WWW
       - name: Clean Nginx Folder
         run: rm -rf /var/www/html/*
 
+      # 7. Wgrywanie plików (Używamy składni dist/. żeby skopiować ukryte pliki i uniknąć błędów)
       - name: Deploy to Nginx
         run: |
           echo "🚀 Kopiowanie plików..."
-          # Kopiujemy rekurencyjnie (-r) zawartość dist do html
           cp -r dist/. /var/www/html/
-          # Zmiana właściciela na www-data (dla pewności)
+          
+      # 8. Naprawa uprawnień (żeby Nginx mógł czytać pliki)
+      - name: Fix Permissions
+        run: |
           chown -R www-data:www-data /var/www/html
+          chmod -R 755 /var/www/html
+          echo "✅ Uprawnienia naprawione!"
