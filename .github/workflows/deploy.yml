@@ -50,6 +50,6 @@ jobs:
       # 8. Naprawa uprawnień
       - name: Fix Permissions
         run: |
-          chown -R www-data:www-data /var/www/html
-          chmod -R 755 /var/www/html
+          sudo chown -R www-data:www-data /var/www/html
+          sudo chmod -R 755 /var/www/html
           echo "✅ Uprawnienia naprawione!"
