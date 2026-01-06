@@ -9,8 +9,7 @@
 
 </div>
 
-> [!IMPORTANT]
-> **Code is cheap. Architecture is expensive.**
+
 
 The application code itself follows an **AI-Assisted Development methodology**. This approach was chosen to drastically minimize *time-to-market* for the frontend logic, shifting the engineering weight where it matters most:
 
