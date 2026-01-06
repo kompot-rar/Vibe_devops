@@ -45,7 +45,7 @@ jobs:
         run: |
           echo "🚀 Kopiowanie plików..."
           # Kopiujemy zawartość folderu dist
-          cp -r dist/. /var/www/html/
+          sudo cp -r dist/. /var/www/html/
 
       # 8. Naprawa uprawnień
       - name: Fix Permissions
