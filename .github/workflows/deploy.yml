@@ -1,35 +1,27 @@
-name: Deploy React App to Homelab
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build-and-deploy:
-    runs-on: [self-hosted, linux, homelab]
-
-    steps:
-      # 1. Pobieramy kod
+steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Instalujemy zależności (biblioteki z package.json)
       - name: Install Dependencies
         run: npm install
 
-      # 3. Budujemy aplikację (To zamieni TSX na czysty HTML/JS w folderze 'dist')
       - name: Build Project
         run: npm run build
 
-      # 4. Czyścimy folder serwera WWW
+      # --- DIAGNOSTYKA: Zobaczmy co powstało w folderze dist ---
+      - name: Debug Build Output
+        run: |
+          echo "📂 Zawartość folderu dist:"
+          ls -R dist/
+      # ---------------------------------------------------------
+
       - name: Clean Nginx Folder
         run: rm -rf /var/www/html/*
 
-      # 5. Kopiujemy TYLKO zbudowaną aplikację (folder dist)
       - name: Deploy to Nginx
         run: |
-          echo "🚀 Wgrywanie zbudowanej aplikacji..."
-          # Vite domyślnie buduje do folderu 'dist'. Kopiujemy JEGO ZAWARTOŚĆ.
-          cp -r dist/* /var/www/html/
-          echo "✅ Gotowe!"
+          echo "🚀 Kopiowanie plików..."
+          # Kopiujemy rekurencyjnie (-r) zawartość dist do html
+          cp -r dist/. /var/www/html/
+          # Zmiana właściciela na www-data (dla pewności)
+          chown -R www-data:www-data /var/www/html
