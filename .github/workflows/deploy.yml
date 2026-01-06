@@ -1,0 +1,25 @@
+name: Deploy to Homelab
+
+on:
+  push:
+    branches:
+      - main  # lub 'master' - sprawdź jak nazywa się Twoja główna gałąź!
+
+jobs:
+  deploy:
+    # To mówi GitHubowi: "Nie szukaj serwerów w chmurze, użyj tego, który się zgłosił jako self-hosted"
+    runs-on: [self-hosted, linux, homelab] 
+
+    steps:
+      - name: Pobierz kod z repozytorium (Checkout)
+        uses: actions/checkout@v4
+
+      - name: Wyczyść stary content (opcjonalne, ale zalecane)
+        run: rm -rf /var/www/html/*
+
+      - name: Kopiuj nowe pliki bloga
+        run: |
+          echo "🚀 Rozpoczynam deployment na Homelab..."
+          # Kopiujemy wszystko z bieżącego folderu repozytorium do katalogu Nginxa
+          cp -r ./* /var/www/html/
+          echo "✅ Deployment zakończony!"
