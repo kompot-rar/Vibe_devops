@@ -1,5 +1,5 @@
 <div align="center">
-<img src="public/DEMO.png" alt="demo" width="600">
+<img src="public/DEMO.png" alt="demo" width="800">
   
 ## ⚡ Development Philosophy: The "Vibe Coding" Protocol
 
@@ -21,3 +21,6 @@ The application code itself follows an **AI-Assisted Development methodology**. 
 | **Network Security** | Zero Trust (Cloudflare Tunnels), No Open Inbound Ports |
 
 ---
+
+live: devops.mrozy.org
+
