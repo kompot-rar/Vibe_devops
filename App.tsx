@@ -47,7 +47,7 @@ const About: React.FC = () => (
     </div>
     <h2 className="text-2xl font-bold text-white mb-4">O Projekcie</h2>
     <p className="text-slate-300 mb-6 leading-relaxed">
-      Witaj na moim blogu! Nazywam się Łukasz i jestem początkującym inżynierem DevOps. 
+      Witaj na moim blogu! Nazywam się Łukasz Mróz i jestem zafascynowany DevOps. 
       Stworzyłem tę stronę, aby dokumentować moją naukę i dzielić się wiedzą z innymi.
       Korzystam z pomocy sztucznej inteligencji, aby szybciej zrozumieć trudne koncepty.
     </p>
