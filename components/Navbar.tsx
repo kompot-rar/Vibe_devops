@@ -18,17 +18,25 @@ const Navbar: React.FC = () => {
     <nav className="sticky top-0 z-50 bg-slate-950/80 backdrop-blur-md border-b border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
+          
+          {/* --- LOGO I LINK DO STRONY GŁÓWNEJ --- */}
           <div className="flex items-center">
-            <Link to="/" className="flex-shrink-0 flex items-center gap-2 group">
+            <Link 
+              to="/" 
+              className="flex-shrink-0 flex items-center gap-2 group cursor-pointer"
+              onClick={() => setIsOpen(false)} // Zamyka menu mobilne po kliknięciu w logo
+            >
               <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/20 group-hover:border-emerald-500/50 transition-colors">
                 <Terminal className="h-6 w-6 text-emerald-500" />
               </div>
-              <span className="text-xl font-bold font-mono tracking-tight text-slate-100">
+              <span className="text-xl font-bold font-mono tracking-tight text-slate-100 group-hover:text-emerald-400 transition-colors">
                 DevOps<span className="text-emerald-500">Zero</span>ToHero
               </span>
             </Link>
           </div>
+          {/* ------------------------------------- */}
           
+          {/* Desktop Menu */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
               {navItems.map((item) => (
@@ -47,6 +55,7 @@ const Navbar: React.FC = () => {
             </div>
           </div>
 
+          {/* Mobile Menu Button */}
           <div className="-mr-2 flex md:hidden">
             <button
               onClick={() => setIsOpen(!isOpen)}
@@ -58,8 +67,9 @@ const Navbar: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Menu Panel */}
       {isOpen && (
-        <div className="md:hidden bg-slate-900 border-b border-slate-800">
+        <div className="md:hidden bg-slate-900 border-b border-slate-800 animate-fade-in">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
               <Link
