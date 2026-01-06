@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
 import Roadmap from './components/Roadmap';
 import AdminPanel from './components/AdminPanel';
-import { BlogPost } from './types';
+import { BlogPost } from './types';a
 import { Github, Linkedin, Server } from 'lucide-react';
 
 const INITIAL_POSTS: BlogPost[] = [
@@ -50,9 +50,28 @@ const About: React.FC = () => (
       Stworzyłem tę stronę, aby dokumentować moją naukę i dzielić się wiedzą z innymi.
       Korzystam z pomocy sztucznej inteligencji, aby szybciej zrozumieć trudne koncepty.
     </p>
-    <div className="flex justify-center gap-4">
-      <a href="#" className="text-slate-400 hover:text-white transition-colors"><Github /></a>
-      <a href="#" className="text-slate-400 hover:text-white transition-colors"><Linkedin /></a>
+    
+    {/* Sekcja ikonek z animacją */}
+    <div className="flex justify-center gap-8 mt-8">
+      <a 
+        href="https://github.com/kompot-rar" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="text-slate-400 transform transition-all duration-300 hover:scale-125 hover:-translate-y-1 hover:text-white hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]"
+        aria-label="GitHub Profile"
+      >
+        <Github size={32} />
+      </a>
+      
+      <a 
+        href="https://www.linkedin.com/in/%C5%82ukasz-mr%C3%B3z-b4980039a/" 
+        target="_blank" 
+        rel="noopener noreferrer" 
+        className="text-slate-400 transform transition-all duration-300 hover:scale-125 hover:-translate-y-1 hover:text-[#0A66C2] hover:drop-shadow-[0_0_15px_rgba(10,102,194,0.6)]"
+        aria-label="LinkedIn Profile"
+      >
+        <Linkedin size={32} />
+      </a>
     </div>
   </div>
 );
