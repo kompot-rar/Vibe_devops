@@ -1,7 +1,22 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+## ⚡ Development Philosophy: The "Vibe Coding" Protocol
+
+![AI Assisted](https://img.shields.io/badge/AI_Assisted-Workflow-8A2BE2?style=for-the-badge&logo=openai&logoColor=white)
+![Infrastructure First](https://img.shields.io/badge/Infrastructure-Hardened-00C853?style=for-the-badge&logo=linux&logoColor=white)
+![Time To Market](https://img.shields.io/badge/Time_to_Market-Optimized-FFD600?style=for-the-badge&logo=speedtest&logoColor=black)
+
 </div>
 
-### 💡 Project Focus
+> [!IMPORTANT]
+> **Code is cheap. Architecture is expensive.**
 
-> "The application code itself follows an **AI-Assisted Development methodology**. This approach was chosen to minimize time-to-market for the frontend logic, allowing the primary focus to remain on **infrastructure robustness, deployment pipelines, and network security**."
+The application code itself follows an **AI-Assisted Development methodology**. This approach was chosen to drastically minimize *time-to-market* for the frontend logic, shifting the engineering weight where it matters most:
+
+| 🎯 Focus Area | 🛡️ Implementation Details |
+| :--- | :--- |
+| **Infrastructure Robustness** | Proxmox HA-ready setup, Resource Isolation |
+| **Deployment Pipelines** | Git-based workflow, Systemd automation |
+| **Network Security** | Zero Trust (Cloudflare Tunnels), No Open Inbound Ports |
+
+---
