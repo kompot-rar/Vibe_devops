@@ -4,7 +4,7 @@ import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
 import Roadmap from './components/Roadmap';
 import AdminPanel from './components/AdminPanel';
-import { BlogPost } from './types';a
+import { BlogPost } from './types';
 import { Github, Linkedin, Server } from 'lucide-react';
 
 const INITIAL_POSTS: BlogPost[] = [
