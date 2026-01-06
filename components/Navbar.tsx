@@ -19,12 +19,12 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
-          {/* --- LOGO I LINK DO STRONY GŁÓWNEJ --- */}
+          {/* --- TU JEST ZMIANA: Używamy <a> zamiast <Link> --- */}
+          {/* To wymusi odświeżenie strony i powrót do listy postów */}
           <div className="flex items-center">
-            <Link 
-              to="/" 
+            <a 
+              href="/" 
               className="flex-shrink-0 flex items-center gap-2 group cursor-pointer"
-              onClick={() => setIsOpen(false)} // Zamyka menu mobilne po kliknięciu w logo
             >
               <div className="bg-emerald-500/10 p-2 rounded-lg border border-emerald-500/20 group-hover:border-emerald-500/50 transition-colors">
                 <Terminal className="h-6 w-6 text-emerald-500" />
@@ -32,9 +32,9 @@ const Navbar: React.FC = () => {
               <span className="text-xl font-bold font-mono tracking-tight text-slate-100 group-hover:text-emerald-400 transition-colors">
                 DevOps<span className="text-emerald-500">Zero</span>ToHero
               </span>
-            </Link>
+            </a>
           </div>
-          {/* ------------------------------------- */}
+          {/* -------------------------------------------------- */}
           
           {/* Desktop Menu */}
           <div className="hidden md:block">
