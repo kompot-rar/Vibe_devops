@@ -1,5 +1,6 @@
 <div align="center">
-
+<img src="public/DEMO.png" alt="demo" width="600">
+  
 ## ⚡ Development Philosophy: The "Vibe Coding" Protocol
 
 ![AI Assisted](https://img.shields.io/badge/AI_Assisted-Workflow-8A2BE2?style=for-the-badge&logo=openai&logoColor=white)
