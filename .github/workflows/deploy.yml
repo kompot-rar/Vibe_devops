@@ -3,51 +3,42 @@ name: Deploy React App to Homelab
 on:
   push:
     branches:
-      - main  # Upewnij się, że Twoja gałąź to 'main' (czasem bywa 'master')
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: [self-hosted, linux, homelab]
 
     steps:
-      # 1. Pobranie kodu
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Diagnostyka środowiska
       - name: Check Environment
         run: |
           echo "🔍 Node version:"
           node -v
-          echo "🔍 NPM version:"
           npm -v
 
-      # 3. Instalacja zależności
       - name: Install Dependencies
         run: npm install
 
-      # 4. Budowanie aplikacji (Vite)
       - name: Build Project
         run: npm run build
 
-      # 5. DIAGNOSTYKA: Co powstało?
       - name: Debug Build Output
         run: |
           echo "📂 Zawartość folderu dist:"
-          ls -R dist/ || echo "❌ Brak folderu dist!"
+          ls -R dist/
 
-      # 6. Czyszczenie serwera WWW
+      # --- TU JEST ZMIANA (SUDO) ---
       - name: Clean Nginx Folder
         run: sudo rm -rf /var/www/html/*
 
-      # 7. Kopiowanie plików
       - name: Deploy to Nginx
         run: |
           echo "🚀 Kopiowanie plików..."
-          # Kopiujemy zawartość folderu dist
           sudo cp -r dist/. /var/www/html/
 
-      # 8. Naprawa uprawnień
       - name: Fix Permissions
         run: |
           sudo chown -R www-data:www-data /var/www/html
