@@ -33,9 +33,9 @@ const INITIAL_POSTS: BlogPost[] = [
     title: 'Pierwsze kroki z Linuxem',
     excerpt: 'Terminal to Twój najlepszy przyjaciel. Poznaj podstawowe komendy, które uratują Ci życie na serwerze.',
     content: "## Nie bój się czarnego ekranu\n\nTerminal w systemie Linux to potężne narzędzie. Graficzny interfejs zużywa zasoby, których na serwerach produkcyjnych często brakuje.\n\n### Podstawowe komendy\n\n- `ls`: Listuje pliki\n- `cd`: Zmienia katalog\n- `grep`: Szuka tekstu w plikach\n\nOpanowanie potoków (pipes `|`) pozwoli Ci łączyć te proste narzędzia w skomplikowane systemy przetwarzania danych.",
-    date: '2023-10-26',
+    date: '2026-01-05',
     tags: ['Linux', 'Terminal', 'Basics'],
-    readTime: '6 min',
+    readTime: '1 min',
     imageUrl: 'https://picsum.photos/800/401?grayscale'
   }
 ];
