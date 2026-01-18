@@ -27,7 +27,7 @@ const INITIAL_POSTS: BlogPost[] = [
     tags: ['Terraform', 'Ansible', 'CI/CD', 'WarStories'],
     readTime: '10 min',
     imageUrl: '/serwerownia3.png'
-}
+},
   {
     id: '3',
     title: 'Pierwsze kroki z Linuxem',
