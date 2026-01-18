@@ -35,7 +35,7 @@ content: "Zarządzanie domowym serwerem przez GUI (Proxmox) jest wygodne, ale ma
     date: '2026-01-01',
     tags: ['ArchLinux', 'Proxmox', 'DevOps', 'LearnByDoing'],
     readTime: '4 min',
-    imageUrl: '/serwerownia4.jpg'
+    imageUrl: '/serwerownia4.png'
   }
 ];
 
