@@ -29,6 +29,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
   const [tags, setTags] = useState('');
   const [readTime, setReadTime] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const adminPassword = process.env.REACT_APP_ADMIN_PASSWORD;
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
