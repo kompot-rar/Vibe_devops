@@ -25,6 +25,7 @@ jobs:
       - name: Build Project
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          REACT_APP_ADMIN_PASSWORD: ${{ secrets.REACT_APP_ADMIN_PASSWORD }}
         run: npm run build
       # -------------------------------
 
