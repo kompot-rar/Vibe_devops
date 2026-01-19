@@ -34,7 +34,7 @@ const AdminPanel: React.FC<AdminPanelProps> = ({ posts, onAdd, onUpdate, onDelet
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     // Logic: checking against the hidden hardcoded password
-    if (passwordInput === 'admin123') {
+    if (passwordInput === adminPassword) {
       setIsAuthenticated(true);
       setAuthError('');
       setPasswordInput('');
