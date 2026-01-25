@@ -14,7 +14,6 @@ export default defineConfig(({ mode }) => {
       define: {
         'process.env.API_KEY': JSON.stringify(env.GEMINI_API_KEY),
         'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY)
-        'process.env.REACT_APP_ADMIN_PASSWORD': JSON.stringify(env.REACT_APP_ADMIN_PASSWORD)
       },
       resolve: {
         alias: {
