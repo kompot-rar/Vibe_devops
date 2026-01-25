@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
@@ -99,20 +99,6 @@ const About: React.FC = () => (
 );
 
 const App: React.FC = () => {
-  const [posts, setPosts] = useState<BlogPost[]>(INITIAL_POSTS);
-
-  const handleAddPost = (newPost: BlogPost) => {
-    setPosts(prev => [newPost, ...prev]);
-  };
-
-  const handleUpdatePost = (updatedPost: BlogPost) => {
-    setPosts(prev => prev.map(post => post.id === updatedPost.id ? updatedPost : post));
-  };
-
-  const handleDeletePost = (id: string) => {
-    setPosts(prev => prev.filter(post => post.id !== id));
-  };
-
   return (
     <Router>
       <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
@@ -131,18 +117,11 @@ const App: React.FC = () => {
                       Dokumentacja podróży w głąb infrastruktury. Od pojedynczego skryptu do orkiestracji klastrów.
                     </p>
                   </div>
-                  <BlogList posts={posts} />
+                  <BlogList posts={INITIAL_POSTS} />
                 </>
               } />
               <Route path="/roadmap" element={<Roadmap />} />
-              <Route path="/admin" element={
-                <AdminPanel 
-                  posts={posts} 
-                  onAdd={handleAddPost} 
-                  onUpdate={handleUpdatePost}
-                  onDelete={handleDeletePost} 
-                />
-              } />
+
               <Route path="/about" element={<About />} />
             </Routes>
           </div>
