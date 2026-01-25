@@ -39,7 +39,7 @@ content: "Zarządzanie domowym serwerem przez GUI (Proxmox) jest wygodne, ale ma
     imageUrl: '/linux_config.png'
 },
   {
-    {
+    
     id: '4',
     title: 'Kontenery to kłamstwo. Zbudowałem własny runtime w Bashu.',
     excerpt: 'Docker to tylko wygodny interfejs. Prawdziwa izolacja dzieje się w Kernelu. Zobacz jak zrozumieć co naprawdę dzieje się w Podzie Kubernetesa.',
