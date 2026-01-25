@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
 import Roadmap from './components/Roadmap';
-import AdminPanel from './components/AdminPanel';
 import { BlogPost } from './types';
 import { Github, Linkedin, Server } from 'lucide-react';
 
