@@ -40,23 +40,23 @@ Umożliwić bezpośrednie linkowanie do poszczególnych postów (np. `devops.mro
 
 ---
 
-## Strategia Rozwoju: Operacja "Markdown Migration"
+## Strategia Rozwoju: Operacja "Markdown Migration" [COMPLETED]
 
 ### Cel
 Przeniesienie treści postów z kodu źródłowego (`App.tsx`) do osobnych plików `.md` w katalogu `/posts/`. Ułatwi to zarządzanie treścią, pozwoli na pisanie postów w zewnętrznych edytorach i zautomatyzuje proces publikacji w homelabie.
 
-### Faza 1: Przygotowanie Treści i Struktury
+### Faza 1: Przygotowanie Treści i Struktury [DONE]
 1. **Utworzenie katalogu `/posts/`**: Miejsce na wszystkie notatki w formacie Markdown.
 2. **Konwersja postów**: Przeniesienie obecnych wpisów do plików `.md` z sekcją Frontmatter (tytuł, data, tagi, obrazek).
 
-### Faza 2: Implementacja Logiki Ładowania (Vite)
+### Faza 2: Implementacja Logiki Ładowania (Vite) [DONE]
 1. **Dynamiczny Import**: Wykorzystanie `import.meta.glob` do automatycznego skanowania katalogu `/posts/`.
 2. **Parser Markdown**: Implementacja `postService.ts`, który przetworzy surowe pliki `.md` na obiekty TypeScript zgodne z interfejsem `BlogPost`.
-3. **Zastosowanie `gray-matter`**: (Opcjonalnie) do profesjonalnego wyciągania metadanych z plików.
+3. **Zastosowanie `gray-matter`**: Do profesjonalnego wyciągania metadanych z plików.
 
-### Faza 3: Refaktoryzacja Komponentów
-1. **Użycie `react-markdown`**: Zastąpienie autorskiego parsera w `BlogList.tsx` standardową biblioteką dla lepszego wsparcia składni (tabele, zadania, lepsze bloki kodu).
-2. **Async Loading**: Dostosowanie aplikacji do ładowania postów asynchronicznie przy starcie.
+### Faza 3: Refaktoryzacja Komponentów [DONE]
+1. **Użycie `react-markdown`**: Zastąpienie autorskiego parsera w `BlogPostView.tsx` standardową biblioteką dla lepszego wsparcia składni.
+2. **Async Loading**: Dostosowanie aplikacji do ładowania postów (użycie `useMemo` w `App.tsx`).
 
 ### Zalety dla Homelaba
 - **GitOps**: Dodanie nowego posta to po prostu `git push`.

@@ -1,8 +1,7 @@
 import React from 'react';
 import { BlogPost } from '../types';
-import { BookOpen, ArrowRight } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { slugify } from '../src/utils/slugify';
 
 interface BlogListProps {
   posts: BlogPost[];
@@ -28,7 +27,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
         {posts.map((post) => (
           <Link 
             key={post.id} 
-            to={`/blog/${slugify(post.title)}`}
+            to={`/blog/${post.slug}`}
             className="group bg-thinkpad-surface border border-neutral-700 rounded-none overflow-hidden hover:border-thinkpad-red transition-all duration-300 cursor-pointer flex flex-col h-full shadow-lg hover:shadow-[0_0_20px_rgba(224,6,19,0.3)]"
           >
             <div className="h-48 overflow-hidden relative transition-all duration-500">

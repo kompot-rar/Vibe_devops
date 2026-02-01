@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { BlogPost } from '../types';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
-import { slugify } from '../src/utils/slugify';
+import ReactMarkdown from 'react-markdown';
 
 interface BlogPostViewProps {
   posts: BlogPost[];
@@ -10,54 +10,11 @@ interface BlogPostViewProps {
 
 const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
   const { slug } = useParams<{ slug: string }>();
-  const post = posts.find(p => slugify(p.title) === slug);
+  const post = posts.find(p => p.slug === slug);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
-
-  // --- PARSER ---
-  const parseBold = (text: string) => {
-    return text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-bold tracking-tight">$1</strong>')
-               .replace(/`(.*?)`/g, '<code class="bg-neutral-800 text-thinkpad-red px-1.5 py-0.5 rounded-sm text-sm font-mono border border-neutral-700">$1</code>');
-  };
-
-  const renderContent = (content: string) => {
-    const lines = content.split('\n');
-    let inCodeBlock = false;
-
-    return lines.map((line, index) => {
-      // Kod
-      if (line.trim().startsWith('```')) {
-        inCodeBlock = !inCodeBlock;
-        return null;
-      }
-      if (inCodeBlock) {
-        return <div key={index} className="bg-neutral-950 text-neutral-300 font-mono text-sm p-4 border-l-4 border-thinkpad-red overflow-x-auto shadow-inner">{line}</div>;
-      }
-
-      // Nagłówki
-      if (line.startsWith('## ')) return <h2 key={index} className="text-2xl font-bold text-white mt-10 mb-6 font-mono uppercase tracking-wide border-b border-neutral-800 pb-2">{line.replace('## ', '')}</h2>;
-      if (line.startsWith('### ')) return <h3 key={index} className="text-xl font-bold text-thinkpad-red mt-8 mb-4 font-mono">{line.replace('### ', '')}</h3>;
-
-      // Obrazki (Markdown i HTML)
-      if (line.includes('<img')) return <div key={index} dangerouslySetInnerHTML={{ __html: line }} />;
-      if (line.includes('![') && line.includes('](')) {
-          const src = line.match(/\((.*?)\)/)?.[1];
-          return src ? <img key={index} src={src} className="w-full rounded-sm border border-neutral-800 my-8 shadow-lg" alt="Blog content" /> : null;
-      }
-
-      // Listy
-      if (line.trim().startsWith('- ')) {
-        return <li key={index} className="ml-4 text-thinkpad-text list-square marker:text-thinkpad-red mb-2 pl-2"><span dangerouslySetInnerHTML={{ __html: parseBold(line.replace('- ', '')) }} /></li>;
-      }
-
-      // Puste linie i paragrafy
-      if (line.trim() === '') return <div key={index} className="h-4"></div>;
-      
-      return <p key={index} className="text-thinkpad-text leading-loose mb-4 font-light" dangerouslySetInnerHTML={{ __html: parseBold(line) }} />;
-    });
-  };
 
   if (!post) {
     return (
@@ -108,9 +65,18 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
             <span className="flex items-center gap-2"><Clock size={14} className="text-thinkpad-red"/> {post.readTime}</span>
           </div>
 
-          {/* Renderowana treść */}
-          <div className="prose prose-invert max-w-none prose-p:text-thinkpad-text prose-headings:font-mono prose-a:text-thinkpad-red hover:prose-a:text-white">
-            {renderContent(post.content)}
+          {/* Renderowana treść z react-markdown */}
+          <div className="prose prose-invert max-w-none 
+            prose-p:text-thinkpad-text prose-p:leading-loose prose-p:font-light
+            prose-headings:font-mono prose-headings:uppercase prose-headings:tracking-wide
+            prose-h2:text-2xl prose-h2:border-b prose-h2:border-neutral-800 prose-h2:pb-2 prose-h2:mt-10
+            prose-h3:text-xl prose-h3:text-thinkpad-red prose-h3:mt-8
+            prose-code:bg-neutral-800 prose-code:text-thinkpad-red prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
+            prose-pre:bg-neutral-950 prose-pre:border-l-4 prose-pre:border-thinkpad-red prose-pre:rounded-none prose-pre:shadow-inner
+            prose-li:text-thinkpad-text prose-li:marker:text-thinkpad-red
+            prose-img:rounded-sm prose-img:border prose-img:border-neutral-800 prose-img:shadow-lg
+            prose-a:text-thinkpad-red hover:prose-a:text-white transition-colors">
+            <ReactMarkdown>{post.content}</ReactMarkdown>
           </div>
         </div>
       </article>
