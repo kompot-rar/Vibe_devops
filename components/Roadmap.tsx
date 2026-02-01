@@ -5,72 +5,58 @@ import { CheckCircle2, Activity, ShieldCheck, Cpu, Code2, Database } from 'lucid
 const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '1',
-    title: 'Linux & Environment',
-    description: 'Fundament pracy. Instalacja Arch Linux, konfiguracja Dotfiles (GNU Stow) oraz zarządzanie kluczami SSH (automatyzacja).',
-    tools: ['Arch Linux', 'Stow', 'SSH', 'GPG'],
+    title: 'Linux & Workstation',
+    description: 'Kompletne środowisko pracy. Arch Linux, konfiguracja Dotfiles, zarządzanie SSH oraz biegłość w Vim i Bash Scripting.',
+    tools: ['Arch Linux', 'Bash', 'SSH', 'Vim'],
     status: 'completed'
   },
   {
     id: '2',
-    title: 'Terminal & Scripting',
-    description: 'Optymalizacja workflow. Vim/LazyVim jako IDE, Fzf, oraz zaawansowane skrypty Bash (Healthcheck, Backup z rotacją).',
-    tools: ['Vim', 'Bash', 'Fzf', 'Tmux'],
+    title: 'Infrastruktura Homelab',
+    description: 'W pełni operacyjny klaster Proxmox. Hardware, podstawy sieci (OSI, VLANs) oraz fizyczna budowa serwerowni.',
+    tools: ['Proxmox', 'Hardware', 'Networking', 'LXC'],
     status: 'completed'
   },
   {
     id: '3',
-    title: 'Network Theory',
-    description: 'Głębokie zrozumienie warstw modelu OSI (L2-L7), protokołów TCP/UDP oraz diagnostyka sieciowa.',
-    tools: ['OSI Model', 'TCP/IP', 'DNS', 'tcpdump'],
-    status: 'completed'
-  },
-  {
-    id: '4',
-    title: 'Homelab Networking',
-    description: 'Implementacja sieci w domu. Segmentacja VLAN na switchu, własny DNS (Pi-hole) i Reverse Proxy (Nginx) na bare metal.',
-    tools: ['VLANs', 'Pi-hole', 'Nginx', 'Blackbox Exp'],
+    title: 'Automatyzacja & Python',
+    description: 'Tworzenie narzędzi w Pythonie (Boto3) i Bashu do automatyzacji zadań administracyjnych oraz monitoringu.',
+    tools: ['Python', 'Boto3', 'Scripting', 'Automation'],
     status: 'in-progress'
   },
   {
-    id: '5',
+    id: '4',
     title: 'Wirtualizacja & IaC',
-    description: 'Budowa klastra Proxmox i zarządzanie nim przez kod (Terraform). Wstęp do chmur publicznych (AWS/Azure).',
-    tools: ['Proxmox', 'Terraform', 'Ansible', 'Cloud'],
+    description: 'Zarządzanie infrastrukturą jako kod. Terraform do provisioningu VM-ek oraz konfiguracja przez Ansible.',
+    tools: ['Terraform', 'Ansible', 'IaC', 'Cloud'],
+    status: 'pending'
+  },
+  {
+    id: '5',
+    title: 'Konteneryzacja',
+    description: 'Głębokie wejście w Docker i Docker Compose. Budowa wydajnych obrazów i środowisk deweloperskich.',
+    tools: ['Docker', 'Compose', 'DevEnv', 'Distroless'],
     status: 'pending'
   },
   {
     id: '6',
-    title: 'Containers & Python',
-    description: 'Docker Deep Dive, środowiska Dev Containers oraz automatyzacja operacyjna w Pythonie (boto3).',
-    tools: ['Docker', 'Python', 'Boto3', 'SBOM'],
+    title: 'CI/CD Pipelines',
+    description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja runnerów.',
+    tools: ['GitLab CI', 'GitHub Actions', 'Pipelines', 'Tests'],
     status: 'pending'
   },
   {
     id: '7',
-    title: 'CI/CD & Automation',
-    description: 'Nowoczesne potoki wdrażania. GitLab CI, GitHub Actions i zarządzanie Self-hosted Runners.',
-    tools: ['GitLab CI', 'GitHub Actions', 'Runners', 'YAML'],
+    title: 'Kubernetes Core',
+    description: 'Orkiestracja kontenerów. Instalacja K3s, zarządzanie aplikacjami przez Helm i konfiguracja sieci klastra.',
+    tools: ['K3s', 'Helm', 'Ingress', 'K8s'],
     status: 'pending'
   },
   {
     id: '8',
-    title: 'Databases & State',
-    description: 'Bazy danych w kontenerach. PostgreSQL, migracje schematu (Flyway) i strategie backupu danych trwałych.',
-    tools: ['PostgreSQL', 'Flyway', 'SQL', 'Backup'],
-    status: 'pending'
-  },
-  {
-    id: '9',
-    title: 'Kubernetes Core',
-    description: 'Instalacja K3s "The Hard Way", zarządzanie aplikacjami przez Helm oraz konfiguracja Ingress i Security.',
-    tools: ['K3s', 'Helm', 'Ingress', 'Kyverno'],
-    status: 'pending'
-  },
-  {
-    id: '10',
-    title: 'Advanced Ops & CKA',
-    description: 'GitOps (ArgoCD), pełny monitoring (ELK/Prometheus) i finalne przygotowanie do egzaminu CKA.',
-    tools: ['ArgoCD', 'ELK', 'Prometheus', 'Talos'],
+    title: 'Advanced Ops',
+    description: 'Poziom ekspercki. GitOps (ArgoCD), zaawansowany monitoring (ELK) i certyfikacja CKA.',
+    tools: ['ArgoCD', 'ELK', 'Prometheus', 'CKA'],
     status: 'pending'
   }
 ];
@@ -123,7 +109,7 @@ const Roadmap: React.FC = () => {
                         {item.title}
                       </h3>
                       {isCompleted && <CheckCircle2 size={16} className="text-thinkpad-red" />}
-                      {isInProgress && <Activity size={16} className="text-white animate-pulse" />}
+                      {isInProgress && <Activity size={16} className="text-white animate-pulse stroke-[3px] drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />}
                     </div>
                     
                     <p className="text-neutral-500 text-sm mb-6 font-light leading-relaxed">
