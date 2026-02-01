@@ -19,41 +19,48 @@ const ROADMAP_DATA: RoadmapItem[] = [
   },
   {
     id: '3',
+    title: 'Teoria Sieci',
+    description: 'Fundamenty komunikacji. Model OSI (L2-L7), protokoły TCP/UDP, DNS oraz diagnostyka pakietów (tcpdump/Wireshark).',
+    tools: ['OSI', 'TCP/IP', 'DNS', 'Wireshark'],
+    status: 'completed'
+  },
+  {
+    id: '4',
     title: 'Automatyzacja & Python',
     description: 'Tworzenie narzędzi w Pythonie (Boto3) i Bashu do automatyzacji zadań administracyjnych oraz monitoringu.',
     tools: ['Python', 'Boto3', 'Scripting', 'Automation'],
     status: 'in-progress'
   },
   {
-    id: '4',
+    id: '5',
     title: 'Wirtualizacja & IaC',
     description: 'Zarządzanie infrastrukturą jako kod. Terraform do provisioningu VM-ek oraz konfiguracja przez Ansible.',
     tools: ['Terraform', 'Ansible', 'IaC', 'Cloud'],
     status: 'pending'
   },
   {
-    id: '5',
+    id: '6',
     title: 'Konteneryzacja',
     description: 'Głębokie wejście w Docker i Docker Compose. Budowa wydajnych obrazów i środowisk deweloperskich.',
     tools: ['Docker', 'Compose', 'DevEnv', 'Distroless'],
     status: 'pending'
   },
   {
-    id: '6',
+    id: '7',
     title: 'CI/CD Pipelines',
     description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja runnerów.',
     tools: ['GitLab CI', 'GitHub Actions', 'Pipelines', 'Tests'],
     status: 'pending'
   },
   {
-    id: '7',
+    id: '8',
     title: 'Kubernetes Core',
     description: 'Orkiestracja kontenerów. Instalacja K3s, zarządzanie aplikacjami przez Helm i konfiguracja sieci klastra.',
     tools: ['K3s', 'Helm', 'Ingress', 'K8s'],
     status: 'pending'
   },
   {
-    id: '8',
+    id: '9',
     title: 'Advanced Ops',
     description: 'Poziom ekspercki. GitOps (ArgoCD), zaawansowany monitoring (ELK) i certyfikacja CKA.',
     tools: ['ArgoCD', 'ELK', 'Prometheus', 'CKA'],
@@ -108,8 +115,8 @@ const Roadmap: React.FC = () => {
                       <h3 className={`text-lg font-bold font-mono tracking-tight uppercase ${isCompleted ? 'text-white' : 'text-neutral-500'}`}>
                         {item.title}
                       </h3>
-                      {isCompleted && <CheckCircle2 size={16} className="text-thinkpad-red" />}
-                      {isInProgress && <Activity size={16} className="text-white animate-pulse stroke-[3px] drop-shadow-[0_0_5px_rgba(255,255,255,0.8)]" />}
+                      {isCompleted && <CheckCircle2 size={24} className="text-thinkpad-red drop-shadow-[0_0_8px_rgba(224,6,19,0.5)]" />}
+                      {isInProgress && <Activity size={24} className="text-white animate-pulse stroke-[3px] drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]" />}
                     </div>
                     
                     <p className="text-neutral-500 text-sm mb-6 font-light leading-relaxed">
