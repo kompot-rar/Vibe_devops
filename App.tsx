@@ -99,7 +99,7 @@ Netgear GS108T nie jest najseksowniejszym sprzętem na świecie. Jego interfejs 
 Windowsa XP. Ale **robi robotę**. Jest stabilny i uczy jak panować nad ruchem sieciowym na poziomie warstwy drugiej (L2). W świecie chmury koncepcje są te same, tylko kable są wirtualne. Zrozumienie tego na fizycznym sprzęcie to fundament, którego nie da się pominąć.
 
 ![Homelab Setup](/homelab2-0.jpg)`,
-    date: '2026-03-01',
+    date: '2026-02-01',
     tags: ['Bare Metal', '3D Printing', 'Chaos Engineering', 'Homelab', 'Hardware'],
     readTime: '15 min',
     imageUrl: '/homelab_cluster_rack.jpg'
