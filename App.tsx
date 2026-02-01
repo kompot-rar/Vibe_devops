@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
+import BlogPostView from './components/BlogPostView';
 import Roadmap from './components/Roadmap';
 import { BlogPost } from './types';
 import { Github, Linkedin, Server } from 'lucide-react';
@@ -177,6 +178,7 @@ const App: React.FC = () => {
                   <BlogList posts={INITIAL_POSTS} />
                 </>
               } />
+              <Route path="/blog/:id" element={<BlogPostView posts={INITIAL_POSTS} />} />
               <Route path="/roadmap" element={<Roadmap />} />
 
               <Route path="/about" element={<About />} />
