@@ -1,9 +1,10 @@
-name: Deploy React App to Homelab
+name: Deploy React App (Multi-Environment)
 
 on:
   push:
     branches:
       - main
+      - dev
 
 jobs:
   build-and-deploy:
@@ -13,9 +14,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check Environment
+      # --- ENVIRONMENT DETECTION ---
+      - name: Set Environment Variables
+        id: set-env
         run: |
-          echo "🔍 Node version:"
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "DEPLOY_DIR=/var/www/html" >> $GITHUB_ENV
+            echo "ENV_NAME=Production" >> $GITHUB_ENV
+          else
+            echo "DEPLOY_DIR=/var/www/vibe_dev" >> $GITHUB_ENV
+            echo "ENV_NAME=Preview (Dev)" >> $GITHUB_ENV
+          fi
+
+      - name: Check Environment Info
+        run: |
+          echo "Target Environment: ${{ env.ENV_NAME }}"
+          echo "Target Directory: ${{ env.DEPLOY_DIR }}"
+          echo "Node version:"
           node -v
           npm -v
 
@@ -27,23 +42,26 @@ jobs:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           REACT_APP_ADMIN_PASSWORD: ${{ secrets.REACT_APP_ADMIN_PASSWORD }}
         run: npm run build
-      # -------------------------------
 
       - name: Debug Build Output
         run: |
-          echo "📂 Zawartość folderu dist:"
+          echo "Content of dist folder:"
           ls -R dist/
 
-      - name: Clean Nginx Folder
-        run: sudo rm -rf /var/www/html/*
+      # --- DEPLOYMENT ---
+      - name: Ensure Target Directory Exists
+        run: sudo mkdir -p ${{ env.DEPLOY_DIR }}
+
+      - name: Clean Target Folder
+        run: sudo rm -rf ${{ env.DEPLOY_DIR }}/*
 
       - name: Deploy to Nginx
         run: |
-          echo "🚀 Kopiowanie plików..."
-          sudo cp -r dist/. /var/www/html/
+          echo "Copying files to ${{ env.ENV_NAME }}..."
+          sudo cp -r dist/. ${{ env.DEPLOY_DIR }}/
 
       - name: Fix Permissions
         run: |
-          sudo chown -R www-data:www-data /var/www/html
-          sudo chmod -R 755 /var/www/html
-          echo "✅ Uprawnienia naprawione!"
+          sudo chown -R www-data:www-data ${{ env.DEPLOY_DIR }}
+          sudo chmod -R 755 ${{ env.DEPLOY_DIR }}
+          echo "Permissions fixed for ${{ env.DEPLOY_DIR }}!"
