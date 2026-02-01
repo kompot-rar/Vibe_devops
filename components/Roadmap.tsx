@@ -124,31 +124,32 @@ const Roadmap: React.FC = () => {
             const index = ROADMAP_DATA.length + i;
             const isLeft = index % 2 === 0;
             
+            // Increased opacity for better readability, removed blur which hurts text
             const styles = i === 0 
-              ? { opacity: 'opacity-40', text: 'Security Hardening', icon: ShieldCheck } 
-              : { opacity: 'opacity-20 blur-[1px]', text: 'High Availability', icon: Cpu };
+              ? { opacity: 'opacity-70', text: 'Security Hardening', icon: ShieldCheck } 
+              : { opacity: 'opacity-50', text: 'High Availability', icon: Cpu };
 
             return (
-              <div key={`placeholder-${i}`} className={`relative flex items-center md:justify-between ${isLeft ? 'md:flex-row-reverse' : ''} ${styles.opacity} pointer-events-none select-none grayscale`}>
+              <div key={`placeholder-${i}`} className={`relative flex items-center md:justify-between ${isLeft ? 'md:flex-row-reverse' : ''} ${styles.opacity} select-none grayscale`}>
                  {/* Icon Wrapper */}
                  <div className="absolute left-0 md:static md:left-auto flex-shrink-0 w-16 flex justify-center z-10 bg-thinkpad-base py-2">
-                   <div className="w-10 h-10 rounded-none flex items-center justify-center border-2 border-neutral-800 text-neutral-700 bg-thinkpad-base">
+                   <div className="w-10 h-10 rounded-none flex items-center justify-center border-2 border-neutral-700 text-neutral-500 bg-thinkpad-base">
                      <styles.icon size={20} />
                    </div>
                 </div>
 
                  {/* Content Card */}
                  <div className={`ml-16 md:ml-0 w-full md:w-5/12 ${isLeft ? 'md:text-right' : ''}`}>
-                  <div className="p-6 rounded-none border border-neutral-800 bg-neutral-900/30 border-dashed">
-                    <h3 className="text-xl font-bold mb-2 text-neutral-600 font-mono uppercase">
+                  <div className="p-6 rounded-none border border-neutral-700 bg-neutral-900/50 border-dashed">
+                    <h3 className="text-xl font-bold mb-2 text-neutral-400 font-mono uppercase">
                       {styles.text}
                     </h3>
-                    <p className="text-neutral-700 text-sm mb-4">
-                      Loading...
+                    <p className="text-neutral-500 text-sm mb-4">
+                      Planned
                     </p>
                     <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : ''}`}>
-                        <span className="w-16 h-6 rounded-none bg-neutral-800/50"></span>
-                        <span className="w-12 h-6 rounded-none bg-neutral-800/50"></span>
+                        <span className="w-16 h-6 rounded-none bg-neutral-800"></span>
+                        <span className="w-12 h-6 rounded-none bg-neutral-800"></span>
                     </div>
                   </div>
                 </div>
