@@ -1,6 +1,6 @@
 ---
 id: '1'
-title: 'TEST *Arr na starym TV do własnej chmury. Mój Homelab.'
+title: 'Od serwisów *Arr na starym TV do własnej chmury. Mój Homelab.'
 date: '2026-01-06'
 tags: ['Story', 'Wstęp', 'Omnie']
 readTime: '6 min'
