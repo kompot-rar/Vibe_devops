@@ -10,12 +10,16 @@
   },
   "dependencies": {
     "@google/genai": "^1.32.0",
+    "@tailwindcss/typography": "^0.5.19",
     "gray-matter": "^4.0.3",
+    "highlight.js": "^11.11.1",
     "lucide-react": "^0.559.0",
     "react": "^19.2.1",
     "react-dom": "^19.2.1",
     "react-markdown": "^10.1.0",
-    "react-router-dom": "^7.10.1"
+    "react-router-dom": "^7.10.1",
+    "rehype-highlight": "^7.0.2",
+    "remark-gfm": "^4.0.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.18",

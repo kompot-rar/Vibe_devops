@@ -3,6 +3,9 @@ import { useParams, Link } from 'react-router-dom';
 import { BlogPost } from '../types';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import rehypeHighlight from 'rehype-highlight';
+import 'highlight.js/styles/atom-one-dark.css';
 
 interface BlogPostViewProps {
   posts: BlogPost[];
@@ -67,16 +70,19 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
 
           {/* Renderowana treść z react-markdown */}
           <div className="prose prose-invert max-w-none 
-            prose-p:text-thinkpad-text prose-p:leading-loose prose-p:font-light
             prose-headings:font-mono prose-headings:uppercase prose-headings:tracking-wide
             prose-h2:text-2xl prose-h2:border-b prose-h2:border-neutral-800 prose-h2:pb-2 prose-h2:mt-10
             prose-h3:text-xl prose-h3:text-thinkpad-red prose-h3:mt-8
-            prose-code:bg-neutral-800 prose-code:text-thinkpad-red prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-sm prose-code:font-mono prose-code:before:content-none prose-code:after:content-none
-            prose-pre:bg-neutral-950 prose-pre:border-l-4 prose-pre:border-thinkpad-red prose-pre:rounded-none prose-pre:shadow-inner
-            prose-li:text-thinkpad-text prose-li:marker:text-thinkpad-red
-            prose-img:rounded-sm prose-img:border prose-img:border-neutral-800 prose-img:shadow-lg
-            prose-a:text-thinkpad-red hover:prose-a:text-white transition-colors">
-            <ReactMarkdown>{post.content}</ReactMarkdown>
+            prose-pre:bg-[#282c34] prose-pre:border prose-pre:border-neutral-700
+            prose-blockquote:border-l-thinkpad-red prose-blockquote:bg-neutral-900/50 prose-blockquote:py-1 prose-blockquote:px-4
+            prose-a:text-thinkpad-red hover:prose-a:text-white transition-colors
+            prose-img:rounded-sm prose-img:border prose-img:border-neutral-800 prose-img:shadow-lg">
+            <ReactMarkdown 
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[rehypeHighlight]}
+            >
+              {post.content}
+            </ReactMarkdown>
           </div>
         </div>
       </article>
