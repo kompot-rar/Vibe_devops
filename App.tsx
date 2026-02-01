@@ -61,7 +61,7 @@ content: "Zarządzanie domowym serwerem przez GUI (Proxmox) jest wygodne, ale ma
   },
   {
     id: '9',
-    title: 'BASTION: Architektura Totalna. Od Druku 3D po Kubernetes.',
+    title: 'HOMELAB 2.0: Architektura Totalna. Od Druku 3D po Kubernetes.',
     excerpt: 'Zbudowałem własne Data Center w szafie 10 cali – od druku 3D mocowań, przez walkę z umierającym dyskiem, aż po klaster HA.',
     content: `## Prolog: Dar od Boga Chaosu
 
@@ -88,8 +88,7 @@ Znalazłem idealne modele 3D do moich terminali, przetopiłem trochę plastiku i
 **"Jeden serwer to hobby a trzy to klaster.""**
 
 Chciałbym napisać, że z premedytacją postawiłem na infrastrukturę heterogeniczną, by sprawdzić, jak
-scheduler Kubernetesa poradzi sobie z żonglowaniem workloadem między maszynami o drastycznie różnej
-wydajności. Ale bądźmy szczerzy – to czysty przypadek (i okazje na Allegro).
+scheduler Kubernetesa poradzi sobie z żonglowaniem workloadem między maszynami o drastycznie różnej wydajności. Ale bądźmy szczerzy – to czysty przypadek (i okazje na Allegro).
 
  **Node 01 (Overlord):** AMD Ryzen 2200GE.
  **Node 02 (Workhorse):** Intel i5. 
