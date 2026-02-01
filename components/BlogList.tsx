@@ -90,8 +90,8 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
           <div className="p-8 sm:p-12 bg-thinkpad-surface">
             {/* Metadane */}
             <div className="flex gap-8 text-xs font-mono uppercase tracking-widest text-neutral-500 mb-10 border-b border-neutral-800 pb-6">
-              <span className="flex items-center gap-2"><Calendar size={14} className="text-neon-blue"/> {selectedPost.date}</span>
-              <span className="flex items-center gap-2"><Clock size={14} className="text-neon-blue"/> {selectedPost.readTime}</span>
+              <span className="flex items-center gap-2"><Calendar size={14} className="text-thinkpad-red"/> {selectedPost.date}</span>
+              <span className="flex items-center gap-2"><Clock size={14} className="text-thinkpad-red"/> {selectedPost.readTime}</span>
             </div>
 
             {/* Renderowana treść */}
@@ -142,7 +142,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
 
               <div className="flex gap-2 mb-4 flex-wrap">
                 {post.tags.slice(0, 3).map(tag => (
-                  <span key={tag} className="text-xs font-mono font-bold text-neon-blue bg-black/30 px-2 py-0.5 border border-neutral-700 uppercase">
+                  <span key={tag} className="text-xs font-mono font-bold text-neutral-400 bg-neutral-900/50 px-2 py-0.5 border border-neutral-800 uppercase hover:text-white hover:border-neutral-600 transition-colors">
                     #{tag}
                   </span>
                 ))}
@@ -159,7 +159,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
               <div className="flex items-center justify-between text-xs text-neutral-500 mt-auto pt-4 border-t border-neutral-700 font-mono uppercase">
                 <span>{new Date(post.date).toLocaleDateString()}</span>
                 <span className="flex items-center gap-1 group-hover:text-white transition-colors">
-                  <BookOpen size={12} className="text-neon-blue" /> {post.readTime}
+                  <BookOpen size={12} className="text-thinkpad-red" /> {post.readTime}
                 </span>
               </div>
             </div>

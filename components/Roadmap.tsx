@@ -1,6 +1,6 @@
 import React from 'react';
 import { RoadmapItem } from '../types';
-import { CheckCircle2, Circle, Activity, Server, ShieldCheck, Cpu } from 'lucide-react';
+import { CheckCircle2, Activity, ShieldCheck, Cpu, Code2, Database } from 'lucide-react';
 
 const ROADMAP_DATA: RoadmapItem[] = [
   {
@@ -49,63 +49,62 @@ const ROADMAP_DATA: RoadmapItem[] = [
 
 const Roadmap: React.FC = () => {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-white mb-4 font-mono uppercase tracking-tight">Moja Ścieżka Inżyniera</h2>
-        <p className="text-neutral-500 max-w-2xl mx-auto font-mono text-sm">
-          To nie jest teoria z bootcampu. To dokumentacja tego, co faktycznie działa na moim serwerze.
-          <span className="text-thinkpad-red font-bold"> Czerwone</span> to produkcja (Done), 
-          <span className="text-white font-bold"> Białe</span> to obecny warsztat (WIP).
+    <div className="max-w-5xl mx-auto px-4 py-16">
+      <div className="text-center mb-20">
+        <h2 className="text-4xl font-bold text-white mb-6 font-mono tracking-tighter">
+          <span className="text-thinkpad-red">/</span> Roadmap
+        </h2>
+        <p className="text-neutral-400 max-w-2xl mx-auto font-mono text-sm leading-relaxed">
+          Praktyczna ścieżka rozwoju. Zero teorii, 100% wdrażania na produkcję.
         </p>
       </div>
 
-      <div className="relative pb-20">
-        {/* Vertical Line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-neutral-800 md:left-1/2 md:-ml-0.5 bg-gradient-to-b from-thinkpad-red via-neutral-800 to-transparent"></div>
+      <div className="relative">
+        {/* Central Line */}
+        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-thinkpad-red via-neutral-800 to-transparent md:-translate-x-1/2"></div>
 
-        <div className="space-y-12">
+        <div className="space-y-16">
           {ROADMAP_DATA.map((item, index) => {
             const isLeft = index % 2 === 0;
-            const statusColor = 
-              item.status === 'completed' ? 'text-thinkpad-red border-thinkpad-red shadow-[0_0_15px_-3px_rgba(224,6,19,0.2)]' :
-              item.status === 'in-progress' ? 'text-white border-white shadow-[0_0_15px_-3px_rgba(255,255,255,0.2)]' :
-              'text-neutral-500 bg-neutral-900/30 border-neutral-800';
+            const isCompleted = item.status === 'completed';
+            const isInProgress = item.status === 'in-progress';
             
-            const Icon = 
-              item.status === 'completed' ? CheckCircle2 :
-              item.status === 'in-progress' ? Activity :
-              Circle;
-
             return (
-              <div key={item.id} className={`relative flex items-center md:justify-between ${isLeft ? 'md:flex-row-reverse' : ''}`}>
+              <div key={item.id} className={`relative flex flex-col md:flex-row items-center justify-between group ${isLeft ? 'md:flex-row-reverse' : ''}`}>
                 
-                {/* Icon Wrapper */}
-                <div className="absolute left-0 md:static md:left-auto flex-shrink-0 w-16 flex justify-center z-10 bg-thinkpad-base py-2">
-                   <div className={`w-10 h-10 rounded-none flex items-center justify-center border-2 bg-thinkpad-base transition-colors duration-300 ${
-                     item.status === 'completed' ? 'border-thinkpad-red text-thinkpad-red bg-thinkpad-red/10' :
-                     item.status === 'in-progress' ? 'border-white text-white bg-white/10 animate-pulse' :
-                     'border-neutral-800 text-neutral-700'
-                   }`}>
-                     <Icon size={20} />
-                   </div>
-                </div>
+                {/* Timeline Dot */}
+                <div className={`
+                  absolute left-4 md:left-1/2 w-3 h-3 -translate-x-[5px] md:-translate-x-[5px] rounded-full z-10 transition-all duration-500
+                  ${isCompleted ? 'bg-thinkpad-red shadow-[0_0_10px_rgba(224,6,19,0.5)]' : isInProgress ? 'bg-white animate-pulse' : 'bg-neutral-800'}
+                `}></div>
+
+                {/* Spacer */}
+                <div className="w-full md:w-1/2"></div>
 
                 {/* Content Card */}
-                <div className={`ml-16 md:ml-0 w-full md:w-5/12 ${isLeft ? 'md:text-right' : ''}`}>
-                  <div className={`p-6 rounded-none border ${statusColor} bg-thinkpad-surface transition-all hover:bg-neutral-900`}>
-                    <h3 className={`text-xl font-bold mb-2 font-mono uppercase tracking-tighter ${item.status === 'pending' ? 'text-neutral-600' : 'text-white'}`}>
-                      {item.title}
-                    </h3>
-                    <p className="text-thinkpad-text text-sm mb-4 leading-relaxed font-light">
+                <div className={`w-full md:w-[45%] pl-12 md:pl-0 ${isLeft ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
+                  <div className={`
+                    relative p-6 bg-neutral-900/40 border-y border-neutral-900 transition-all duration-300 rounded-sm group-hover:bg-neutral-900/80
+                    ${isCompleted ? 'border-l-2 border-l-thinkpad-red md:border-l-thinkpad-red md:border-r-0' : 'border-l-2 border-l-neutral-800'}
+                    ${isLeft && isCompleted ? 'md:border-l-0 md:border-r-2 md:border-r-thinkpad-red' : ''}
+                    ${isInProgress ? 'border-l-2 border-l-white md:border-l-white md:border-r-0' : ''}
+                    ${isLeft && isInProgress ? 'md:border-l-0 md:border-r-2 md:border-r-white' : ''}
+                  `}>
+                    <div className={`flex items-center gap-3 mb-3 ${isLeft ? 'md:flex-row-reverse' : ''}`}>
+                      <h3 className={`text-lg font-bold font-mono tracking-tight uppercase ${isCompleted ? 'text-white' : 'text-neutral-500'}`}>
+                        {item.title}
+                      </h3>
+                      {isCompleted && <CheckCircle2 size={16} className="text-thinkpad-red" />}
+                      {isInProgress && <Activity size={16} className="text-white animate-pulse" />}
+                    </div>
+                    
+                    <p className="text-neutral-500 text-sm mb-6 font-light leading-relaxed">
                       {item.description}
                     </p>
+
                     <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : ''}`}>
                       {item.tools.map(tool => (
-                        <span key={tool} className={`px-2 py-1 text-xs font-mono rounded-none border ${
-                            item.status === 'completed' ? 'bg-thinkpad-red/10 border-thinkpad-red text-thinkpad-red' :
-                            item.status === 'in-progress' ? 'bg-white/10 border-white text-white' :
-                            'bg-neutral-900 border-neutral-800 text-neutral-600'
-                        }`}>
+                        <span key={tool} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 bg-black border border-neutral-800 text-neutral-500 rounded-sm hover:text-white hover:border-neutral-600 transition-colors cursor-default">
                           {tool}
                         </span>
                       ))}
@@ -113,50 +112,8 @@ const Roadmap: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Spacer for the other side */}
-                <div className="hidden md:block w-5/12"></div>
               </div>
             );
-          })}
-
-          {/* Future Tiles */}
-          {[1, 2].map((_, i) => {
-            const index = ROADMAP_DATA.length + i;
-            const isLeft = index % 2 === 0;
-            
-            // Increased opacity for better readability, removed blur which hurts text
-            const styles = i === 0 
-              ? { opacity: 'opacity-70', text: 'Security Hardening', icon: ShieldCheck } 
-              : { opacity: 'opacity-50', text: 'High Availability', icon: Cpu };
-
-            return (
-              <div key={`placeholder-${i}`} className={`relative flex items-center md:justify-between ${isLeft ? 'md:flex-row-reverse' : ''} ${styles.opacity} select-none grayscale`}>
-                 {/* Icon Wrapper */}
-                 <div className="absolute left-0 md:static md:left-auto flex-shrink-0 w-16 flex justify-center z-10 bg-thinkpad-base py-2">
-                   <div className="w-10 h-10 rounded-none flex items-center justify-center border-2 border-neutral-700 text-neutral-500 bg-thinkpad-base">
-                     <styles.icon size={20} />
-                   </div>
-                </div>
-
-                 {/* Content Card */}
-                 <div className={`ml-16 md:ml-0 w-full md:w-5/12 ${isLeft ? 'md:text-right' : ''}`}>
-                  <div className="p-6 rounded-none border border-neutral-700 bg-neutral-900/50 border-dashed">
-                    <h3 className="text-xl font-bold mb-2 text-neutral-400 font-mono uppercase">
-                      {styles.text}
-                    </h3>
-                    <p className="text-neutral-500 text-sm mb-4">
-                      Planned
-                    </p>
-                    <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : ''}`}>
-                        <span className="w-16 h-6 rounded-none bg-neutral-800"></span>
-                        <span className="w-12 h-6 rounded-none bg-neutral-800"></span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="hidden md:block w-5/12"></div>
-              </div>
-            )
           })}
         </div>
       </div>
