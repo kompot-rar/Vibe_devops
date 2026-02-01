@@ -2,18 +2,19 @@ import React, { useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { BlogPost } from '../types';
 import { Calendar, Clock, ArrowRight } from 'lucide-react';
+import { slugify } from '../src/utils/slugify';
 
 interface BlogPostViewProps {
   posts: BlogPost[];
 }
 
 const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
-  const { id } = useParams<{ id: string }>();
-  const post = posts.find(p => p.id === id);
+  const { slug } = useParams<{ slug: string }>();
+  const post = posts.find(p => slugify(p.title) === slug);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [id]);
+  }, [slug]);
 
   // --- PARSER ---
   const parseBold = (text: string) => {

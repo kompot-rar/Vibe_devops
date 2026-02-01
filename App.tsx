@@ -178,7 +178,7 @@ const App: React.FC = () => {
                   <BlogList posts={INITIAL_POSTS} />
                 </>
               } />
-              <Route path="/blog/:id" element={<BlogPostView posts={INITIAL_POSTS} />} />
+              <Route path="/blog/:slug" element={<BlogPostView posts={INITIAL_POSTS} />} />
               <Route path="/roadmap" element={<Roadmap />} />
 
               <Route path="/about" element={<About />} />
