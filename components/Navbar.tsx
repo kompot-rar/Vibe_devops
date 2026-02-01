@@ -26,9 +26,11 @@ const Navbar: React.FC = () => {
               href="/" 
               className="flex-shrink-0 flex items-center gap-2 group cursor-pointer"
             >
-              <div className="bg-thinkpad-red p-2 rounded-sm transform rotate-45 group-hover:rotate-0 transition-all duration-300">
-                <Terminal className="h-6 w-6 text-white transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
-              </div>
+              <img 
+                src="/docker.png" 
+                alt="Docker Whale Logo" 
+                className="h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-110" 
+              />
               <span className="text-xl font-bold font-mono tracking-tighter text-white group-hover:text-thinkpad-red transition-colors">
                 DevOps<span className="text-thinkpad-red group-hover:text-white transition-colors">Zero</span>ToHero
               </span>
