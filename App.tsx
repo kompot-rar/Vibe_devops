@@ -114,7 +114,7 @@ Windowsa XP. Ale **robi robotę**. Jest stabilny i uczy jak panować nad ruchem 
     date: '2026-02-01',
     tags: ['Networking', 'Security', 'LXC', 'iptables'],
     readTime: '15 min',
-    imageUrl: '/network_warzone3.jpg'
+    imageUrl: '/test.jpg'
   },
   ];
 
