@@ -33,10 +33,10 @@ const ROADMAP_DATA: RoadmapItem[] = [
   },
   {
     id: '5',
-    title: 'Wirtualizacja & IaC',
+    title: 'Infrastructure as Code',
     description: 'Zarządzanie infrastrukturą jako kod. Terraform do provisioningu VM-ek oraz konfiguracja przez Ansible.',
     tools: ['Terraform', 'Ansible', 'IaC', 'Cloud'],
-    status: 'pending'
+    status: 'in-progress'
   },
   {
     id: '6',
