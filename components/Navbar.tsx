@@ -26,28 +26,9 @@ const Navbar: React.FC = () => {
               href="/" 
               className="flex-shrink-0 flex items-center gap-2 group cursor-pointer"
             >
-              {/* Vector Whale Logo */}
-              <svg 
-                className="h-10 w-10 text-blue-500 transition-transform duration-300 group-hover:scale-110" 
-                viewBox="0 0 100 80" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                {/* Whale Body */}
-                <path d="M10,50 Q10,75 40,75 H60 Q90,75 90,50 Q90,30 60,30 H40 Q10,30 10,50 Z" fill="currentColor" />
-                <path d="M90,50 Q100,40 100,50 Q100,60 90,50" fill="currentColor" />
-                {/* Eye */}
-                <circle cx="25" cy="55" r="2" fill="white" />
-                
-                {/* Containers */}
-                <rect x="35" y="15" width="10" height="10" rx="1" className="fill-blue-400" />
-                <rect x="47" y="15" width="10" height="10" rx="1" className="fill-blue-300" />
-                <rect x="59" y="15" width="10" height="10" rx="1" className="fill-blue-400" />
-                
-                <rect x="41" y="4" width="10" height="10" rx="1" className="fill-thinkpad-red" />
-                <rect x="53" y="4" width="10" height="10" rx="1" className="fill-blue-300" />
-              </svg>
-              
+              <div className="bg-thinkpad-red p-2 rounded-sm transform rotate-45 group-hover:rotate-0 transition-all duration-300">
+                <Terminal className="h-6 w-6 text-white transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+              </div>
               <span className="text-xl font-bold font-mono tracking-tighter text-white group-hover:text-thinkpad-red transition-colors">
                 DevOps<span className="text-thinkpad-red group-hover:text-white transition-colors">Zero</span>ToHero
               </span>
