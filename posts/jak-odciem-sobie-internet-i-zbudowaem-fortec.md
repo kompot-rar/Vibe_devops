@@ -20,10 +20,10 @@ Zamiast kupować drogi router albo stawiać ciężkie VM z OPNsense, postanowił
 - **Router:** Kontener LXC Alpine Linux
 
 **Segmentacja:**
-    - **VLAN 1 (Untrusted):** Sieć domowa i WiFi z routera ISP. Stąd chińskie żarówki wifi mogą dzwonić do Pekinu.
-    - **VLAN 10 (MGMT):** Proxmox, Switch, Router. Dostęp tylko dla wybranych.
-    - **VLAN 20 (APPS):** Jellyfin, *Arr, kontenery. Dostępny dla domowników, ale odizolowany od MGMT.
-    - **VLAN 30 (SECURE):** Vault, SSH CA, wrażliwe dane. Odcięty od świata.
+- **VLAN 1 (Untrusted):** Sieć domowa i WiFi z routera ISP. Stąd chińskie żarówki wifi mogą dzwonić do Pekinu.
+- **VLAN 10 (MGMT):** Proxmox, Switch, Router. Dostęp tylko dla wybranych.
+- **VLAN 20 (APPS):** Jellyfin, *Arr, kontenery. Dostępny dla domowników, ale odizolowany od MGMT.
+- **VLAN 30 (SECURE):** Vault, SSH CA, wrażliwe dane. Odcięty od świata.
 
 ## 3. Implementacja: Linux to najlepszy router
 Dlaczego LXC? Bo startuje w 2 sekundy i zużywa tyle zasobów co nic.
