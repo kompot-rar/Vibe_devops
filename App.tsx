@@ -115,7 +115,7 @@ Windowsa XP. Ale **robi robotę**. Jest stabilny i uczy jak panować nad ruchem 
     tags: ['Networking', 'Security', 'LXC', 'iptables', 'Proxmox'],
     readTime: '15 min',
     imageUrl: '/network_warzone.jpg'
-  }
+  };
 
 const About: React.FC = () => (
   <div className="max-w-2xl mx-auto bg-slate-900 p-8 rounded-xl border border-slate-800 text-center animate-fade-in">
