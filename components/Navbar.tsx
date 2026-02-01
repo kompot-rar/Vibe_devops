@@ -24,10 +24,10 @@ const Navbar: React.FC = () => {
           <div className="flex items-center">
             <a 
               href="/" 
-              className="flex-shrink-0 flex items-center gap-2 group cursor-pointer"
+              className="flex-shrink-0 flex items-center gap-3 group cursor-pointer"
             >
-              <div className="bg-thinkpad-red p-2 rounded-sm transform rotate-45 group-hover:rotate-0 transition-all duration-300">
-                <Terminal className="h-6 w-6 text-white transform -rotate-45 group-hover:rotate-0 transition-transform duration-300" />
+              <div className="bg-thinkpad-red p-2 rounded-sm transition-all duration-300">
+                <Terminal className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold font-mono tracking-tighter text-white group-hover:text-thinkpad-red transition-colors">
                 DevOps<span className="text-thinkpad-red group-hover:text-white transition-colors">Zero</span>ToHero
