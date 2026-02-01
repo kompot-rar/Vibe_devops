@@ -26,11 +26,11 @@ const Navbar: React.FC = () => {
               href="/" 
               className="flex-shrink-0 flex items-center gap-3 group cursor-pointer"
             >
-              <div className="bg-thinkpad-red p-2 rounded-sm transition-all duration-300">
-                <Terminal className="h-6 w-6 text-white" />
+              <div className="bg-thinkpad-red p-2 rounded-sm transition-all duration-300 group-hover:bg-white group-hover:scale-105 shadow-lg group-hover:shadow-thinkpad-red/50">
+                <Terminal className="h-6 w-6 text-white group-hover:text-thinkpad-red transition-colors" />
               </div>
-              <span className="text-xl font-bold font-mono tracking-tighter text-white group-hover:text-thinkpad-red transition-colors">
-                DevOps<span className="text-thinkpad-red group-hover:text-white transition-colors">Zero</span>ToHero
+              <span className="text-xl font-bold font-mono tracking-tighter text-white transition-colors">
+                DevOps<span className="text-thinkpad-red transition-all duration-300 group-hover:drop-shadow-[0_0_8px_rgba(255,0,43,0.8)]">Zero</span>ToHero
               </span>
             </a>
           </div>
