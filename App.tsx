@@ -57,11 +57,20 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={
                 <>
-                  <div className="text-center mb-16">
-                    <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
+                  <div className="relative text-center mb-16 py-10">
+                    {/* Background decoration */}
+                    <div className="absolute inset-0 flex items-center justify-center -z-10 overflow-hidden pointer-events-none select-none">
+                      <img 
+                        src="/rece.svg" 
+                        alt="" 
+                        className="w-full max-w-4xl opacity-25 blur-[1px] [mask-image:radial-gradient(circle_at_center,black_0%,transparent_70%)]"
+                      />
+                    </div>
+
+                    <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono relative z-10">
                       DevOps <span className="text-thinkpad-red">Adventure</span>
                     </h1>
-                    <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4">
+                    <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4 relative z-10">
                       Dokumentacja podróży w głąb infrastruktury. Od pojedynczego skryptu do orkiestracji klastrów.
                     </p>
                   </div>
