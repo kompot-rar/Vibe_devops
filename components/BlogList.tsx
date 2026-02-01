@@ -142,7 +142,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
 
               <div className="flex gap-2 mb-4 flex-wrap">
                 {post.tags.slice(0, 3).map(tag => (
-                  <span key={tag} className="text-xs font-mono font-bold text-neutral-400 bg-neutral-900/50 px-2 py-0.5 border border-neutral-800 uppercase hover:text-white hover:border-neutral-600 transition-colors">
+                  <span key={tag} className="text-xs font-mono font-bold text-red-200/70 bg-red-900/10 px-2 py-0.5 border border-red-900/20 uppercase hover:text-red-100 hover:border-red-500/30 transition-colors">
                     #{tag}
                   </span>
                 ))}
