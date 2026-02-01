@@ -50,7 +50,7 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
           <div className="absolute bottom-0 left-0 p-8 sm:p-12 w-full">
              <div className="flex gap-2 mb-4 flex-wrap">
                 {post.tags.map(tag => (
-                  <span key={tag} className="px-2 py-1 bg-red-500/10 text-red-200 border border-red-500/20 text-xs font-mono font-bold uppercase tracking-wider rounded-none">
+                  <span key={tag} className="px-2 py-1 bg-black/80 text-thinkpad-red border border-thinkpad-red/50 text-xs font-mono font-bold uppercase tracking-wider rounded-none backdrop-blur-sm shadow-md">
                     #{tag}
                   </span>
                 ))}

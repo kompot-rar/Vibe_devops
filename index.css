@@ -9,6 +9,9 @@
   --color-thinkpad-muted: #64748b;
   --color-thinkpad-accent: #ff002b;
   --color-neon-blue: #0ea5e9;
+  
+  --font-sans: "JetBrains Mono", monospace;
+  --font-mono: "JetBrains Mono", monospace;
 }
 
 @layer base {
