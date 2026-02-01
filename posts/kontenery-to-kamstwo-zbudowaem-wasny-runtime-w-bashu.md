@@ -49,7 +49,9 @@ ip netns exec moj_kontener ip addr add 10.0.0.2/24 dev veth1
 ip netns exec moj_kontener ip link set veth1 up
 ```
 
-> ![ping](docker1.png) **Lekcja:** To co tu widzisz, to manualna robota wtyczki **CNI (Calico/Flannel)**. Każdy Pod w klastrze ma taką swoją rurę podpiętą do wirtualnego switcha hosta. Zrozumienie tego to koniec problemów z "Network Unreachable".
+![ping](docker1.png)
+
+> **Lekcja:** To co tu widzisz, to manualna robota wtyczki **CNI (Calico/Flannel)**. Każdy Pod w klastrze ma taką swoją rurę podpiętą do wirtualnego switcha hosta. Zrozumienie tego to koniec problemów z "Network Unreachable".
 
 ### 3. Izolacja (Namespaces): PID 1 i "Zombie Apocalypse"
 

@@ -16,16 +16,14 @@ Wiedziałem, że poleje się krew. Sieci były do tej pory moim kryptonitem. To 
 ## 2. Architektura: The Great Wall
 Zamiast kupować drogi router albo stawiać ciężkie VM z OPNsense, postanowiłem zrobić to **The Hard Way** – używając czystego Linuxa.
 
+- **Hardware:** Netgear GS108T v2
+- **Router:** Kontener LXC Alpine Linux
 
-   - **Hardware:** Netgear GS108T v2
-   - **Router:** Kontener LXC Alpine Linux
- 
- 
-   **Segmentacja:**
- - **VLAN 1 (Untrusted):**  Sieć domowa i WiFi z routera ISP. Stąd chińskie żarówki wifi mogą dzwonić do Pekinu. 
-      - **VLAN 10 (MGMT):** Proxmox, Switch, Router. Dostęp tylko dla wybranych.
-       - **VLAN 20 (APPS):**  Jellyfin, *Arr, kontenery. Dostępny dla domowników, ale odizolowany od MGMT.
-      - **VLAN 30 (SECURE):** Valut, SSH CA, wrażliwe dane. Odcięty od świata.
+**Segmentacja:**
+- **VLAN 1 (Untrusted):** Sieć domowa i WiFi z routera ISP. Stąd chińskie żarówki wifi mogą dzwonić do Pekinu.
+    - **VLAN 10 (MGMT):** Proxmox, Switch, Router. Dostęp tylko dla wybranych.
+    - **VLAN 20 (APPS):** Jellyfin, *Arr, kontenery. Dostępny dla domowników, ale odizolowany od MGMT.
+    - **VLAN 30 (SECURE):** Vault, SSH CA, wrażliwe dane. Odcięty od świata.
 
 ## 3. Implementacja: Linux to najlepszy router
 Dlaczego LXC? Bo startuje w 2 sekundy i zużywa tyle zasobów co nic.

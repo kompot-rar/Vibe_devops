@@ -26,7 +26,7 @@ Uczyniłem z niego Generator Entropii. Zamiast symulować awarie w chmurze (jak 
 
 ### Akt 1: The Monolith (Szafa 10" 6U) 
 Mój dotychczasowy homelab – tylko jeden terminal i router generował już wystarczający nieporządek. Skalowanie tego bałaganu razy trzy nie wchodziło w grę, jeśli chciałem zachować spokój w domu. Rozwiązaniem stała się czarna, 10-calowa szafa Rack 6U. Sięgnąłem teź po **Open Source Hardware**.
-Znalazłem idealne modele 3D do moich terminali, przetopiłem trochę plastiku i uzyskałem dopasowane panele frontowe ukrywając haos i zmieniając stertę starej elektroniki w monolit.
+Znalazłem idealne modele 3D do moich terminali, przetopiłem trochę plastiku i uzyskałem dopasowane panele frontowe ukrywając chaos i zmieniając stertę starej elektroniki w monolit.
 
 ### Akt 2: Żelazna Trójca 
 
@@ -35,9 +35,9 @@ Znalazłem idealne modele 3D do moich terminali, przetopiłem trochę plastiku i
 Chciałbym napisać, że z premedytacją postawiłem na infrastrukturę heterogeniczną, by sprawdzić, jak
 scheduler Kubernetesa poradzi sobie z żonglowaniem workloadem między maszynami o drastycznie różnej wydajności. Ale bądźmy szczerzy – to czysty przypadek (i okazje na Allegro).
 
- - **Node 01 (Overlord):** AMD Ryzen 2200GE.
- - **Node 02 (Workhorse):** Intel i5. 
- - **Node 03 (Arbiter):** Legacy i3.
+- **Node 01 (Overlord):** AMD Ryzen 2200GE.
+- **Node 02 (Workhorse):** Intel i5.
+- **Node 03 (Arbiter):** Legacy i3.
 
 ### Akt 3: Sieć to Prawo (VLANs & Firewall) 
 Netgear GS108T nie jest najseksowniejszym sprzętem na świecie. Jego interfejs WWW pamięta czasy
