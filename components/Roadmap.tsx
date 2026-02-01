@@ -5,44 +5,58 @@ import { CheckCircle2, Activity, ShieldCheck, Cpu, Code2, Database } from 'lucid
 const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '1',
-    title: 'Linux & Workstation',
-    description: 'Baza wszystkiego. Codzienna praca na Arch Linux z Hyprlandem. Zrozumienie terminala, SSH i uprawnień plików.',
-    tools: ['Arch Linux', 'Bash', 'SSH Keys', 'Hyprland'],
+    title: 'Fundamenty SysAdmina',
+    description: 'Terminal to Twój dom. Linux Hardcore, konfiguracja Dotfiles, zarządzanie SSH oraz biegłość w Vim/LazyVim i Bash Scripting.',
+    tools: ['Arch Linux', 'Bash', 'SSH', 'Vim', 'Tmux'],
     status: 'completed'
   },
   {
     id: '2',
-    title: 'Wirtualizacja On-Premise',
-    description: 'Budowa własnej chmury na ThinkCentre. Rezygnacja z AWS na rzecz Proxmoxa i kontenerów systemowych.',
-    tools: ['Proxmox VE', 'LXC Containers', 'Hardware', 'Networking'],
-    status: 'completed'
-  },
-  {
-    id: '3',
-    title: 'Infrastructure as Code',
-    description: 'Koniec z ręcznym klikaniem. Infrastruktura (LXC) i konfiguracja (Nginx) definiowana w kodzie.',
-    tools: ['Terraform', 'Ansible', 'HCL', 'YAML'],
-    status: 'completed'
-  },
-  {
-    id: '4',
-    title: 'Nowoczesny Frontend & CI/CD',
-    description: 'Automatyzacja wdrożeń na Self-Hosted Runnerze. React + Vite serwowany przez Nginx.',
-    tools: ['GitHub Actions', 'React', 'Vite', 'Nginx Config'],
-    status: 'completed'
-  },
-  {
-    id: '5',
-    title: 'Monitoring & Observability',
-    description: 'Muszę wiedzieć, co dzieje się z serwerem, zanim padnie. Metryki i logi.',
-    tools: ['Prometheus', 'Grafana', 'Node Exporter'],
+    title: 'Sieci & Hardware',
+    description: 'Zrozumienie przepływu pakietów. Segmentacja VLAN, DNS (Pi-hole), monitoring syntetyczny oraz konfiguracja Nginx na bare metal.',
+    tools: ['VLANs', 'Pi-hole', 'Nginx', 'Prometheus'],
     status: 'in-progress'
   },
   {
+    id: '3',
+    title: 'Wirtualizacja & IaC',
+    description: 'Infrastruktura jako Kod. Konfiguracja klastra Proxmox, Terraform dla VM-ek oraz podstawy chmur AWS/Azure.',
+    tools: ['Proxmox', 'Terraform', 'Ansible', 'AWS'],
+    status: 'pending'
+  },
+  {
+    id: '4',
+    title: 'Konteneryzacja & Python',
+    description: 'Docker Deep Dive i środowiska Dev Containers. Automatyzacja zadań administracyjnych w Pythonie (boto3).',
+    tools: ['Docker', 'Python', 'Boto3', 'SBOM'],
+    status: 'pending'
+  },
+  {
+    id: '5',
+    title: 'CI/CD & Automatyzacja',
+    description: 'Budowanie pipeline\'ów w GitLab CI i GitHub Actions. Self-hosted runnery i automatyczne testy.',
+    tools: ['GitLab CI', 'Jenkins', 'Zabbix', 'Forgejo'],
+    status: 'pending'
+  },
+  {
     id: '6',
-    title: 'Orkiestracja Kontenerów',
-    description: 'Wejście w świat Kubernetesa, gdy pojedyncze kontenery przestaną wystarczać.',
-    tools: ['K3s', 'Helm', 'ArgoCD'],
+    title: 'Bazy Danych & State',
+    description: 'Zarządzanie danymi trwałymi. PostgreSQL, migracje schematu (Flyway/Liquibase) i strategie backupu.',
+    tools: ['PostgreSQL', 'Flyway', 'SQL', 'Backup'],
+    status: 'pending'
+  },
+  {
+    id: '7',
+    title: 'Kubernetes Core',
+    description: 'Orkiestracja kontenerów "The Hard Way". Instalacja K3s, zarządzanie przez Helm, Ingress i polityki sieciowe.',
+    tools: ['K3s', 'Helm', 'Ingress', 'Kyverno'],
+    status: 'pending'
+  },
+  {
+    id: '8',
+    title: 'Advanced Ops & CKA',
+    description: 'Poziom Production Grade. Wdrożenie GitOps z ArgoCD, pełny stack obserwowalności (ELK) i przygotowanie do egzaminu CKA.',
+    tools: ['ArgoCD', 'ELK', 'Prometheus', 'Talos'],
     status: 'pending'
   }
 ];
