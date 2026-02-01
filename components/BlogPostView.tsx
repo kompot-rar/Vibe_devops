@@ -72,7 +72,7 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
           </div>
 
           {/* Renderowana treść z custom componentami (bez pluginu prose) */}
-          <div className="font-sans">
+          <div className="font-sans max-w-3xl mx-auto">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight]}
@@ -81,11 +81,11 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
                 h2: ({node, ...props}) => <h2 className="text-4xl font-bold font-mono uppercase tracking-wide text-white border-b border-neutral-800 pb-6 mt-24 mb-12" {...props} />,
                 h3: ({node, ...props}) => <h3 className="text-3xl font-bold font-mono uppercase tracking-wide text-thinkpad-red mt-16 mb-8" {...props} />,
                 h4: ({node, ...props}) => <h4 className="text-xl font-bold font-mono uppercase tracking-wide text-white mt-12 mb-6" {...props} />,
-                p: ({node, ...props}) => <p className="text-lg text-neutral-300 leading-8 mb-8 font-light" {...props} />,
-                ul: ({node, ...props}) => <ul className="list-disc list-outside ml-6 mb-8 marker:text-thinkpad-red" {...props} />,
-                ol: ({node, ...props}) => <ol className="list-decimal list-outside ml-6 mb-8 marker:text-thinkpad-red" {...props} />,
+                p: ({node, ...props}) => <p className="text-xl text-neutral-300 leading-relaxed mb-8 font-normal font-sans" {...props} />,
+                ul: ({node, ...props}) => <ul className="list-disc list-outside ml-6 mb-8 marker:text-thinkpad-red font-sans" {...props} />,
+                ol: ({node, ...props}) => <ol className="list-decimal list-outside ml-6 mb-8 marker:text-thinkpad-red font-sans" {...props} />,
                 li: ({node, ...props}) => <li className="text-lg text-neutral-300 mb-3 pl-2 leading-relaxed" {...props} />,
-                blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-thinkpad-red bg-neutral-900/50 py-6 px-8 my-12 text-xl font-light italic text-neutral-400" {...props} />,
+                blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-thinkpad-red bg-neutral-900/50 py-6 px-8 my-12 text-xl font-light italic text-neutral-400 font-sans" {...props} />,
                 a: ({node, ...props}) => <a className="text-thinkpad-red hover:text-white hover:underline transition-colors font-medium" {...props} />,
                 code: ({node, className, children, ...props}) => {
                   const match = /language-(\w+)/.exec(className || '');
@@ -100,7 +100,7 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
                     </code>
                   );
                 },
-                pre: ({node, ...props}) => <pre className="bg-[#282c34] border border-neutral-700 rounded-none my-10 overflow-x-auto shadow-lg" {...props} />,
+                pre: ({node, ...props}) => <pre className="bg-[#282c34] border border-neutral-700 rounded-none my-10 overflow-x-auto shadow-lg text-base" {...props} />,
                 img: ({node, ...props}) => <img className="rounded-sm border border-neutral-800 shadow-lg my-12 w-full bg-black" {...props} />,
               }}
             >
