@@ -85,7 +85,7 @@ Znalazłem idealne modele 3D do moich terminali, przetopiłem trochę plastiku i
 
 ## Akt 2: Żelazna Trójca 
 
-**"Jeden serwer to hobby a trzy to klaster.""**
+**"Jeden serwer to hobby a trzy to klaster."**
 
 Chciałbym napisać, że z premedytacją postawiłem na infrastrukturę heterogeniczną, by sprawdzić, jak
 scheduler Kubernetesa poradzi sobie z żonglowaniem workloadem między maszynami o drastycznie różnej wydajności. Ale bądźmy szczerzy – to czysty przypadek (i okazje na Allegro).
