@@ -51,25 +51,25 @@ const Roadmap: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-white mb-4">Moja Ścieżka Inżyniera</h2>
-        <p className="text-slate-400 max-w-2xl mx-auto">
+        <h2 className="text-3xl font-bold text-white mb-4 font-mono uppercase tracking-tight">Moja Ścieżka Inżyniera</h2>
+        <p className="text-neutral-500 max-w-2xl mx-auto font-mono text-sm">
           To nie jest teoria z bootcampu. To dokumentacja tego, co faktycznie działa na moim serwerze.
-          <span className="text-emerald-400 font-semibold"> Zielone</span> to produkcja, 
-          <span className="text-blue-400 font-semibold"> Niebieskie</span> to obecny warsztat.
+          <span className="text-thinkpad-red font-bold"> Czerwone</span> to produkcja (Done), 
+          <span className="text-white font-bold"> Białe</span> to obecny warsztat (WIP).
         </p>
       </div>
 
       <div className="relative pb-20">
         {/* Vertical Line */}
-        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-slate-800 md:left-1/2 md:-ml-0.5 bg-gradient-to-b from-emerald-500/50 via-slate-800 to-transparent"></div>
+        <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-neutral-800 md:left-1/2 md:-ml-0.5 bg-gradient-to-b from-thinkpad-red via-neutral-800 to-transparent"></div>
 
         <div className="space-y-12">
           {ROADMAP_DATA.map((item, index) => {
             const isLeft = index % 2 === 0;
             const statusColor = 
-              item.status === 'completed' ? 'text-emerald-400 bg-emerald-500/5 border-emerald-500/30 shadow-[0_0_15px_-3px_rgba(16,185,129,0.1)]' :
-              item.status === 'in-progress' ? 'text-blue-400 bg-blue-500/5 border-blue-500/30 shadow-[0_0_15px_-3px_rgba(59,130,246,0.1)]' :
-              'text-slate-500 bg-slate-800/30 border-slate-700/50';
+              item.status === 'completed' ? 'text-thinkpad-red border-thinkpad-red shadow-[0_0_15px_-3px_rgba(224,6,19,0.2)]' :
+              item.status === 'in-progress' ? 'text-white border-white shadow-[0_0_15px_-3px_rgba(255,255,255,0.2)]' :
+              'text-neutral-500 bg-neutral-900/30 border-neutral-800';
             
             const Icon = 
               item.status === 'completed' ? CheckCircle2 :
@@ -80,11 +80,11 @@ const Roadmap: React.FC = () => {
               <div key={item.id} className={`relative flex items-center md:justify-between ${isLeft ? 'md:flex-row-reverse' : ''}`}>
                 
                 {/* Icon Wrapper */}
-                <div className="absolute left-0 md:static md:left-auto flex-shrink-0 w-16 flex justify-center z-10 bg-slate-950 py-2">
-                   <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 bg-slate-950 transition-colors duration-300 ${
-                     item.status === 'completed' ? 'border-emerald-500 text-emerald-500 bg-emerald-500/10' :
-                     item.status === 'in-progress' ? 'border-blue-500 text-blue-500 bg-blue-500/10 animate-pulse' :
-                     'border-slate-700 text-slate-700'
+                <div className="absolute left-0 md:static md:left-auto flex-shrink-0 w-16 flex justify-center z-10 bg-thinkpad-base py-2">
+                   <div className={`w-10 h-10 rounded-none flex items-center justify-center border-2 bg-thinkpad-base transition-colors duration-300 ${
+                     item.status === 'completed' ? 'border-thinkpad-red text-thinkpad-red bg-thinkpad-red/10' :
+                     item.status === 'in-progress' ? 'border-white text-white bg-white/10 animate-pulse' :
+                     'border-neutral-800 text-neutral-700'
                    }`}>
                      <Icon size={20} />
                    </div>
@@ -92,19 +92,19 @@ const Roadmap: React.FC = () => {
 
                 {/* Content Card */}
                 <div className={`ml-16 md:ml-0 w-full md:w-5/12 ${isLeft ? 'md:text-right' : ''}`}>
-                  <div className={`p-6 rounded-xl border ${statusColor} backdrop-blur-sm transition-all hover:scale-[1.02] hover:bg-opacity-20`}>
-                    <h3 className={`text-xl font-bold mb-2 ${item.status === 'pending' ? 'text-slate-500' : 'text-slate-100'}`}>
+                  <div className={`p-6 rounded-none border ${statusColor} bg-thinkpad-surface transition-all hover:bg-neutral-900`}>
+                    <h3 className={`text-xl font-bold mb-2 font-mono uppercase tracking-tighter ${item.status === 'pending' ? 'text-neutral-600' : 'text-white'}`}>
                       {item.title}
                     </h3>
-                    <p className="text-slate-400 text-sm mb-4 leading-relaxed">
+                    <p className="text-thinkpad-text text-sm mb-4 leading-relaxed font-light">
                       {item.description}
                     </p>
                     <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : ''}`}>
                       {item.tools.map(tool => (
-                        <span key={tool} className={`px-2 py-1 text-xs font-mono rounded border ${
-                            item.status === 'completed' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' :
-                            item.status === 'in-progress' ? 'bg-blue-500/10 border-blue-500/20 text-blue-300' :
-                            'bg-slate-800 border-slate-700 text-slate-500'
+                        <span key={tool} className={`px-2 py-1 text-xs font-mono rounded-none border ${
+                            item.status === 'completed' ? 'bg-thinkpad-red/10 border-thinkpad-red text-thinkpad-red' :
+                            item.status === 'in-progress' ? 'bg-white/10 border-white text-white' :
+                            'bg-neutral-900 border-neutral-800 text-neutral-600'
                         }`}>
                           {tool}
                         </span>
@@ -131,24 +131,24 @@ const Roadmap: React.FC = () => {
             return (
               <div key={`placeholder-${i}`} className={`relative flex items-center md:justify-between ${isLeft ? 'md:flex-row-reverse' : ''} ${styles.opacity} pointer-events-none select-none grayscale`}>
                  {/* Icon Wrapper */}
-                 <div className="absolute left-0 md:static md:left-auto flex-shrink-0 w-16 flex justify-center z-10 bg-slate-950 py-2">
-                   <div className="w-10 h-10 rounded-full flex items-center justify-center border-2 border-slate-800 text-slate-700 bg-slate-950">
+                 <div className="absolute left-0 md:static md:left-auto flex-shrink-0 w-16 flex justify-center z-10 bg-thinkpad-base py-2">
+                   <div className="w-10 h-10 rounded-none flex items-center justify-center border-2 border-neutral-800 text-neutral-700 bg-thinkpad-base">
                      <styles.icon size={20} />
                    </div>
                 </div>
 
                  {/* Content Card */}
                  <div className={`ml-16 md:ml-0 w-full md:w-5/12 ${isLeft ? 'md:text-right' : ''}`}>
-                  <div className="p-6 rounded-xl border border-slate-800 bg-slate-900/30 border-dashed">
-                    <h3 className="text-xl font-bold mb-2 text-slate-600">
+                  <div className="p-6 rounded-none border border-neutral-800 bg-neutral-900/30 border-dashed">
+                    <h3 className="text-xl font-bold mb-2 text-neutral-600 font-mono uppercase">
                       {styles.text}
                     </h3>
-                    <p className="text-slate-700 text-sm mb-4">
+                    <p className="text-neutral-700 text-sm mb-4">
                       Loading...
                     </p>
                     <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : ''}`}>
-                        <span className="w-16 h-6 rounded bg-slate-800/50"></span>
-                        <span className="w-12 h-6 rounded bg-slate-800/50"></span>
+                        <span className="w-16 h-6 rounded-none bg-neutral-800/50"></span>
+                        <span className="w-12 h-6 rounded-none bg-neutral-800/50"></span>
                     </div>
                   </div>
                 </div>

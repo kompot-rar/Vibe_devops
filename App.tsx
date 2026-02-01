@@ -119,12 +119,12 @@ Windowsa XP. Ale **robi robotę**. Jest stabilny i uczy jak panować nad ruchem 
   ];
 
 const About: React.FC = () => (
-  <div className="max-w-2xl mx-auto bg-slate-900 p-8 rounded-xl border border-slate-800 text-center animate-fade-in">
-    <div className="w-24 h-24 bg-emerald-500 rounded-full mx-auto mb-6 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+  <div className="max-w-2xl mx-auto bg-thinkpad-surface p-8 rounded-none border border-neutral-800 text-center animate-fade-in shadow-2xl shadow-black/50">
+    <div className="w-24 h-24 bg-thinkpad-red rounded-none mx-auto mb-6 flex items-center justify-center shadow-lg shadow-thinkpad-red/20 transform rotate-3 hover:rotate-0 transition-all duration-300">
         <Server className="h-12 w-12 text-white" />
     </div>
-    <h2 className="text-2xl font-bold text-white mb-4">O Projekcie</h2>
-    <p className="text-slate-300 mb-6 leading-relaxed">
+    <h2 className="text-2xl font-bold text-white mb-4 font-mono tracking-tighter uppercase">O Projekcie</h2>
+    <p className="text-thinkpad-muted mb-6 leading-relaxed font-mono text-sm">
       Witaj na moim blogu! Nazywam się Łukasz Mróz i jestem zafascynowany DevOps. 
       Stworzyłem tę stronę, aby dokumentować moją naukę i dzielić się wiedzą z innymi.
       Korzystam z pomocy sztucznej inteligencji, aby szybciej zrozumieć trudne koncepty.
@@ -136,7 +136,7 @@ const About: React.FC = () => (
         href="https://github.com/kompot-rar" 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-slate-400 transform transition-all duration-300 hover:scale-125 hover:-translate-y-1 hover:text-white hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]"
+        className="text-neutral-500 transform transition-all duration-300 hover:scale-125 hover:-translate-y-1 hover:text-white hover:drop-shadow-[0_0_15px_rgba(255,255,255,0.6)]"
         aria-label="GitHub Profile"
       >
         <Github size={32} />
@@ -146,7 +146,7 @@ const About: React.FC = () => (
         href="https://www.linkedin.com/in/%C5%82ukasz-mr%C3%B3z-b4980039a/" 
         target="_blank" 
         rel="noopener noreferrer" 
-        className="text-slate-400 transform transition-all duration-300 hover:scale-125 hover:-translate-y-1 hover:text-[#0A66C2] hover:drop-shadow-[0_0_15px_rgba(10,102,194,0.6)]"
+        className="text-neutral-500 transform transition-all duration-300 hover:scale-125 hover:-translate-y-1 hover:text-[#0A66C2] hover:drop-shadow-[0_0_15px_rgba(10,102,194,0.6)]"
         aria-label="LinkedIn Profile"
       >
         <Linkedin size={32} />
@@ -158,7 +158,7 @@ const About: React.FC = () => (
 const App: React.FC = () => {
   return (
     <Router>
-      <div className="min-h-screen bg-slate-950 flex flex-col font-sans">
+      <div className="min-h-screen bg-thinkpad-base flex flex-col font-sans selection:bg-thinkpad-red selection:text-white">
         <Navbar />
         
         <main className="flex-grow">
@@ -167,10 +167,10 @@ const App: React.FC = () => {
               <Route path="/" element={
                 <>
                   <div className="text-center mb-16">
-                    <h1 className="text-4xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-blue-500 mb-6">
-                      DevOps Adventure
+                    <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
+                      DevOps <span className="text-thinkpad-red">Adventure</span>
                     </h1>
-                    <p className="text-lg text-slate-400 max-w-2xl mx-auto">
+                    <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4">
                       Dokumentacja podróży w głąb infrastruktury. Od pojedynczego skryptu do orkiestracji klastrów.
                     </p>
                   </div>
@@ -184,9 +184,9 @@ const App: React.FC = () => {
           </div>
         </main>
 
-        <footer className="bg-slate-900 border-t border-slate-800">
-          <div className="max-w-7xl mx-auto py-8 px-4 text-center text-slate-500 text-sm">
-            <p>&copy; {new Date().getFullYear()} DevOps Starter Hub. Code is Law.</p>
+        <footer className="bg-thinkpad-surface border-t border-neutral-800">
+          <div className="max-w-7xl mx-auto py-8 px-4 text-center text-neutral-600 text-sm font-mono">
+            <p>&copy; {new Date().getFullYear()} DevOps Starter Hub. <span className="text-thinkpad-red">Code is Law.</span></p>
           </div>
         </footer>
       </div>

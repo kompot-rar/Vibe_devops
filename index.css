@@ -1,3 +1,30 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  --color-thinkpad-base: #161616;
+  --color-thinkpad-surface: #1F1F1F;
+  --color-thinkpad-red: #E00613;
+  --color-thinkpad-text: #F0F0F0;
+  --color-thinkpad-muted: #808080;
+  --color-thinkpad-accent: #FF4D4D;
+}
+
+@layer base {
+  body {
+    @apply bg-thinkpad-base text-thinkpad-text font-sans antialiased;
+  }
+}
+
+/* Custom Scrollbar for the Ninja look */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-thinkpad-base;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-thinkpad-surface rounded border border-thinkpad-base;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-thinkpad-red;
+}
