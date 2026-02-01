@@ -68,26 +68,38 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
             <span className="flex items-center gap-2"><Clock size={14} className="text-thinkpad-red"/> {post.readTime}</span>
           </div>
 
-          {/* Renderowana treść z react-markdown */}
-          <div className="prose prose-invert max-w-none 
-            prose-p:text-lg prose-p:leading-relaxed prose-p:text-thinkpad-text prose-p:mb-8
-            prose-headings:font-mono prose-headings:uppercase prose-headings:tracking-wide
-            
-            prose-h1:text-5xl prose-h1:mt-16 prose-h1:mb-12
-            prose-h2:text-4xl prose-h2:font-bold prose-h2:border-b prose-h2:border-neutral-800 prose-h2:pb-6 prose-h2:mt-24 prose-h2:mb-12
-            prose-h3:text-3xl prose-h3:font-bold prose-h3:text-thinkpad-red prose-h3:mt-16 prose-h3:mb-8
-            
-            prose-ul:my-8 prose-ol:my-8
-            prose-li:text-lg prose-li:my-3 prose-li:marker:text-thinkpad-red
-            
-            prose-pre:bg-[#282c34] prose-pre:border prose-pre:border-neutral-700 prose-pre:my-10
-            prose-blockquote:border-l-4 prose-blockquote:border-thinkpad-red prose-blockquote:bg-neutral-900/50 prose-blockquote:py-4 prose-blockquote:px-8 prose-blockquote:my-12 prose-blockquote:text-xl prose-blockquote:font-light prose-blockquote:italic
-            
-            prose-a:text-thinkpad-red prose-a:no-underline hover:prose-a:underline hover:prose-a:text-white transition-colors
-            prose-img:rounded-sm prose-img:border prose-img:border-neutral-800 prose-img:shadow-lg prose-img:my-12">
+          {/* Renderowana treść z custom componentami (bez pluginu prose) */}
+          <div className="font-sans">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight]}
+              components={{
+                h1: ({node, ...props}) => <h1 className="text-5xl font-mono uppercase tracking-wide text-white mt-20 mb-12" {...props} />,
+                h2: ({node, ...props}) => <h2 className="text-4xl font-bold font-mono uppercase tracking-wide text-white border-b border-neutral-800 pb-6 mt-24 mb-12" {...props} />,
+                h3: ({node, ...props}) => <h3 className="text-3xl font-bold font-mono uppercase tracking-wide text-thinkpad-red mt-16 mb-8" {...props} />,
+                h4: ({node, ...props}) => <h4 className="text-xl font-bold font-mono uppercase tracking-wide text-white mt-12 mb-6" {...props} />,
+                p: ({node, ...props}) => <p className="text-lg text-neutral-300 leading-8 mb-8 font-light" {...props} />,
+                ul: ({node, ...props}) => <ul className="list-disc list-outside ml-6 mb-8 marker:text-thinkpad-red" {...props} />,
+                ol: ({node, ...props}) => <ol className="list-decimal list-outside ml-6 mb-8 marker:text-thinkpad-red" {...props} />,
+                li: ({node, ...props}) => <li className="text-lg text-neutral-300 mb-3 pl-2 leading-relaxed" {...props} />,
+                blockquote: ({node, ...props}) => <blockquote className="border-l-4 border-thinkpad-red bg-neutral-900/50 py-6 px-8 my-12 text-xl font-light italic text-neutral-400" {...props} />,
+                a: ({node, ...props}) => <a className="text-thinkpad-red hover:text-white hover:underline transition-colors font-medium" {...props} />,
+                code: ({node, className, children, ...props}) => {
+                  const match = /language-(\w+)/.exec(className || '');
+                  const isInline = !match && !String(children).includes('\n');
+                  return isInline ? (
+                    <code className="bg-neutral-800 text-thinkpad-red px-1.5 py-0.5 rounded-sm font-mono text-sm" {...props}>
+                      {children}
+                    </code>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  );
+                },
+                pre: ({node, ...props}) => <pre className="bg-[#282c34] border border-neutral-700 rounded-none my-10 overflow-x-auto shadow-lg" {...props} />,
+                img: ({node, ...props}) => <img className="rounded-sm border border-neutral-800 shadow-lg my-12 w-full bg-black" {...props} />,
+              }}
             >
               {post.content}
             </ReactMarkdown>
