@@ -90,8 +90,8 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
           <div className="p-8 sm:p-12 bg-thinkpad-surface">
             {/* Metadane */}
             <div className="flex gap-8 text-xs font-mono uppercase tracking-widest text-neutral-500 mb-10 border-b border-neutral-800 pb-6">
-              <span className="flex items-center gap-2"><Calendar size={14} className="text-thinkpad-red"/> {selectedPost.date}</span>
-              <span className="flex items-center gap-2"><Clock size={14} className="text-thinkpad-red"/> {selectedPost.readTime}</span>
+              <span className="flex items-center gap-2"><Calendar size={14} className="text-neon-blue"/> {selectedPost.date}</span>
+              <span className="flex items-center gap-2"><Clock size={14} className="text-neon-blue"/> {selectedPost.readTime}</span>
             </div>
 
             {/* Renderowana treść */}
@@ -125,15 +125,15 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
           <div 
             key={post.id} 
             onClick={() => setSelectedPost(post)}
-            className="group bg-thinkpad-surface border border-neutral-700 rounded-none overflow-hidden hover:border-thinkpad-red transition-all cursor-pointer flex flex-col h-full shadow-lg hover:shadow-thinkpad-red/20 hover:-translate-y-1"
+            className="group bg-thinkpad-surface border border-neutral-700 rounded-none overflow-hidden hover:border-thinkpad-red transition-all duration-300 cursor-pointer flex flex-col h-full shadow-lg hover:shadow-[0_0_20px_rgba(224,6,19,0.3)]"
           >
             <div className="h-48 overflow-hidden relative transition-all duration-500">
               <img 
                 src={post.imageUrl || 'https://picsum.photos/800/400'} 
                 alt={post.title} 
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover grayscale-[0.75] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-in-out"
               />
-              <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+              <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
             </div>
             
             <div className="p-6 flex flex-col flex-1 relative">
@@ -142,7 +142,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
 
               <div className="flex gap-2 mb-4 flex-wrap">
                 {post.tags.slice(0, 3).map(tag => (
-                  <span key={tag} className="text-xs font-mono font-bold text-thinkpad-red bg-black/30 px-2 py-0.5 border border-neutral-700 uppercase">
+                  <span key={tag} className="text-xs font-mono font-bold text-neon-blue bg-black/30 px-2 py-0.5 border border-neutral-700 uppercase">
                     #{tag}
                   </span>
                 ))}
@@ -159,7 +159,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
               <div className="flex items-center justify-between text-xs text-neutral-500 mt-auto pt-4 border-t border-neutral-700 font-mono uppercase">
                 <span>{new Date(post.date).toLocaleDateString()}</span>
                 <span className="flex items-center gap-1 group-hover:text-white transition-colors">
-                  <BookOpen size={12} /> {post.readTime}
+                  <BookOpen size={12} className="text-neon-blue" /> {post.readTime}
                 </span>
               </div>
             </div>

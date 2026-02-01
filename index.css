@@ -1,17 +1,18 @@
 @import "tailwindcss";
 
 @theme {
-  --color-thinkpad-base: #161616;
-  --color-thinkpad-surface: #262626;
-  --color-thinkpad-red: #E00613;
-  --color-thinkpad-text: #F0F0F0;
-  --color-thinkpad-muted: #808080;
-  --color-thinkpad-accent: #FF4D4D;
+  --color-thinkpad-base: #0a0b10;
+  --color-thinkpad-surface: #16181d;
+  --color-thinkpad-red: #ff002b;
+  --color-thinkpad-text: #e2e8f0;
+  --color-thinkpad-muted: #64748b;
+  --color-thinkpad-accent: #ff002b;
+  --color-neon-blue: #0ea5e9;
 }
 
 @layer base {
   body {
-    @apply bg-thinkpad-base text-thinkpad-text font-sans antialiased;
+    @apply bg-thinkpad-base text-thinkpad-text font-sans antialiased selection:bg-thinkpad-red selection:text-white;
   }
 }
 
