@@ -49,7 +49,7 @@ ip netns exec moj_kontener ip addr add 10.0.0.2/24 dev veth1
 ip netns exec moj_kontener ip link set veth1 up
 ```
 
-![ping](docker1.png)
+![ping](/docker1.png)
 
 > **Lekcja:** To co tu widzisz, to manualna robota wtyczki **CNI (Calico/Flannel)**. Każdy Pod w klastrze ma taką swoją rurę podpiętą do wirtualnego switcha hosta. Zrozumienie tego to koniec problemów z "Network Unreachable".
 
@@ -57,7 +57,7 @@ ip netns exec moj_kontener ip link set veth1 up
 
 Używając mechanizmu **Namespaces**, odciąłem proces od reszty systemu. Ale tu pojawia się kluczowy problem: **PID 1**. Jeśli Twój proces zostanie PID-em 1, **Kernel** wymaga od niego sprzątania "procesów sierot". Jeśli tego nie robi, Twój kontener zapycha się procesami-widmami `[defunct]`.
 
- ![Widok ps aux - nasz shell jako król wszechświata PID 1](docker2.png)
+ ![Widok ps aux - nasz shell jako król wszechświata PID 1](/docker2.png)
 *Rys 2. Izolacja PID Namespace - bash widzi tylko siebie.*
 
 ### 4. Limity (Cgroups v2): Brutalne kajdanki
@@ -68,7 +68,7 @@ W K8s piszesz `limits.memory: "50Mi"`. Pod maską **Kernel** używa **Cgroups**.
 sudo systemd-nspawn -D /var/lib/machines/moj-kontener --property=MemoryMax=50M --property=MemorySwapMax=0
 ```
 
-![OOM Killer w akcji - twardy limit 50MB](docker4.png)
+![OOM Killer w akcji - twardy limit 50MB](/docker4.png)
 *Rys 3. Moment, w którym Cgroup mówi "dość" i wysyła sygnał SIGKILL.*
 
 ---
@@ -81,4 +81,4 @@ Docker to nie jest jedna, monolityczna technologia. To nakładka na konkretne fu
 
 Aby udowodnić, że to nie tylko teoria, całą tę wiedzę spisałem w formie jednego skryptu Bash. Tak powstał **Bash Container Runtime (BCR)** – edukacyjne narzędzie, które automatyzuje tworzenie namespaces i cgroups bez użycia Dockera.
 
-**👉 Kod źródłowy na moim GitHub** ![BCR](bcr.png)
+**👉 Kod źródłowy na moim GitHub** ![BCR](/bcr.png)
