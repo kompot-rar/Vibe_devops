@@ -57,13 +57,13 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={
                 <>
-                  <div className="relative text-center mb-16 py-10">
+                  <div className="relative text-center mb-16 py-10 isolate">
                     {/* Background decoration */}
                     <div className="absolute inset-0 flex items-center justify-center -z-10 overflow-hidden pointer-events-none select-none">
                       <img 
                         src="/rece.svg" 
                         alt="" 
-                        className="w-full max-w-4xl opacity-25 blur-[1px] [mask-image:radial-gradient(circle_at_center,black_0%,transparent_70%)]"
+                        className="w-full max-w-4xl opacity-30 blur-[1px] [mask-image:radial-gradient(circle_at_center,black_0%,transparent_70%)]"
                       />
                     </div>
 
