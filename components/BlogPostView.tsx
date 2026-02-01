@@ -70,13 +70,21 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
 
           {/* Renderowana treść z react-markdown */}
           <div className="prose prose-invert max-w-none 
+            prose-p:text-lg prose-p:leading-relaxed prose-p:text-thinkpad-text prose-p:mb-6
             prose-headings:font-mono prose-headings:uppercase prose-headings:tracking-wide
-            prose-h2:text-2xl prose-h2:border-b prose-h2:border-neutral-800 prose-h2:pb-2 prose-h2:mt-10
-            prose-h3:text-xl prose-h3:text-thinkpad-red prose-h3:mt-8
-            prose-pre:bg-[#282c34] prose-pre:border prose-pre:border-neutral-700
-            prose-blockquote:border-l-thinkpad-red prose-blockquote:bg-neutral-900/50 prose-blockquote:py-1 prose-blockquote:px-4
-            prose-a:text-thinkpad-red hover:prose-a:text-white transition-colors
-            prose-img:rounded-sm prose-img:border prose-img:border-neutral-800 prose-img:shadow-lg">
+            
+            prose-h1:text-4xl prose-h1:mt-12 prose-h1:mb-8
+            prose-h2:text-3xl prose-h2:font-bold prose-h2:border-b prose-h2:border-neutral-800 prose-h2:pb-4 prose-h2:mt-16 prose-h2:mb-8
+            prose-h3:text-2xl prose-h3:font-bold prose-h3:text-thinkpad-red prose-h3:mt-12 prose-h3:mb-6
+            
+            prose-ul:my-6 prose-ol:my-6
+            prose-li:text-lg prose-li:my-2 prose-li:marker:text-thinkpad-red
+            
+            prose-pre:bg-[#282c34] prose-pre:border prose-pre:border-neutral-700 prose-pre:my-8
+            prose-blockquote:border-l-4 prose-blockquote:border-thinkpad-red prose-blockquote:bg-neutral-900/50 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:my-8 prose-blockquote:text-xl prose-blockquote:font-light prose-blockquote:italic
+            
+            prose-a:text-thinkpad-red prose-a:no-underline hover:prose-a:underline hover:prose-a:text-white transition-colors
+            prose-img:rounded-sm prose-img:border prose-img:border-neutral-800 prose-img:shadow-lg prose-img:my-8">
             <ReactMarkdown 
               remarkPlugins={[remarkGfm]}
               rehypePlugins={[rehypeHighlight]}
