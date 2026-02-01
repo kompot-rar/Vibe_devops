@@ -57,15 +57,15 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={
                 <>
-                  <div className="relative text-center mb-16 py-10 isolate">
-                    {/* Background decoration */}
-                    <div className="absolute inset-0 flex items-center justify-center -z-10 overflow-hidden pointer-events-none select-none">
-                      <img 
-                        src="/rece.svg" 
-                        alt="" 
-                        className="w-full max-w-4xl opacity-30 blur-[1px] [mask-image:radial-gradient(circle_at_center,black_0%,transparent_70%)]"
-                      />
-                    </div>
+                  <div className="relative text-center mb-16 py-20 isolate overflow-hidden">
+                    {/* Fixed Background Layer */}
+                    <div 
+                      className="absolute inset-0 -z-10 opacity-20 bg-[url('/rece.svg')] bg-fixed bg-center bg-no-repeat"
+                      style={{ backgroundSize: 'auto 60%' }} // Adjust size to not be too huge
+                    />
+                    
+                    {/* Vignette overlay for subtle edge fade without blur */}
+                    <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,transparent_0%,var(--color-thinkpad-base)_90%)]" />
 
                     <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono relative z-10">
                       DevOps <span className="text-thinkpad-red">Adventure</span>
