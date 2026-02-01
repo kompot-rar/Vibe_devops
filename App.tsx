@@ -57,20 +57,11 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={
                 <>
-                  <div className="relative text-center mb-16 py-20 isolate overflow-hidden">
-                    {/* Fixed Background Layer */}
-                    <div 
-                      className="absolute inset-0 -z-10 opacity-20 bg-[url('/rece.svg')] bg-fixed bg-center bg-no-repeat"
-                      style={{ backgroundSize: 'auto 60%' }} // Adjust size to not be too huge
-                    />
-                    
-                    {/* Vignette overlay for subtle edge fade without blur */}
-                    <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,transparent_0%,var(--color-thinkpad-base)_90%)]" />
-
-                    <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono relative z-10">
+                  <div className="text-center mb-16">
+                    <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
                       DevOps <span className="text-thinkpad-red">Adventure</span>
                     </h1>
-                    <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4 relative z-10">
+                    <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4">
                       Dokumentacja podróży w głąb infrastruktury. Od pojedynczego skryptu do orkiestracji klastrów.
                     </p>
                   </div>
