@@ -5,57 +5,71 @@ import { CheckCircle2, Activity, ShieldCheck, Cpu, Code2, Database } from 'lucid
 const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '1',
-    title: 'Fundamenty SysAdmina',
-    description: 'Terminal to Twój dom. Linux Hardcore, konfiguracja Dotfiles, zarządzanie SSH oraz biegłość w Vim/LazyVim i Bash Scripting.',
-    tools: ['Arch Linux', 'Bash', 'SSH', 'Vim', 'Tmux'],
+    title: 'Linux & Environment',
+    description: 'Fundament pracy. Instalacja Arch Linux, konfiguracja Dotfiles (GNU Stow) oraz zarządzanie kluczami SSH (automatyzacja).',
+    tools: ['Arch Linux', 'Stow', 'SSH', 'GPG'],
     status: 'completed'
   },
   {
     id: '2',
-    title: 'Sieci & Hardware',
-    description: 'Zrozumienie przepływu pakietów. Segmentacja VLAN, DNS (Pi-hole), monitoring syntetyczny oraz konfiguracja Nginx na bare metal.',
-    tools: ['VLANs', 'Pi-hole', 'Nginx', 'Prometheus'],
-    status: 'in-progress'
+    title: 'Terminal & Scripting',
+    description: 'Optymalizacja workflow. Vim/LazyVim jako IDE, Fzf, oraz zaawansowane skrypty Bash (Healthcheck, Backup z rotacją).',
+    tools: ['Vim', 'Bash', 'Fzf', 'Tmux'],
+    status: 'completed'
   },
   {
     id: '3',
-    title: 'Wirtualizacja & IaC',
-    description: 'Infrastruktura jako Kod. Konfiguracja klastra Proxmox, Terraform dla VM-ek oraz podstawy chmur AWS/Azure.',
-    tools: ['Proxmox', 'Terraform', 'Ansible', 'AWS'],
-    status: 'pending'
+    title: 'Network Theory',
+    description: 'Głębokie zrozumienie warstw modelu OSI (L2-L7), protokołów TCP/UDP oraz diagnostyka sieciowa.',
+    tools: ['OSI Model', 'TCP/IP', 'DNS', 'tcpdump'],
+    status: 'completed'
   },
   {
     id: '4',
-    title: 'Konteneryzacja & Python',
-    description: 'Docker Deep Dive i środowiska Dev Containers. Automatyzacja zadań administracyjnych w Pythonie (boto3).',
-    tools: ['Docker', 'Python', 'Boto3', 'SBOM'],
-    status: 'pending'
+    title: 'Homelab Networking',
+    description: 'Implementacja sieci w domu. Segmentacja VLAN na switchu, własny DNS (Pi-hole) i Reverse Proxy (Nginx) na bare metal.',
+    tools: ['VLANs', 'Pi-hole', 'Nginx', 'Blackbox Exp'],
+    status: 'in-progress'
   },
   {
     id: '5',
-    title: 'CI/CD & Automatyzacja',
-    description: 'Budowanie pipeline\'ów w GitLab CI i GitHub Actions. Self-hosted runnery i automatyczne testy.',
-    tools: ['GitLab CI', 'Jenkins', 'Zabbix', 'Forgejo'],
+    title: 'Wirtualizacja & IaC',
+    description: 'Budowa klastra Proxmox i zarządzanie nim przez kod (Terraform). Wstęp do chmur publicznych (AWS/Azure).',
+    tools: ['Proxmox', 'Terraform', 'Ansible', 'Cloud'],
     status: 'pending'
   },
   {
     id: '6',
-    title: 'Bazy Danych & State',
-    description: 'Zarządzanie danymi trwałymi. PostgreSQL, migracje schematu (Flyway/Liquibase) i strategie backupu.',
-    tools: ['PostgreSQL', 'Flyway', 'SQL', 'Backup'],
+    title: 'Containers & Python',
+    description: 'Docker Deep Dive, środowiska Dev Containers oraz automatyzacja operacyjna w Pythonie (boto3).',
+    tools: ['Docker', 'Python', 'Boto3', 'SBOM'],
     status: 'pending'
   },
   {
     id: '7',
-    title: 'Kubernetes Core',
-    description: 'Orkiestracja kontenerów "The Hard Way". Instalacja K3s, zarządzanie przez Helm, Ingress i polityki sieciowe.',
-    tools: ['K3s', 'Helm', 'Ingress', 'Kyverno'],
+    title: 'CI/CD & Automation',
+    description: 'Nowoczesne potoki wdrażania. GitLab CI, GitHub Actions i zarządzanie Self-hosted Runners.',
+    tools: ['GitLab CI', 'GitHub Actions', 'Runners', 'YAML'],
     status: 'pending'
   },
   {
     id: '8',
+    title: 'Databases & State',
+    description: 'Bazy danych w kontenerach. PostgreSQL, migracje schematu (Flyway) i strategie backupu danych trwałych.',
+    tools: ['PostgreSQL', 'Flyway', 'SQL', 'Backup'],
+    status: 'pending'
+  },
+  {
+    id: '9',
+    title: 'Kubernetes Core',
+    description: 'Instalacja K3s "The Hard Way", zarządzanie aplikacjami przez Helm oraz konfiguracja Ingress i Security.',
+    tools: ['K3s', 'Helm', 'Ingress', 'Kyverno'],
+    status: 'pending'
+  },
+  {
+    id: '10',
     title: 'Advanced Ops & CKA',
-    description: 'Poziom Production Grade. Wdrożenie GitOps z ArgoCD, pełny stack obserwowalności (ELK) i przygotowanie do egzaminu CKA.',
+    description: 'GitOps (ArgoCD), pełny monitoring (ELK/Prometheus) i finalne przygotowanie do egzaminu CKA.',
     tools: ['ArgoCD', 'ELK', 'Prometheus', 'Talos'],
     status: 'pending'
   }
