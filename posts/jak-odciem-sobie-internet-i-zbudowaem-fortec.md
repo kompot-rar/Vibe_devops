@@ -2,7 +2,7 @@
 id: '7'
 title: 'Jak odciąłem sobie internet i zbudowałem Fortecę'
 date: '2026-02-01'
-tags: ['Networking', 'Security', 'LXC', 'iptables']
+tags: ['Networking', 'Security', 'iptables']
 readTime: '15 min'
 imageUrl: '/network.png'
 excerpt: 'Moja podróż przez meandry sieci komputerowych: od totalnego chaosu do bezpiecznej, posegmentowanej infrastruktury opartej na VLANach i Alpine Linux jako routerze.'
@@ -20,7 +20,7 @@ Zamiast kupować drogi router albo stawiać ciężkie VM z OPNsense, postanowił
 - **Router:** Kontener LXC Alpine Linux
 
 **Segmentacja:**
-- **VLAN 1 (Untrusted):** Sieć domowa i WiFi z routera ISP. Stąd chińskie żarówki wifi mogą dzwonić do Pekinu.
+    - **VLAN 1 (Untrusted):** Sieć domowa i WiFi z routera ISP. Stąd chińskie żarówki wifi mogą dzwonić do Pekinu.
     - **VLAN 10 (MGMT):** Proxmox, Switch, Router. Dostęp tylko dla wybranych.
     - **VLAN 20 (APPS):** Jellyfin, *Arr, kontenery. Dostępny dla domowników, ale odizolowany od MGMT.
     - **VLAN 30 (SECURE):** Vault, SSH CA, wrażliwe dane. Odcięty od świata.
