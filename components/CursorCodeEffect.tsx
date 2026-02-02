@@ -193,6 +193,10 @@ const CursorCodeEffect: React.FC = () => {
     let content = "";
     for (let i = 0; i < 20; i++) {
       content += REAL_DEVOPS_CODE + "\n";
+      if (i % 5 === 0) {
+        content += "\n// 🐇 EASTER EGG: FOLLOW THE WHITE RABBIT -> 0x539\n";
+        content += "// SYSTEM_OVERRIDE_INITIATED_BY_KOMPOT\n";
+      }
     }
     return content;
   }, []);
@@ -211,12 +215,12 @@ const CursorCodeEffect: React.FC = () => {
       className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0"
     >
       <div 
-        className="absolute inset-0 text-xs leading-tight font-mono text-thinkpad-red opacity-10 break-all"
+        className="absolute inset-0 text-xs leading-tight font-mono text-thinkpad-red opacity-10 break-all columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-8 text-right"
         style={{
           whiteSpace: 'pre-wrap', // Allows wrapping of long lines
           maskImage: `radial-gradient(circle 500px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
           WebkitMaskImage: `radial-gradient(circle 500px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
-          fontFamily: "'JetBrains Mono', 'Fira Code', monospace" 
+          fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
         }}
       >
         {codeContent}
