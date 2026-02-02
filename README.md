@@ -7,8 +7,7 @@
 ![AI Assisted](https://img.shields.io/badge/Workflow-AI_Assisted-8A2BE2?style=flat-square)
 ![Infrastructure First](https://img.shields.io/badge/Infrastructure-Hardened-00C853?style=flat-square)
 
-[**LIVE DEMO: devops.mrozy.org**](https://devops.mrozy.org)
-[**DEV PREVIEW: vibe-dev.mrozy.org**](https://vibe-dev.mrozy.org)
+[**LIVE DEMO: devops.mrozy.org**](https://devops.mrozy.org) &nbsp;&nbsp;&nbsp; [**DEV PREVIEW: vibe-dev.mrozy.org**](https://vibe-dev.mrozy.org)
 
 </div>
 
