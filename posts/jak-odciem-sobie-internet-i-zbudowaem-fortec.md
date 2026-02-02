@@ -25,6 +25,42 @@ Zamiast kupować drogi router albo stawiać ciężkie VM z OPNsense, postanowił
 - **VLAN 20 (APPS):** Jellyfin, *Arr, kontenery. Dostępny dla domowników, ale odizolowany od MGMT.
 - **VLAN 30 (SECURE):** Vault, SSH CA, wrażliwe dane. Odcięty od świata.
 
+
+```text
+            [ INTERNET / HOME NET ]
+                      |
+                      v
+      +---------------------------------------+
+      |       HOME ROUTER (ISP)               |
+      |       IP: 192.168.1.1                 |
+      +---------------------------------------+
+                      |
+                      | 192.168.1.0/24
+                      v
+      +=======================================+
+      |         LXC ROUTER (CT 999)           |  <-- "THE GREAT WALL"
+      |         OS: Alpine Linux              |      (iptables DROP POLICY)
+      +=======================================+
+      | [eth0] WAN: 192.168.1.123             |
+      | [eth1] VLAN 10: 10.0.10.1 (MGMT)      |
+      | [eth2] VLAN 20: 10.0.20.1 (APPS)      |
+      | [eth3] VLAN 30: 10.0.30.1 (SECURE)    |
+      +=======================================+
+          ||             ||             ||
+          ||             ||             ||
+    [VLAN 10 - MGMT] [VLAN 20 - APPS] [VLAN 30 - SECURE]
+    +--------------+ +--------------+ +----------------+
+    | Proxmox Clst | | Jellyfin     | | SSH CA Vault   |
+    | Netgear Sw   | | *Arr Stack   | | (10.0.30.10)   |
+    | (10.0.10.x)  | | (10.0.20.x)  | | [NO INTERNET]  |
+    +--------------+ +--------------+ +----------------+
+          ^                                     ^
+          |                                     |
+          +---------- [ MAGIC DOOR ] -----------+
+                  (Laptop MAC Filtered)
+```
+
+
 ## 3. Implementacja: Linux to najlepszy router
 Dlaczego LXC? Bo startuje w 2 sekundy i zużywa tyle zasobów co nic.
 Co pod maską?
@@ -41,7 +77,6 @@ interface=eth2
 dhcp-range=set:apps,10.0.20.100,10.0.20.200,255.255.255.0,12h
 dhcp-option=tag:apps,option:router,10.0.20.1
 ```
-
 W iptables kluczowym elementem był **Stateful Inspection**. Bez tej jednej linijki ruch byłby jednokierunkowy (pakiety by wychodziły, ale odpowiedzi byłyby blokowane):
 ```bash
 iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
