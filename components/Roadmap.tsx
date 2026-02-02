@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RoadmapItem } from '../types';
 import { CheckCircle2, Activity, ShieldCheck, Cpu, Code2, Database } from 'lucide-react';
 
@@ -90,6 +90,54 @@ const ROADMAP_DATA: RoadmapItem[] = [
 ];
 
 const Roadmap: React.FC = () => {
+  const [displayText, setDisplayText] = useState('');
+  const [startTyping, setStartTyping] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        setStartTyping(true);
+      }
+    }, { threshold: 0.1 });
+
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!startTyping) return;
+
+    let currentIndex = 0;
+    let isDeleting = false;
+    let timeoutId: NodeJS.Timeout;
+
+    const type = () => {
+      const fullText = "NEVER STOP LEARNING";
+      
+      if (!isDeleting && currentIndex <= fullText.length) {
+        setDisplayText(fullText.substring(0, currentIndex));
+        currentIndex++;
+        timeoutId = setTimeout(type, 100);
+      } else if (isDeleting && currentIndex >= 0) {
+        setDisplayText(fullText.substring(0, currentIndex));
+        currentIndex--;
+        timeoutId = setTimeout(type, 50);
+      } else if (currentIndex > fullText.length) {
+        isDeleting = true;
+        currentIndex = fullText.length; // Pause at end
+        timeoutId = setTimeout(type, 3000);
+      } else if (currentIndex < 0) {
+        isDeleting = false;
+        currentIndex = 0;
+        timeoutId = setTimeout(type, 1000);
+      }
+    };
+
+    timeoutId = setTimeout(type, 500);
+    return () => clearTimeout(timeoutId);
+  }, [startTyping]);
+
   return (
     <div className="max-w-5xl mx-auto px-4 py-16">
       <div className="text-center mb-20">
@@ -166,16 +214,13 @@ const Roadmap: React.FC = () => {
           })}
         </div>
 
-        {/* Never Stop Learning Badge */}
-        <div className="relative flex flex-col items-center justify-center mt-20 pb-12">
-          
-          <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
-            <span className="font-mono text-xs text-neutral-600">~/</span>
-            <span className="font-mono text-xs tracking-[0.3em] text-neutral-500 uppercase animate-pulse">
-              Never Stop Learning
-            </span>
-            <span className="w-1.5 h-3 bg-neutral-600 animate-blink"></span>
-          </div>
+        {/* Terminal Text Animation */}
+        <div ref={containerRef} className="relative flex flex-col items-center justify-center mt-20 pb-12 h-12">
+            <div className="flex items-center gap-2 font-mono text-sm tracking-widest text-neutral-500">
+                <span className="text-thinkpad-red font-bold">$</span>
+                <span className="uppercase">{displayText}</span>
+                <span className="w-2 h-4 bg-thinkpad-red animate-pulse"></span>
+            </div>
         </div>
       </div>
     </div>
