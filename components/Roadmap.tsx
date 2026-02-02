@@ -167,12 +167,16 @@ const Roadmap: React.FC = () => {
         </div>
 
         {/* Never Stop Learning Badge */}
-        <div className="relative flex justify-center mt-24 pb-12">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-24 bg-thinkpad-red/5 blur-[40px] rounded-full pointer-events-none"></div>
-          <div className="relative z-10 px-6 py-2 border border-neutral-800 rounded-full">
-            <span className="font-mono text-xs tracking-[0.3em] text-neutral-600 uppercase bg-clip-text text-transparent bg-gradient-to-r from-neutral-600 via-neutral-400 to-neutral-600 animate-pulse">
+        <div className="relative flex flex-col items-center justify-center mt-24 pb-12">
+          {/* Vertical connecting line */}
+          <div className="w-px h-8 bg-gradient-to-b from-neutral-800 to-transparent mb-4"></div>
+          
+          <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
+            <span className="font-mono text-xs text-neutral-600">~/</span>
+            <span className="font-mono text-xs tracking-[0.3em] text-neutral-500 uppercase animate-pulse">
               Never Stop Learning
             </span>
+            <span className="w-1.5 h-3 bg-neutral-600 animate-blink"></span>
           </div>
         </div>
       </div>
