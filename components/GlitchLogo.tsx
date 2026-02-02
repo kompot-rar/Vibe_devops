@@ -8,9 +8,7 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
   const originalText = "DevOpsZeroToHero";
   const [displayText, setDisplayText] = useState(originalText);
   const [isGlitching, setIsGlitching] = useState(false);
-  const [isRed, setIsRed] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   
   const chars = "!@#$%^&*()_+-=[]{}|;':\",./<>?~`";
 
@@ -18,12 +16,10 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
     if (isHovered) {
       // Start glitch
       setIsGlitching(true);
-      setIsRed(true);
       let iteration = 0;
       const maxIterations = 8; 
 
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
       intervalRef.current = setInterval(() => {
         setDisplayText(
@@ -35,25 +31,17 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
           if (intervalRef.current) clearInterval(intervalRef.current);
           setDisplayText(originalText);
           setIsGlitching(false);
-          
-          // Keep red for a moment, then fade
-          timeoutRef.current = setTimeout(() => {
-            setIsRed(false);
-          }, 300);
         }
       }, 50);
     } else {
       // Reset
       setIsGlitching(false);
-      setIsRed(false);
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
       setDisplayText(originalText);
     }
 
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [isHovered]);
 
@@ -62,13 +50,12 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
        return <span className="text-thinkpad-red">{displayText}</span>;
     }
 
-    const transitionClass = "transition-colors duration-[10000ms] ease-out";
-
     return (
       <>
-        <span className={`${transitionClass} ${isRed ? 'text-thinkpad-red' : 'text-white'}`}>DevOps</span>
-        <span className={`${transitionClass} text-thinkpad-red`}>Zero</span>
-        <span className={`${transitionClass} ${isRed ? 'text-thinkpad-red' : 'text-white'}`}>ToHero</span>
+        <span className="text-white">DevOps</span>
+        <span className="text-thinkpad-red">Zero</span>
+        <span className="text-white">To</span>
+        <span className="text-thinkpad-red">Hero</span>
       </>
     );
   };
