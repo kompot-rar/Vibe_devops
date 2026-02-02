@@ -60,7 +60,10 @@ To nie poszło gładko. To była 4-dniowa wojna z warstwą drugą i trzecią mod
  ![Lekcja Pokory](/network_warzone0.jpg) 
 
 ### A. Port Ratunkowy (The Airlock)
-Pierwsza zasada VLANów: Jak zmieniasz PVID na porcie, do którego jesteś wpięty – tracisz dostęp. Zrobiłem to trzy razy.
+Pierwsza zasada VLANów: Jak zmieniasz PVID na porcie, do którego jesteś wpięty – tracisz dostęp.
+
+Zrobiłem to trzy razy.
+
 **Rozwiązanie:** Port 8 na switchu skonfigurowany jako **Emergency Port** (Untagged VLAN 10). Fizyczny kabel, który ratuje życie, gdy WiFi milczy. A mimo to, kilkukrotnie i tak musiałem zapinać **HDMI** bezpośrednio do nodów, bo poziom "całkowitej anihilacji", który serwowałem interfejsom sieciowym, wykraczał poza możliwości jakiegokolwiek portu ratunkowego.
 
 ### B. Routing Asymetryczny i "The Masquerade Hack"
