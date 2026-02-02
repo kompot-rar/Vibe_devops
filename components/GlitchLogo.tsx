@@ -53,7 +53,7 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
     return (
       <>
         <span className="text-white">DevOps</span>
-        <span className="text-thinkpad-red">Zero</span>
+        <span className="text-white">Zero</span>
         <span className="text-white">To</span>
         <span className="text-thinkpad-red">Hero</span>
       </>
