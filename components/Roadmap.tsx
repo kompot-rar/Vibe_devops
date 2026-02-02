@@ -6,22 +6,22 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '1',
     title: 'Linux & Workstation',
-    description: 'Kompletne środowisko pracy. Arch Linux, konfiguracja Dotfiles, zarządzanie SSH oraz biegłość w Vim i Bash Scripting.',
+    description: 'Inżynieria środowiska pracy. Arch Linux, zarządzanie konfiguracją (Dotfiles), bezpieczne SSH oraz biegłość w Vim.',
     tools: ['Arch Linux', 'Bash', 'SSH', 'Vim'],
     status: 'completed'
   },
   {
     id: '2',
     title: 'Infrastruktura Homelab',
-    description: 'W pełni operacyjny klaster Proxmox. Hardware, podstawy sieci (OSI, VLANs) oraz fizyczna budowa serwerowni.',
-    tools: ['Proxmox', 'Hardware', 'Networking', 'LXC'],
+    description: 'W pełni operacyjny klaster Proxmox. Hardware server-grade, wirtualizacja (LXC/KVM) i zarządzanie storage-em (ZFS).',
+    tools: ['Proxmox', 'ZFS', 'Hardware', 'LXC'],
     status: 'completed'
   },
   {
     id: '3',
     title: 'Sieci',
-    description: 'Fundamenty komunikacji. Model OSI (L2-L7), protokoły TCP/UDP, DNS oraz diagnostyka pakietów (tcpdump/Wireshark).',
-    tools: ['OSI', 'TCP/IP', 'DNS', 'Wireshark'],
+    description: 'Architektura sieciowa. Model OSI, segmentacja (VLAN), routing, DNS oraz głęboka analiza pakietów (Wireshark).',
+    tools: ['OSI', 'VLAN', 'DNS', 'Wireshark'],
     status: 'completed'
   },
   {
@@ -34,21 +34,21 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '7',
     title: 'CI/CD Pipelines',
-    description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja runnerów.',
+    description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja własnych runnerów.',
     tools: ['GitLab CI', 'GitHub Actions', 'Pipelines', 'Tests'],
     status: 'completed'
   },
   {
     id: '4',
     title: 'Automatyzacja & Python',
-    description: 'Tworzenie narzędzi w Pythonie i Bashu do automatyzacji zadań administracyjnych oraz monitoringu.',
-    tools: ['Python', 'Boto3', 'Scripting', 'Automation'],
+    description: 'Programowanie infrastruktury. Skrypty w Pythonie (Boto3), automatyzacja zadań (Bash) i interakcja z API.',
+    tools: ['Python', 'Boto3', 'API', 'Automation'],
     status: 'in-progress'
   },
   {
     id: '6',
     title: 'Konteneryzacja',
-    description: 'Głębokie wejście w Docker i Docker Compose. Budowa wydajnych obrazów i środowisk deweloperskich.',
+    description: 'Standard OCI. Budowa zoptymalizowanych obrazów (Multi-stage), Docker Compose i bezpieczeństwo kontenerów.',
     tools: ['Docker', 'Compose', 'DevEnv', 'Distroless'],
     status: 'in-progress'
   },
@@ -62,15 +62,15 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '11',
     title: 'SRE & Observability',
-    description: 'Utrzymanie niezawodności. SLI/SLO, Error Budgets, Distributed Tracing (Jaeger) oraz Chaos Engineering.',
-    tools: ['Grafana', 'Jaeger', 'OpenTelemetry', 'Chaos Mesh'],
+    description: 'Pełna obserwowalność. Monitoring (Prometheus/Grafana), logi (ELK), Distributed Tracing i kultura SRE.',
+    tools: ['Prometheus', 'Grafana', 'ELK', 'OpenTelemetry'],
     status: 'pending'
   },
   {
     id: '9',
     title: 'Certyfikacja CKA',
-    description: 'Poziom ekspercki. GitOps (ArgoCD), zaawansowany monitoring (ELK) i certyfikacja CKA.',
-    tools: ['ArgoCD', 'ELK', 'Prometheus', 'CKA'],
+    description: 'Administracja zaawansowana. GitOps (ArgoCD), zarządzanie cyklem życia klastra, RBAC i certyfikacja CKA.',
+    tools: ['ArgoCD', 'RBAC', 'Etcd', 'CKA'],
     status: 'pending'
   },
   {
