@@ -60,6 +60,13 @@ const ROADMAP_DATA: RoadmapItem[] = [
     status: 'pending'
   },
   {
+    id: '11',
+    title: 'SRE & Observability',
+    description: 'Utrzymanie niezawodności. SLI/SLO, Error Budgets, Distributed Tracing (Jaeger) oraz Chaos Engineering.',
+    tools: ['Grafana', 'Jaeger', 'OpenTelemetry', 'Chaos Mesh'],
+    status: 'pending'
+  },
+  {
     id: '9',
     title: 'Certyfikacja CKA',
     description: 'Poziom ekspercki. GitOps (ArgoCD), zaawansowany monitoring (ELK) i certyfikacja CKA.',
@@ -74,10 +81,10 @@ const ROADMAP_DATA: RoadmapItem[] = [
     status: 'pending'
   },
   {
-    id: '11',
-    title: 'SRE & Observability',
-    description: 'Utrzymanie niezawodności. SLI/SLO, Error Budgets, Distributed Tracing (Jaeger) oraz Chaos Engineering.',
-    tools: ['Grafana', 'Jaeger', 'OpenTelemetry', 'Chaos Mesh'],
+    id: '12',
+    title: 'Platform Engineering',
+    description: 'Budowa wewnętrznych platform deweloperskich (IDP). Backstage, samoobsługa dla devów i automatyzacja cyklu życia infrastruktury.',
+    tools: ['Backstage', 'Crossplane', 'Pulumi', 'IDP'],
     status: 'pending'
   }
 ];
@@ -139,11 +146,12 @@ const Roadmap: React.FC = () => {
                       {isInProgress && <Activity size={24} className="text-white animate-pulse stroke-[3px] drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]" />}
                     </div>
                     
-                    <p className="text-neutral-500 text-sm mb-6 font-light leading-relaxed">
+                    <p className="text-neutral-400 text-sm mb-6 font-light leading-relaxed">
                       {item.description}
                     </p>
 
                     <div className={`flex flex-wrap gap-2 ${isLeft ? 'md:justify-end' : ''}`}>
+
                       {item.tools.map(tool => (
                         <span key={tool} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 bg-black border border-neutral-800 text-neutral-500 rounded-sm hover:text-white hover:border-neutral-600 transition-colors cursor-default">
                           {tool}
