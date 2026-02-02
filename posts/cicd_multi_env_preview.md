@@ -4,7 +4,7 @@ date: "2026-02-02"
 excerpt: "Jak przeszedłem z trybu 'YOLO Deployment' na produkcję do profesjonalnego podziału na środowiska Dev i Prod przy użyciu GitHub Actions i Cloudflare."
 tags: ["CI/CD", "GitHub Actions", "Homelab", "DevOps"]
 readTime: "5 min"
-imageUrl: "/dev.png"
+imageUrl: "/cicd-intro.png"
 ---
 
 ## Wstęp: Problem "Produkcja to moja jedyna baza"
@@ -118,4 +118,4 @@ Mając środowisko `dev`, mogę bezpiecznie testować bardziej agresywne zmiany 
 
 To mały krok dla kodu, ale wielki skok dla higieny pracy.
 
-![Architektura po zmianach](/dev2.png)
+![Architektura po zmianach](/cicd-diagram.png)
