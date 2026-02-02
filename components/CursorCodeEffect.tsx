@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 const DEVOPS_COMMANDS = [
   "git push origin main",
@@ -36,27 +36,26 @@ const DEVOPS_COMMANDS = [
   "df -h",
   "ip addr show",
   "journalctl -u docker -f",
-  "sudo rm -rf / --no-preserve-root", // A little easter egg joke
-  ":(){ :|:& };:", // Fork bomb
+  "sudo rm -rf / --no-preserve-root",
+  ":(){ :|:& };:",
 ];
 
 const CursorCodeEffect: React.FC = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-  const [codeContent, setCodeContent] = useState('');
+
+  // Generate content once and memoize it
+  const codeContent = useMemo(() => {
+    let content = "";
+    // Generate even more content to be absolutely sure it covers ultra-wide screens
+    for (let i = 0; i < 2000; i++) {
+      const cmd = DEVOPS_COMMANDS[Math.floor(Math.random() * DEVOPS_COMMANDS.length)];
+      const padding = " ".repeat(Math.floor(Math.random() * 5) + 3);
+      content += `${cmd}${padding}`;
+    }
+    return content;
+  }, []);
 
   useEffect(() => {
-    // Generate content only once on mount
-    let content = "";
-    // Generate a massive block of text to ensure it covers screens of all sizes
-    // Using simple concatenation with padding to let it wrap naturally
-    for (let i = 0; i < 600; i++) {
-        const cmd = DEVOPS_COMMANDS[Math.floor(Math.random() * DEVOPS_COMMANDS.length)];
-        // Add random padding between commands
-        const padding = " ".repeat(Math.floor(Math.random() * 4) + 2);
-        content += `${cmd}${padding}`;
-    }
-    setCodeContent(content);
-
     const handleMouseMove = (e: MouseEvent) => {
       setMousePos({ x: e.clientX, y: e.clientY });
     };
@@ -67,18 +66,16 @@ const CursorCodeEffect: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 pointer-events-none overflow-hidden select-none"
-      style={{
-        zIndex: 0,
-      }}
+      className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0"
     >
       <div 
-        className="w-full h-full text-lg leading-relaxed font-mono text-thinkpad-red break-words opacity-20"
+        className="absolute inset-0 text-xl leading-relaxed font-mono text-thinkpad-red opacity-15"
         style={{
-            // Use flex wrap or just block with break-words
-            whiteSpace: 'normal', 
-            maskImage: `radial-gradient(circle 300px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 100%)`,
-            WebkitMaskImage: `radial-gradient(circle 300px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 100%)`,
+          whiteSpace: 'normal',
+          wordBreak: 'break-all',
+          overflowWrap: 'anywhere',
+          maskImage: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
+          WebkitMaskImage: `radial-gradient(circle 350px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
         }}
       >
         {codeContent}
