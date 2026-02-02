@@ -167,9 +167,7 @@ const Roadmap: React.FC = () => {
         </div>
 
         {/* Never Stop Learning Badge */}
-        <div className="relative flex flex-col items-center justify-center mt-24 pb-12">
-          {/* Vertical connecting line */}
-          <div className="w-px h-8 bg-gradient-to-b from-neutral-800 to-transparent mb-4"></div>
+        <div className="relative flex flex-col items-center justify-center mt-20 pb-12">
           
           <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity duration-300">
             <span className="font-mono text-xs text-neutral-600">~/</span>
