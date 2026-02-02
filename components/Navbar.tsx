@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import GlitchLogo from './GlitchLogo';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
   const location = useLocation();
 
   const navItems = [
@@ -25,15 +27,15 @@ const Navbar: React.FC = () => {
             <a 
               href="/" 
               className="flex-shrink-0 flex items-center gap-3 group cursor-pointer"
+              onMouseEnter={() => setIsLogoHovered(true)}
+              onMouseLeave={() => setIsLogoHovered(false)}
             >
               <div className="bg-neutral-900 border border-neutral-700 p-2 rounded-sm transition-all duration-300 group-hover:border-thinkpad-red shadow-sm flex items-center justify-center min-w-[40px] h-[40px]">
                 <span className="font-mono text-lg font-bold text-thinkpad-red leading-none">
                   &gt;<span className="text-white animate-blink">_</span>
                 </span>
               </div>
-              <span className="text-xl font-bold font-mono tracking-tighter text-white group-hover:text-thinkpad-red transition-colors">
-                DevOps<span className="text-thinkpad-red group-hover:text-white transition-colors">Zero</span>ToHero
-              </span>
+              <GlitchLogo isHovered={isLogoHovered} />
             </a>
           </div>
           {/* -------------------------------------------------- */}
