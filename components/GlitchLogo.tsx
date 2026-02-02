@@ -62,7 +62,7 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
        return <span className="text-thinkpad-red">{displayText}</span>;
     }
 
-    const transitionClass = "transition-colors duration-[4000ms] ease-out";
+    const transitionClass = "transition-colors duration-[10000ms] ease-out";
 
     return (
       <>
