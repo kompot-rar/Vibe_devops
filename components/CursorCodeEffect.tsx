@@ -188,14 +188,19 @@ const CursorCodeEffect: React.FC = () => {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   const codeContent = useMemo(() => {
-    // Repeat the code block enough times to ensure it covers 4k screens fully
-    // when wrapped
+    // Flatten the code into a continuous stream to fill the screen like a wall of text
+    // Replace newlines with spaces to create a continuous flow
+    const flatCode = REAL_DEVOPS_CODE.replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+    
     let content = "";
-    for (let i = 0; i < 20; i++) {
-      content += REAL_DEVOPS_CODE + "\n";
-      if (i % 5 === 0) {
-        content += "\n// 🐇 EASTER EGG: FOLLOW THE WHITE RABBIT -> 0x539\n";
-        content += "// SYSTEM_OVERRIDE_INITIATED_BY_KOMPOT\n";
+    // Repeat enough times to fill a large high-res screen with a dense block
+    for (let i = 0; i < 150; i++) {
+      content += flatCode;
+      // Add random-looking separators and easter eggs
+      content += " || "; 
+      if (i % 3 === 0) {
+        content += " [🐇 FOLLOW_THE_WHITE_RABBIT_0x539] ";
+        content += " <<SYSTEM_OVERRIDE_BY_KOMPOT>> ";
       }
     }
     return content;
@@ -212,14 +217,14 @@ const CursorCodeEffect: React.FC = () => {
 
   return (
     <div 
-      className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0"
+      className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0 bg-black"
     >
       <div 
-        className="absolute inset-0 text-xs leading-tight font-mono text-thinkpad-red opacity-10 break-all columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-8 text-right"
+        className="absolute inset-0 text-xs leading-relaxed font-mono text-thinkpad-red opacity-20 break-all"
         style={{
-          whiteSpace: 'pre-wrap', // Allows wrapping of long lines
-          maskImage: `radial-gradient(circle 500px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
-          WebkitMaskImage: `radial-gradient(circle 500px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
+          whiteSpace: 'normal', // Allow normal wrapping of the continuous text
+          maskImage: `radial-gradient(circle 400px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
+          WebkitMaskImage: `radial-gradient(circle 400px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
           fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
         }}
       >
