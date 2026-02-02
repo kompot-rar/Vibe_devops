@@ -39,7 +39,7 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
     } else {
       // Reset
       setIsGlitching(false);
-      setHasGlitched(false);
+      // Don't reset hasGlitched here - it persists until refresh
       if (intervalRef.current) clearInterval(intervalRef.current);
       setDisplayText(originalText);
     }
