@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
 import BlogPostView from './components/BlogPostView';
 import Roadmap from './components/Roadmap';
+import CursorCodeEffect from './components/CursorCodeEffect';
 import { Github, Linkedin, Server } from 'lucide-react';
 import { getPosts } from './services/postService';
 
@@ -49,10 +50,11 @@ const App: React.FC = () => {
 
   return (
     <Router>
-      <div className="min-h-screen bg-thinkpad-base flex flex-col font-sans selection:bg-thinkpad-red selection:text-white">
+      <div className="min-h-screen bg-thinkpad-base flex flex-col font-sans selection:bg-thinkpad-red selection:text-white relative">
+        <CursorCodeEffect />
         <Navbar />
         
-        <main className="flex-grow">
+        <main className="flex-grow relative z-10">
           <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
             <Routes>
               <Route path="/" element={
@@ -76,7 +78,7 @@ const App: React.FC = () => {
           </div>
         </main>
 
-        <footer className="bg-thinkpad-surface border-t border-neutral-800">
+        <footer className="bg-thinkpad-surface border-t border-neutral-800 relative z-10">
           <div className="max-w-7xl mx-auto py-8 px-4 text-center text-neutral-600 text-sm font-mono">
             <p>&copy; {new Date().getFullYear()} DevOps Starter Hub. <span className="text-thinkpad-red">Code is Law.</span></p>
           </div>
