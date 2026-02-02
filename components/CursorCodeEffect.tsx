@@ -35,7 +35,9 @@ const DEVOPS_COMMANDS = [
   "free -h",
   "df -h",
   "ip addr show",
-  "journalctl -u docker -f"
+  "journalctl -u docker -f",
+  "sudo rm -rf / --no-preserve-root", // A little easter egg joke
+  ":(){ :|:& };:", // Fork bomb
 ];
 
 const CursorCodeEffect: React.FC = () => {
@@ -45,17 +47,17 @@ const CursorCodeEffect: React.FC = () => {
   useEffect(() => {
     // Generate content only once on mount
     let content = "";
-    // We need enough text to cover a large screen randomly
-    for (let i = 0; i < 400; i++) {
+    // Generate a massive block of text to ensure it covers screens of all sizes
+    // Using simple concatenation with padding to let it wrap naturally
+    for (let i = 0; i < 600; i++) {
         const cmd = DEVOPS_COMMANDS[Math.floor(Math.random() * DEVOPS_COMMANDS.length)];
-        const indent = " ".repeat(Math.floor(Math.random() * 8));
-        content += `${indent}${cmd}    ${DEVOPS_COMMANDS[Math.floor(Math.random() * DEVOPS_COMMANDS.length)]}\n`;
+        // Add random padding between commands
+        const padding = " ".repeat(Math.floor(Math.random() * 4) + 2);
+        content += `${cmd}${padding}`;
     }
     setCodeContent(content);
 
     const handleMouseMove = (e: MouseEvent) => {
-      // Use requestAnimationFrame for smoother performance if needed, 
-      // but direct state update is usually fine for simple cursor tracking in React unless it lags.
       setMousePos({ x: e.clientX, y: e.clientY });
     };
 
@@ -67,14 +69,16 @@ const CursorCodeEffect: React.FC = () => {
     <div 
       className="fixed inset-0 pointer-events-none overflow-hidden select-none"
       style={{
-        zIndex: 0, // Behind content if possible, or low level
+        zIndex: 0,
       }}
     >
       <div 
-        className="w-full h-full text-[12px] leading-4 font-mono text-thinkpad-red whitespace-pre break-all opacity-20"
+        className="w-full h-full text-lg leading-relaxed font-mono text-thinkpad-red break-words opacity-20"
         style={{
-          maskImage: `radial-gradient(circle 250px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 100%)`,
-          WebkitMaskImage: `radial-gradient(circle 250px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 100%)`,
+            // Use flex wrap or just block with break-words
+            whiteSpace: 'normal', 
+            maskImage: `radial-gradient(circle 300px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 100%)`,
+            WebkitMaskImage: `radial-gradient(circle 300px at ${mousePos.x}px ${mousePos.y}px, black 0%, transparent 100%)`,
         }}
       >
         {codeContent}
