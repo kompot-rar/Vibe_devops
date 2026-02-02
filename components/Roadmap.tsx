@@ -19,23 +19,30 @@ const ROADMAP_DATA: RoadmapItem[] = [
   },
   {
     id: '3',
-    title: 'Teoria Sieci',
+    title: 'Sieci',
     description: 'Fundamenty komunikacji. Model OSI (L2-L7), protokoły TCP/UDP, DNS oraz diagnostyka pakietów (tcpdump/Wireshark).',
     tools: ['OSI', 'TCP/IP', 'DNS', 'Wireshark'],
     status: 'completed'
-  },
-  {
-    id: '4',
-    title: 'Automatyzacja & Python',
-    description: 'Tworzenie narzędzi w Pythonie (Boto3) i Bashu do automatyzacji zadań administracyjnych oraz monitoringu.',
-    tools: ['Python', 'Boto3', 'Scripting', 'Automation'],
-    status: 'in-progress'
   },
   {
     id: '5',
     title: 'Infrastructure as Code',
     description: 'Zarządzanie infrastrukturą jako kod. Terraform do provisioningu VM-ek oraz konfiguracja przez Ansible.',
     tools: ['Terraform', 'Ansible', 'IaC', 'Cloud'],
+    status: 'completed'
+  },
+  {
+    id: '7',
+    title: 'CI/CD Pipelines',
+    description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja runnerów.',
+    tools: ['GitLab CI', 'GitHub Actions', 'Pipelines', 'Tests'],
+    status: 'completed'
+  },
+  {
+    id: '4',
+    title: 'Automatyzacja & Python',
+    description: 'Tworzenie narzędzi w Pythonie i Bashu do automatyzacji zadań administracyjnych oraz monitoringu.',
+    tools: ['Python', 'Boto3', 'Scripting', 'Automation'],
     status: 'in-progress'
   },
   {
@@ -43,14 +50,7 @@ const ROADMAP_DATA: RoadmapItem[] = [
     title: 'Konteneryzacja',
     description: 'Głębokie wejście w Docker i Docker Compose. Budowa wydajnych obrazów i środowisk deweloperskich.',
     tools: ['Docker', 'Compose', 'DevEnv', 'Distroless'],
-    status: 'pending'
-  },
-  {
-    id: '7',
-    title: 'CI/CD Pipelines',
-    description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja runnerów.',
-    tools: ['GitLab CI', 'GitHub Actions', 'Pipelines', 'Tests'],
-    status: 'pending'
+    status: 'in-progress'
   },
   {
     id: '8',
@@ -61,9 +61,23 @@ const ROADMAP_DATA: RoadmapItem[] = [
   },
   {
     id: '9',
-    title: 'Advanced Ops',
+    title: 'Certyfikacja CKA',
     description: 'Poziom ekspercki. GitOps (ArgoCD), zaawansowany monitoring (ELK) i certyfikacja CKA.',
     tools: ['ArgoCD', 'ELK', 'Prometheus', 'CKA'],
+    status: 'pending'
+  },
+  {
+    id: '10',
+    title: 'DevSecOps',
+    description: 'Bezpieczeństwo jako kod. Skanowanie podatności, zarządzanie sekretami (Vault) oraz compliance (OPA/Kyverno).',
+    tools: ['Vault', 'Trivy', 'OPA', 'Snyk'],
+    status: 'pending'
+  },
+  {
+    id: '11',
+    title: 'SRE & Observability',
+    description: 'Utrzymanie niezawodności. SLI/SLO, Error Budgets, Distributed Tracing (Jaeger) oraz Chaos Engineering.',
+    tools: ['Grafana', 'Jaeger', 'OpenTelemetry', 'Chaos Mesh'],
     status: 'pending'
   }
 ];
@@ -89,6 +103,8 @@ const Roadmap: React.FC = () => {
             const isLeft = index % 2 === 0;
             const isCompleted = item.status === 'completed';
             const isInProgress = item.status === 'in-progress';
+            const isLast = index === ROADMAP_DATA.length - 1;
+            const isSecondToLast = index === ROADMAP_DATA.length - 2;
             
             return (
               <div key={item.id} className={`relative flex flex-col md:flex-row items-center justify-between group ${isLeft ? 'md:flex-row-reverse' : ''}`}>
@@ -97,13 +113,17 @@ const Roadmap: React.FC = () => {
                 <div className={`
                   absolute left-4 md:left-1/2 w-3 h-3 -translate-x-[5px] md:-translate-x-[5px] rounded-full z-10 transition-all duration-500
                   ${isCompleted ? 'bg-thinkpad-red shadow-[0_0_10px_rgba(224,6,19,0.5)]' : isInProgress ? 'bg-white animate-pulse' : 'bg-neutral-800'}
+                  ${isLast || isSecondToLast ? 'bg-neutral-800/50' : ''}
                 `}></div>
 
                 {/* Spacer */}
                 <div className="w-full md:w-1/2"></div>
 
                 {/* Content Card */}
-                <div className={`w-full md:w-[45%] pl-12 md:pl-0 ${isLeft ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}>
+                <div className={`w-full md:w-[45%] pl-12 md:pl-0 ${isLeft ? 'md:pr-12 md:text-right' : 'md:pl-12'}
+                  ${isLast ? 'opacity-30 blur-[2px] grayscale hover:opacity-100 hover:blur-0 hover:grayscale-0 transition-all duration-700' : ''}
+                  ${isSecondToLast ? 'opacity-60 blur-[1px] hover:opacity-100 hover:blur-0 transition-all duration-500' : ''}
+                `}>
                   <div className={`
                     relative p-6 bg-neutral-900/40 border-y border-neutral-900 transition-all duration-300 rounded-sm group-hover:bg-neutral-900/80
                     ${isCompleted ? 'border-l-2 border-l-thinkpad-red md:border-l-thinkpad-red md:border-r-0' : 'border-l-2 border-l-neutral-800'}
@@ -136,6 +156,16 @@ const Roadmap: React.FC = () => {
               </div>
             );
           })}
+        </div>
+
+        {/* Never Stop Learning Badge */}
+        <div className="relative flex justify-center mt-24 pb-12">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-24 bg-thinkpad-red/5 blur-[40px] rounded-full pointer-events-none"></div>
+          <div className="relative z-10 px-6 py-2 bg-black border border-neutral-800 rounded-full">
+            <span className="font-mono text-xs tracking-[0.3em] text-neutral-600 uppercase bg-clip-text text-transparent bg-gradient-to-r from-neutral-600 via-neutral-400 to-neutral-600 animate-pulse">
+              Never Stop Learning
+            </span>
+          </div>
         </div>
       </div>
     </div>

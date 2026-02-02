@@ -1,9 +1,9 @@
 ---
-active: false
-iteration: 1
+active: true
+iteration: 4
 max_iterations: 0
-completion_promise: null
-started_at: "2026-02-02T08:47:35Z"
+completion_promise: "DONE"
+started_at: "2026-02-02T10:15:00Z"
 ---
 
-niech fade trwa dużo dłużej
+ale potem po wykonaniu glitcha zostaje Zero: Białe  Hero: Czerwone aż do odświerzenia strony bo teraz wraca do stanu początkowego a ma zostawać na stanie końcowym

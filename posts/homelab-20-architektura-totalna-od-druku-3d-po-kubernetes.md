@@ -25,12 +25,12 @@ Każdy "racjonalny" człowiek wyrzuciłby go z powrotem do kosza.
 Uczyniłem z niego Generator Entropii. Zamiast symulować awarie w chmurze (jak Netflixowy Chaos Monkey), zostwiłem ten dysk w klastrze. Teraz Kubernetes musi radzić sobie z fizyczną degradacją sprzętu w czasie rzeczywistym. To najlepszy poligon testowy dla mechanizmów Self-Healing, jaki mogłem sobie wymarzyć.
 
 ### Akt 1: The Monolith (Szafa 10" 6U) 
-Mój dotychczasowy homelab – tylko jeden terminal i router generował już wystarczający nieporządek. Skalowanie tego bałaganu razy trzy nie wchodziło w grę, jeśli chciałem zachować spokój w domu. Rozwiązaniem stała się czarna, 10-calowa szafa Rack 6U. Sięgnąłem teź po **Open Source Hardware**.
+Mój dotychczasowy homelab – tylko jeden terminal i router generował już wystarczający nieporządek. Skalowanie tego bałaganu razy trzy nie wchodziło w grę, jeśli chciałem zachować spokój w domu. Rozwiązaniem stała się czarna, 10-calowa szafa Rack 6U. Sięgnąłem też po **Open Source Hardware**.
 Znalazłem idealne modele 3D do moich terminali, przetopiłem trochę plastiku i uzyskałem dopasowane panele frontowe ukrywając chaos i zmieniając stertę starej elektroniki w monolit.
 
 ### Akt 2: Żelazna Trójca 
 
-**"Jeden serwer to hobby a trzy to klaster."**
+**"Jeden serwer to hobby, trzy to klaster."**
 
 Chciałbym napisać, że z premedytacją postawiłem na infrastrukturę heterogeniczną, by sprawdzić, jak
 scheduler Kubernetesa poradzi sobie z żonglowaniem workloadem między maszynami o drastycznie różnej wydajności. Ale bądźmy szczerzy – to czysty przypadek (i okazje na Allegro).

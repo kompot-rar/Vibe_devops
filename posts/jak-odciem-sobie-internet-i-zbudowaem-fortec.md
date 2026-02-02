@@ -64,7 +64,7 @@ Zamiast kupować drogi router albo stawiać ciężkie VM z OPNsense, postanowił
 ## 3. Implementacja: Linux to najlepszy router
 Dlaczego LXC? Bo startuje w 2 sekundy i zużywa tyle zasobów co nic.
 Co pod maską?
-  - **dnsmasq:** DHCP i DNS dla każdego VLANu osobno.
+  - **dnsmasq:** DHCP i DNS 
   - **iptables:** Stara szkoła. Polityka `DROP FORWARD`. Wszystko co nie jest dozwolone, jest zabronione.
   - **Interfejsy:** Proxmox Bridge jako `VLAN-aware`, w środku kontenera `eth1` (vlan 10), `eth2` (vlan 20)...
 
