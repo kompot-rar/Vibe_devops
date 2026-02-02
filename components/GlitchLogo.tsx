@@ -8,6 +8,7 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
   const originalText = "DevOpsZeroToHero";
   const [displayText, setDisplayText] = useState(originalText);
   const [isGlitching, setIsGlitching] = useState(false);
+  const [hasGlitched, setHasGlitched] = useState(false);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   
   const chars = "!@#$%^&*()_+-=[]{}|;':\",./<>?~`";
@@ -16,6 +17,7 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
     if (isHovered) {
       // Start glitch
       setIsGlitching(true);
+      setHasGlitched(false);
       let iteration = 0;
       const maxIterations = 8; 
 
@@ -31,11 +33,13 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
           if (intervalRef.current) clearInterval(intervalRef.current);
           setDisplayText(originalText);
           setIsGlitching(false);
+          setHasGlitched(true);
         }
       }, 50);
     } else {
       // Reset
       setIsGlitching(false);
+      setHasGlitched(false);
       if (intervalRef.current) clearInterval(intervalRef.current);
       setDisplayText(originalText);
     }
@@ -53,9 +57,9 @@ const GlitchLogo: React.FC<GlitchLogoProps> = ({ isHovered }) => {
     return (
       <>
         <span className="text-white">DevOps</span>
-        <span className="text-white">Zero</span>
+        <span className={hasGlitched ? "text-white" : "text-thinkpad-red"}>Zero</span>
         <span className="text-white">To</span>
-        <span className="text-thinkpad-red">Hero</span>
+        <span className={hasGlitched ? "text-thinkpad-red" : "text-white"}>Hero</span>
       </>
     );
   };
