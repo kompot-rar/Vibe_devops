@@ -220,7 +220,7 @@ const CursorCodeEffect: React.FC = () => {
       className="fixed inset-0 pointer-events-none overflow-hidden select-none z-0 bg-black"
     >
       <div 
-        className="absolute inset-0 text-xs leading-relaxed font-mono text-thinkpad-red opacity-20 break-all"
+        className="absolute inset-0 text-xs leading-relaxed font-mono text-thinkpad-red opacity-10 break-all"
         style={{
           whiteSpace: 'normal', // Allow normal wrapping of the continuous text
           maskImage: `radial-gradient(circle 400px at ${mousePos.x}px ${mousePos.y}px, black 20%, transparent 100%)`,
