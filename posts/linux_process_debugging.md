@@ -160,7 +160,7 @@ Ale żeby wiedzieć, o co pytać kernel przez eBPF, najpierw trzeba zrozumieć s
 
 ### **Kod i Narzędzia**
 
-Wszystkie skrypty, których używałem do testowania `strace` (w tym `cpu_hog.py` i przykłady z BrokenPipe), znajdziesz w moim publicznym repozytorium na GitHubie: [kompot-rar/strace-debugging-tools](https://github.com/kompot-rar/strace-debugging-tools).
+Wszystkie skrypty, których używałem do testowania `strace` (w tym `cpu_hog.py`, `sys_call_demo.py` i `ram_hog.py`), znajdziesz w moim publicznym repozytorium na GitHubie.
 
 ![Podgląd repozytorium](/strace-repo-preview.png)
 
