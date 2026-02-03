@@ -13,8 +13,15 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '2',
     title: 'Infrastruktura Homelab',
-    description: 'W pełni operacyjny klaster Proxmox. Hardware server-grade, wirtualizacja (LXC/KVM) i zarządzanie storage-em (ZFS).',
+    description: 'W pełni operacyjny klaster Proxmox. Hardware server-grade, wirtualizacja (LXC/KVM) i zarządzanie storage-em.',
     tools: ['Proxmox', 'ZFS', 'Hardware', 'LXC'],
+    status: 'completed'
+  },
+  {
+    id: '13',
+    title: 'Linux Internals & Debugging',
+    description: 'Diagnostyka głęboka. Analiza syscalli, rozwiązywanie problemów z pamięcią (OOM), I/O oraz debugging sieciowy.',
+    tools: ['strace', 'tcpdump', 'journalctl', 'sysctl'],
     status: 'completed'
   },
   {
@@ -32,6 +39,13 @@ const ROADMAP_DATA: RoadmapItem[] = [
     status: 'completed'
   },
   {
+    id: '15',
+    title: 'Hybrid Cloud & AWS',
+    description: 'Wyjście poza Homelab. Budowa hybrydowej infrastruktury, VPN do chmury, backupy off-site na S3 oraz zarządzanie tożsamością (IAM).',
+    tools: ['AWS', 'S3', 'IAM', 'WireGuard'],
+    status: 'in-progress'
+  },
+  {
     id: '7',
     title: 'CI/CD Pipelines',
     description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja własnych runnerów.',
@@ -41,23 +55,30 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '4',
     title: 'Automatyzacja & Python',
-    description: 'Programowanie infrastruktury. Skrypty w Pythonie (Boto3), automatyzacja zadań (Bash) i interakcja z API.',
+    description: 'Programowanie infrastruktury. Skrypty w Pythonie, automatyzacja zadań (Bash) i interakcja z API.',
     tools: ['Python', 'Boto3', 'API', 'Automation'],
     status: 'in-progress'
   },
   {
     id: '6',
     title: 'Konteneryzacja',
-    description: 'Standard OCI. Budowa zoptymalizowanych obrazów (Multi-stage), Docker Compose i bezpieczeństwo kontenerów.',
-    tools: ['Docker', 'Compose', 'DevEnv', 'Distroless'],
+    description: 'Inżynieria obrazów. Tworzenie bezpiecznych i lekkich kontenerów (Multi-stage), zarządzanie rejestrami i budowanie wewnątrz klastra.',
+    tools: ['Docker', 'Kaniko', 'BuildKit', 'Distroless'],
     status: 'in-progress'
   },
   {
     id: '8',
     title: 'Kubernetes Core',
-    description: 'Orkiestracja kontenerów. Instalacja K3s, zarządzanie aplikacjami przez Helm i konfiguracja sieci klastra.',
+    description: 'Orkiestracja kontenerów. Instalacja K3s, zarządzanie i konfiguracja sieci klastra.',
     tools: ['K3s', 'Helm', 'Ingress', 'K8s'],
     status: 'pending'
+  },
+  {
+    id: '14',
+    title: 'DatabaseOps & Storage',
+    description: 'Utrzymanie aplikacji stanowych. Klastry HA baz danych (Postgres), strategie Backup & Restore (PITR) i replikacja.',
+    tools: ['PostgreSQL', 'Redis', 'MinIO', 'pgBackRest'],
+    status: 'in-progress'
   },
   {
     id: '11',
