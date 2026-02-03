@@ -1,7 +1,7 @@
 ---
 id: '6'
 title: 'HOMELAB 2.0: Architektura Totalna. Od Druku 3D po Kubernetes.'
-date: '2026-02-01'
+date: '2026-01-27'
 tags: ['Bare Metal', '3D Printing', 'Chaos Engineering', 'Homelab', 'Hardware']
 readTime: '15 min'
 imageUrl: '/homelab_cluster_rack.jpg'

@@ -1,7 +1,7 @@
 ---
 id: '7'
 title: 'Jak odciąłem sobie internet i zbudowałem Fortecę'
-date: '2026-02-01'
+date: '2026-01-31'
 tags: ['Networking', 'Security', 'iptables']
 readTime: '15 min'
 imageUrl: '/network.png'
