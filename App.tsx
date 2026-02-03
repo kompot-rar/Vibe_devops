@@ -5,13 +5,14 @@ import BlogList from './components/BlogList';
 import BlogPostView from './components/BlogPostView';
 import Roadmap from './components/Roadmap';
 import CursorCodeEffect from './components/CursorCodeEffect';
+import HomelabRackLogo from './components/HomelabRackLogo';
 import { Github, Linkedin, Server } from 'lucide-react';
 import { getPosts } from './services/postService';
 
 const About: React.FC = () => (
   <div className="max-w-2xl mx-auto bg-thinkpad-surface p-8 rounded-none border border-neutral-800 text-center animate-fade-in shadow-2xl shadow-black/50">
-    <div className="w-24 h-24 bg-thinkpad-red rounded-none mx-auto mb-6 flex items-center justify-center shadow-lg shadow-thinkpad-red/20 transform rotate-3 hover:rotate-0 transition-all duration-300">
-        <Server className="h-12 w-12 text-white" />
+    <div className="w-32 h-48 mx-auto mb-6 flex items-center justify-center transform rotate-3 hover:rotate-0 transition-all duration-300 hover:scale-105">
+        <HomelabRackLogo className="h-full w-full drop-shadow-[0_0_15px_rgba(224,0,0,0.3)]" />
     </div>
     <h2 className="text-2xl font-bold text-white mb-4 font-mono tracking-tighter uppercase">O Projekcie</h2>
     <p className="text-thinkpad-muted mb-6 leading-relaxed font-mono text-sm">

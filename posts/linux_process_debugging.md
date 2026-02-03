@@ -142,7 +142,7 @@ Patrząc na surowe wyniki z `strace` (te fragmenty powyżej), można poczuć si�
 5.  **Strace w kontenerach (Level Pro)**:
     Warto pamiętać, że w świecie Dockera i Kubernetes `strace` nie działa "z pudełka". Ze względów bezpieczeństwa kontenery mają ograniczony dostęp do syscalli innych procesów. Żeby to zadziałało, kontener musi zostać uruchomiony z flagą `--cap-add=SYS_PTRACE`. To wiedza, która ratuje życie przy debugowaniu **CrashLoopBackOff** – kiedy kontener pada zaraz po starcie i logi aplikacji milczą, `strace` podpięty do procesu startowego pokaże dokładnie, na którym pliku lub uprawnieniu system wywalił proces.
 
-### **Twarda Lekcja: `multiprocessing` i `BrokenPipeError`**
+### **Twarda Lekcja: multiprocessing i BrokenPipeError**
 
 Najwięcej nauczyłem się, próbując zrozumieć, co dzieje się w tle w skrypcie `cpu_hog.py`, który używa wielu procesów Pythona (`multiprocessing.Pool`). `strace` pokazał, jak procesy rozmawiają ze sobą, używając skomplikowanych mechanizmów, takich jak `futex` (do synchronizacji) i plików w `/dev/shm` (do komunikacji).
 
