@@ -14,7 +14,7 @@ Moja fascynacja Linuxem i DevOpsem nie zaczęła się w serwerowni. Zaczęła si
 
 ### Wszystko zaczęło się od "Arr" 🏴‍☠️
 
-Jakiś czas temu chciałem stworzyć domowe centrum rozrywki. Miałem stary telewizor i dość ręcznego kopiowania plików na pendrive'y. Odkryłem świat serwisów **Arr** (Radarr, Sonarr itp.) i Home Assistanta.
+Jakiś czas temu chciałem stworzyć domowe centrum rozrywki. Miałem stary telewizor i dość ręcznego kopiowania plików na pendrive'y. Gdzieś pod kanapą leżała już zapomniana centralka od Home Assistanta na linuxie i tak odkryłem świat serwisów **Arr**.
 
 Chciałem tylko, żeby "samo się robiło".
 
