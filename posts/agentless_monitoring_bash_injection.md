@@ -1,6 +1,6 @@
 ---
 id: '3'
-title: 'Wyrzuciłem Agenta. Monitoring "Zero-Dependency" wstrzykiwany przez SSH'
+title: 'Monitoring "Zero-Dependency" wstrzykiwany przez SSH'
 date: '2026-02-03'
 tags: ['Bash', 'DevOps', 'Monitoring', 'Linux', 'Automation', 'Proxmox']
 readTime: '8 min'
