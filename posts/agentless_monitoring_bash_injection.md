@@ -115,24 +115,84 @@ done
 
 ```text
 --- SCAN 10.0.10.11 ---
->> OVERSEER: proxmox << | 10VHS2BU02 | up 4 hours, 57 minutes
+>> OVERSEER: proxmox << | 10VHS2BU02 | up 2 days, 13 hours, 32 minutes
 ─────────────────────────────────────────────────────────────────────
- CPU [■·········]  16%  |  RAM [■■■■■·····]  56%  |  TMP [■■■■■·····]  50°C
+ CPU [■■········]  20%  |  RAM [■■■■■·····]  59%  |  TMP [■■■■■·····]  50°C
 ─────────────────────────────────────────────────────────────────────
- GUESTS:  CT: 12 RUN / 1 STOP   |   VM: 2 RUN / 0 STOP
+ GUESTS:  CT: 14 RUN / 1 STOP   |   VM: 2 RUN / 0 STOP
 ─────────────────────────────────────────────────────────────────────
  [ZFS] NONE
- /            [■■■■■■■■····]  68% (1.1T/1.7T)
+ /            [■■■■■■■■■···]  77% (1.2T/1.7T)
  /boot/efi    [■···········]  10% (96M/1022M)
+ /media/ssd   [■···········]  10% (171G/1.9T)
+ /etc/pve     [············]   1% (48K/128M)
 ─────────────────────────────────────────────────────────────────────
- SYS: 1 FAIL | LOGS(1h): 3 ERR | USERS: 1 | NTP: YES
+ SYS: 1 FAIL | LOGS(1h): 4 ERR | USERS: 1 | NTP: YES
  FAILED UNITS:
   -> pve-container@108.service
- PORTS: 111 22 25 8006 2222 ...
+ PORTS: 111 1900 2049 22 25 323 35988 37437 37625 38907 39527 41925 42307 42481 47686 5405 57009 603 60457 8200 85
 ─────────────────────────────────────────────────────────────────────
  CPU TOP 3:
-   5896  13.3%  /usr/bin/kvm
-   1426   3.2%  pvestatd
+  2252448   101%  /usr/bin/perl
+   5504  12.9%  /usr/bin/kvm
+   4077   4.2%  /usr/bin/qbittorrent-nox
+ RAM TOP 3:
+   1990  20.7%  /usr/bin/kvm
+   5504  13.3%  /usr/bin/kvm
+   4077   4.8%  /usr/bin/qbittorrent-nox
+
+
+--- SCAN 10.0.10.12 ---
+>> OVERSEER: proxmox-worker << | 10MQS2LQ00 | up 2 days, 13 hours, 32 minutes
+─────────────────────────────────────────────────────────────────────
+ CPU [··········]   2%  |  RAM [■·········]  10%  |  TMP [■■■■······]  44°C
+─────────────────────────────────────────────────────────────────────
+ GUESTS:  CT: 0 RUN / 0 STOP   |   VM: 1 RUN / 1 STOP
+─────────────────────────────────────────────────────────────────────
+ [ZFS] NONE
+ /            [■···········]  14% (5.1G/39G)
+ /boot/efi    [············]   1% (8.8M/1022M)
+ /etc/pve     [············]   1% (48K/128M)
+─────────────────────────────────────────────────────────────────────
+ SYS: 2 FAIL | LOGS(1h): 1 ERR | USERS: 1 | NTP: YES
+ FAILED UNITS:
+  -> pve-guests.service
+  -> pvescheduler.service
+ PORTS: 111 22 25 323 5405 85
+─────────────────────────────────────────────────────────────────────
+ CPU TOP 3:
+  198656   0.9%  /usr/sbin/corosync
+   9918   0.3%  pvestatd
+  362738   0.3%  pve-firewall
+ RAM TOP 3:
+  198656   1.1%  /usr/sbin/corosync
+   9937   1.0%  pveproxy
+  214014   0.9%  pveproxy
+
+
+--- SCAN 10.0.10.13 ---
+>> OVERSEER: proxmox-worker-2 << | 10E9S01Y00 | up 2 days, 13 hours, 32 minutes
+─────────────────────────────────────────────────────────────────────
+ CPU [··········]   2%  |  RAM [■·········]  10%  |  TMP [■■········]  27°C
+─────────────────────────────────────────────────────────────────────
+ GUESTS:  CT: 0 RUN / 0 STOP   |   VM: 1 RUN / 0 STOP
+─────────────────────────────────────────────────────────────────────
+ [ZFS] NONE
+ /            [············]   6% (4.0G/73G)
+ /boot/efi    [············]   1% (8.8M/1022M)
+ /etc/pve     [············]   1% (48K/128M)
+─────────────────────────────────────────────────────────────────────
+ SYS: 0 FAIL | LOGS(1h): 11 ERR | USERS: 1 | NTP: YES
+ PORTS: 111 22 25 323 5405 85
+─────────────────────────────────────────────────────────────────────
+ CPU TOP 3:
+  377332   0.8%  /usr/sbin/corosync
+   1049   0.3%  pvestatd
+   1050   0.2%  pve-firewall
+ RAM TOP 3:
+  377332   1.1%  /usr/sbin/corosync
+   1095   1.0%  pveproxy
+  403709   0.9%  pveproxy
 ```
 
 ## 🎮 Bonus: Overseer UI
