@@ -1,6 +1,6 @@
 ---
 id: '3'
-title: 'Monitoring "Zero-Dependency" wstrzykiwany przez SSH'
+title: 'Autorski monitoring "Zero-Dependency" wstrzykiwany przez SSH'
 date: '2026-02-03'
 tags: ['Bash', 'DevOps', 'Monitoring', 'Linux', 'Automation', 'Proxmox']
 readTime: '8 min'
@@ -14,15 +14,15 @@ Zanim wdrożymy "Święty Graal" każdego DevOpsa, czyli stack **Prometheus + Gr
 Nie chce czytać gotowych wykresów, ale wykładać się na prostym pytaniu: *"Skąd właściwie Linux wie, jakie jest zużycie CPU?"*.
 
 Traktuj ten projekt jako **trening interwałowy z Basha**.
-Naszym celem nie jest budowanie konkurencji dla Datadoga. Celem jest "Muscle Memory" w obszarach basha:
+Moim celem nie jest budowanie konkurencji dla Datadoga. Celem jest "Muscle Memory" w obszarach basha:
 1.  **Nested Commands:** Jak łączyć potoki, warunki i strumienie w sposób, który przetrwa na produkcji.
 2.  **SSH Streams:** Jak wstrzyknąć kod na zdalną maszynę bez kopiowania plików (`scp`).
 3.  **Linux Internals:** Wyciąganie surowych danych z `/proc/loadavg` czy `/sys/class/thermal` przy pomocy `awk`.
 
 
-##  Metoda: Bash Injection ("Zero-Dependency")
+##  Metoda: Bash Injection "Zero-Dependency"
 
-Zamiast instalować ciężkie agenty i otwierać porty, użyjemy starej szkoły Unixa. Nie musisz kopiować skryptu na serwer, nadawać mu uprawnień i go uruchamiać. Możesz **wstrzyknąć** kod prosto do procesu powłoki na zdalnej maszynie.
+Zamiast instalować pakiety i otwierać porty, użyłem starej szkoły Unixa. Nie musisz kopiować skryptu na serwer, nadawać mu uprawnień i go uruchamiać. Możesz **wstrzyknąć** kod prosto do procesu powłoki na zdalnej maszynie.
 
 ```bash
 ssh user@remote-server 'bash -s' < my_local_script.sh
@@ -100,7 +100,7 @@ Okazało się, że mój własny skrypt był przyczyną!
 
 ##  Skalowanie - Dynamic Discovery
 
-Początkowo używałem pliku `inventory.txt`, ale po co hardcodować adresy IP, skoro klaster sam wie, z kogo się składa?
+Początkowo do skanowania wszystkich maszyn z klastra używałem pliku `inventory.txt`, ale po co hardcodować adresy IP, skoro klaster sam wie, z kogo się składa?
 Oto one-liner, który łączy się z Masterem, pobiera adresy IP wszystkich nodów z konfiguracji Corosync (`/etc/pve/corosync.conf`) i natychmiast je skanuje.
 
 ```bash
@@ -135,7 +135,7 @@ done
    1426   3.2%  pvestatd
 ```
 
-## 🎮 Bonus: Overseer UI (Demoscene Vibe)
+## 🎮 Bonus: Overseer UI
 
 Kiedy już opanowałem surowe dane, nie mogłem się powstrzymać przed odrobiną zabawy. Skoro mamy agentless monitoring, to dlaczego by nie ubrać go w coś, co wygląda jak okno z demo sceny?
 
