@@ -29,7 +29,7 @@ Cel był prosty:
           |
           v
   +------------------+
-  |  Forgejo/GitHub  |
+  |     GitHub       |
   +--------+---------+
            | (Webhook)
            v
