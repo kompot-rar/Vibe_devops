@@ -41,7 +41,7 @@ This strategic choice allows for:
 ### Core Components
 *   **Infrastructure:** Private Homelab cluster.
 *   **Virtualization:** Proxmox VE Cluster.
-*   **Containerization & Orchestration:** `containerd` & Kubernetes coming soon (currently exploring low-level runtimes).
+*   **Containerization & Orchestration:** containerd & Kubernetes coming soon (currently exploring low-level runtimes).
 *   **Networking:** Zero Trust architecture using Cloudflare Tunnels; no exposed inbound ports.
 *   **Storage:** Network File System (NFS) for shared persistent storage across nodes.
 
