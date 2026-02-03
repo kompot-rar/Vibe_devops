@@ -1,6 +1,6 @@
 ---
 title: "Od Single Branch do Multi-Environment - CI/CD w Homelabie"
-date: "2026-02-02"
+date: "2026-02-01"
 excerpt: "Jak przeszedłem z trybu 'YOLO Deployment' na produkcję do profesjonalnego podziału na środowiska Dev i Prod przy użyciu GitHub Actions i Cloudflare."
 tags: ["CI/CD", "GitHub Actions", "Homelab", "DevOps"]
 readTime: "5 min"
