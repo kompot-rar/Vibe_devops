@@ -78,7 +78,7 @@ const ROADMAP_DATA: RoadmapItem[] = [
     title: 'DatabaseOps & Storage',
     description: 'Utrzymanie aplikacji stanowych. Klastry HA baz danych (Postgres), strategie Backup & Restore (PITR) i replikacja.',
     tools: ['PostgreSQL', 'Redis', 'MinIO', 'pgBackRest'],
-    status: 'in-progress'
+    status: 'pending'
   },
   {
     id: '11',
