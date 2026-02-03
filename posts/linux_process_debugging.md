@@ -155,3 +155,12 @@ Napotkałem też frustrujący błąd `BrokenPipeError`. To była lekcja, że zab
 Na produkcji, gdzie liczy się każda milisekunda, `strace` bywa zbyt ciężki. Każde przechwycenie wywołania systemowego to kosztowne przełączenie kontekstu, które może odczuwalnie spowolnić aplikację. Tam standardem staje się **eBPF**, które pozwala podglądać kernel niemal bezkosztowo.
 
 Ale żeby wiedzieć, o co pytać kernel przez eBPF, najpierw trzeba zrozumieć same syscalle. Ta sesja z `strace` była moim kolejnym "Hard Way". Teraz, gdy widzę błąd w logach, nie widzę już tylko suchego tekstu – widzę proces, który bezskutecznie dobija się do deskryptora pliku lub gniazda sieciowego. Fundament odfajkowany, idziemy dalej.
+
+---
+
+### **Kod i Narzędzia**
+
+Wszystkie skrypty, których używałem do testowania `strace` (w tym `cpu_hog.py` i przykłady z BrokenPipe), znajdziesz w moim publicznym repozytorium na GitHubie: [kompot-rar/strace-debugging-tools](https://github.com/kompot-rar/strace-debugging-tools).
+
+![Podgląd repozytorium](/strace-repo-preview.png)
+
