@@ -6,28 +6,28 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '1',
     title: 'Linux & Workstation',
-    description: 'Inżynieria środowiska pracy. Arch Linux, zarządzanie konfiguracją (Dotfiles), bezpieczne SSH oraz biegłość w Vim.',
-    tools: ['Arch Linux', 'Bash', 'SSH', 'Vim'],
+    description: 'Linux podstawą wszystkiego. Inżynieria środowiska pracy, zarządzanie konfiguracją, bezpieczne SSH oraz biegłość w Vim.',
+    tools: ['Bash', 'SSH', 'Vim'],
     status: 'completed'
   },
   {
     id: '2',
     title: 'Infrastruktura Homelab',
-    description: 'W pełni operacyjny klaster Proxmox. Hardware server-grade, wirtualizacja (LXC/KVM) i zarządzanie storage-em.',
+    description: 'W pełni operacyjny klaster Proxmox. Hardware server-grade, wirtualizacja i zarządzanie storage-em.',
     tools: ['Proxmox', 'ZFS', 'Hardware', 'LXC'],
     status: 'completed'
   },
   {
     id: '13',
     title: 'Linux Internals & Debugging',
-    description: 'Diagnostyka głęboka. Analiza syscalli, rozwiązywanie problemów z pamięcią (OOM), I/O oraz debugging sieciowy.',
+    description: 'Głęboka diagnostyka. Analiza syscalli, rozwiązywanie problemów z pamięcią, I/O oraz debugging sieciowy.',
     tools: ['strace', 'tcpdump', 'journalctl', 'sysctl'],
     status: 'completed'
   },
   {
     id: '3',
     title: 'Sieci',
-    description: 'Architektura sieciowa. Model OSI, segmentacja (VLAN), routing, DNS oraz głęboka analiza pakietów (Wireshark).',
+    description: 'Architektura sieciowa. Model OSI, segmentacja VLAN, routing, DNS oraz głęboka analiza pakietów.',
     tools: ['OSI', 'VLAN', 'DNS', 'Wireshark'],
     status: 'completed'
   },
@@ -48,15 +48,15 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '4',
     title: 'Automatyzacja & Python',
-    description: 'Programowanie infrastruktury. Skrypty w Pythonie, automatyzacja zadań (Bash) i interakcja z API.',
+    description: 'Programowanie infrastruktury. Skrypty w Pythonie, automatyzacja zadań Bash i interakcja z API.',
     tools: ['Python', 'Boto3', 'API', 'Automation'],
     status: 'in-progress'
   },
   {
     id: '6',
     title: 'Konteneryzacja',
-    description: 'Inżynieria obrazów. Tworzenie bezpiecznych i lekkich kontenerów (Multi-stage), zarządzanie rejestrami i budowanie wewnątrz klastra.',
-    tools: ['Docker', 'Kaniko', 'BuildKit', 'Distroless'],
+    description: 'Inżynieria obrazów. Tworzenie bezpiecznych i lekkich kontenerów, zarządzanie rejestrami i budowanie wewnątrz klastra.',
+    tools: ['containerd', 'Kaniko', 'BuildKit', 'Distroless'],
     status: 'in-progress'
   },
   {
@@ -69,42 +69,42 @@ const ROADMAP_DATA: RoadmapItem[] = [
   {
     id: '14',
     title: 'DatabaseOps & Storage',
-    description: 'Utrzymanie aplikacji stanowych. Klastry HA baz danych (Postgres), strategie Backup & Restore (PITR) i replikacja.',
+    description: 'Utrzymanie aplikacji stanowych. Klastry HA baz danych, strategie Backup & Restore i replikacja.',
     tools: ['PostgreSQL', 'Redis', 'MinIO', 'pgBackRest'],
     status: 'pending'
   },
   {
     id: '11',
     title: 'SRE & Observability',
-    description: 'Pełna obserwowalność. Monitoring (Prometheus/Grafana), logi (ELK), Distributed Tracing i kultura SRE.',
+    description: 'Pełna obserwowalność. Monitoring, logi, Distributed Tracing i kultura SRE.',
     tools: ['Prometheus', 'Grafana', 'ELK', 'OpenTelemetry'],
     status: 'pending'
   },
   {
     id: '15',
     title: 'Hybrid Cloud & AWS',
-    description: 'Wyjście poza Homelab. Budowa hybrydowej infrastruktury, VPN do chmury, backupy off-site na S3 oraz zarządzanie tożsamością (IAM).',
+    description: 'Wyjście poza Homelab. Budowa hybrydowej infrastruktury, VPN do chmury, backupy off-site na S3 oraz zarządzanie tożsamością.',
     tools: ['AWS', 'S3', 'IAM', 'WireGuard'],
     status: 'pending'
   },
   {
     id: '9',
     title: 'Certyfikacja CKA',
-    description: 'Administracja zaawansowana. GitOps (ArgoCD), zarządzanie cyklem życia klastra, RBAC i certyfikacja CKA.',
+    description: 'Administracja zaawansowana. GitOps, zarządzanie cyklem życia klastra, RBAC i certyfikacja CKA.',
     tools: ['ArgoCD', 'RBAC', 'Etcd', 'CKA'],
     status: 'pending'
   },
   {
     id: '10',
     title: 'DevSecOps',
-    description: 'Bezpieczeństwo jako kod. Skanowanie podatności, zarządzanie sekretami (Vault) oraz compliance (OPA/Kyverno).',
+    description: 'Bezpieczeństwo jako kod. Skanowanie podatności, zarządzanie sekretami oraz compliance.',
     tools: ['Vault', 'Trivy', 'OPA', 'Snyk'],
     status: 'pending'
   },
   {
     id: '12',
     title: 'Platform Engineering',
-    description: 'Budowa wewnętrznych platform deweloperskich (IDP). Backstage, samoobsługa dla devów i automatyzacja cyklu życia infrastruktury.',
+    description: 'Budowa wewnętrznych platform deweloperskich. Backstage, samoobsługa dla devów i automatyzacja cyklu życia infrastruktury.',
     tools: ['Backstage', 'Crossplane', 'Pulumi', 'IDP'],
     status: 'pending'
   }
