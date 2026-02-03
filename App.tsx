@@ -59,7 +59,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={
                 <>
-                  <div className="text-center mb-16">
+                  <div className="text-center mb-16 bg-black/40 backdrop-blur-md p-10 rounded-3xl border border-white/5 shadow-2xl max-w-4xl mx-auto">
                     <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
                       DevOps <span className="text-thinkpad-red">Adventure</span>
                     </h1>
