@@ -213,7 +213,7 @@ const Roadmap: React.FC = () => {
                       </h3>
                       {isCompleted && (
                         <div className="relative flex items-center justify-center">
-                          <Check size={24} className="text-thinkpad-red drop-shadow-[0_0_15px_rgba(224,6,19,1)]" strokeWidth={4} />
+                          <Check size={26} className="text-thinkpad-red drop-shadow-[0_0_5px_rgba(224,6,19,1)] drop-shadow-[0_0_20px_rgba(224,6,19,0.8)]" strokeWidth={4} />
                         </div>
                       )}
                       {isInProgress && <Activity size={24} className="text-white animate-pulse stroke-[3px] drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]" />}
