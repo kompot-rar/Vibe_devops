@@ -29,7 +29,7 @@ Musiałem ręcznie podzielić wirtualny dysk przy użyciu `sgdisk`/`cfdisk`. Zro
 
 ### 2. Chroot = Prehistoria Kontenerów
 
-Moment przejścia z LiveISO do systemu na dysku za pomocą `arch-chroot` to świetna lekcja izolacji procesów. To fundament, na którym później zbudowano Dockera. Zmieniasz "root" (korzeń) systemu plików i działasz wewnątrz nowej struktury.
+Moment przejścia z LiveISO do systemu na dysku za pomocą `arch-chroot` to świetna lekcja izolacji procesów. To fundament, na którym później zbudowano Dockera. Zmieniasz "root" systemu plików i działasz wewnątrz nowej struktury.
 
 ### 3. Bootloader musi wiedzieć, co robić
 

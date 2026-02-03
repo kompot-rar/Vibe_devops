@@ -62,6 +62,8 @@ Dzięki podejściu **IaC (Infrastructure as Code)** na poziomie desktopu, zyska�
 2. **Security:** Świadome zarządzanie sekretami – wrażliwe dane są wykluczone przez `.gitignore`.
 3. **Portability:** `git clone` + `stow` = gotowe środowisko pracy w mniej niż 5 minut na nowym systemie.
 
-### Next Steps: Automatyzacja 2.0 (Ansible)
+### Next Steps: Automatyzacja 2.0 (Ansible i Chezmoi)
 
 GNU Stow to świetny początek, ale dążę do pełnej **idempotentności**. Kolejnym krokiem będzie migracja na **Ansible**. Dlaczego? Ansible pozwoli nie tylko zarządzać linkami, ale również automatycznie instalować niezbędne pakiety i konfigurować system od zera, bez względu na dystrybucję.
+
+Warto też wspomnieć o **chezmoi** – to potężne narzędzie dedykowane stricte pod dotfiles, które świetnie radzi sobie z zarządzaniem sekretami (np. integracja z Bitwardenem czy 1Password) oraz różnicami w konfiguracji między wieloma maszynami. Jeśli Stow przestanie wystarczać, chezmoi będzie moim następnym przystankiem.
