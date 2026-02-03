@@ -32,7 +32,7 @@ const ArticleView: React.FC<ArticleViewProps> = ({ post, onBack }) => {
             <div className="flex flex-wrap gap-4 text-sm text-slate-400 mb-4">
               <div className="flex items-center">
                 <Calendar className="h-4 w-4 mr-2 text-emerald-500" />
-                {new Date(post.date).toLocaleDateString('pl-PL')}
+                {new Date(post.date).toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}
               </div>
               <div className="flex items-center">
                 <Clock className="h-4 w-4 mr-2 text-emerald-500" />

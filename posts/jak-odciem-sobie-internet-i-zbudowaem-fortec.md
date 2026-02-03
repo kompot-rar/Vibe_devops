@@ -14,7 +14,7 @@ Pierwsze co chciałem zrobić w **Homelab 2.0** to porządek z sieciami. Zanim n
 Wiedziałem, że poleje się krew. Sieci były do tej pory moim kryptonitem. To właśnie przez błędy w konfiguracji interfejsów sieciowych reinstalowałem system **kilkukrotnie**, gdy po raz pierwszy stawiałem Dockera bare-metal. Ta frustracja pchnęła mnie ostatecznie w ramiona **Proxmoxa**. Ale tym razem nie szukałem drogi na skróty. Postanowiłem wejść prosto w paszczę lwa i zbudować sieć **The Hard Way**. Żadnych wizardów, czysty routing. Czas wyrównać rachunki.
 
 ## 2. Architektura: The Great Wall
-Zamiast kupować drogi router albo stawiać ciężkie VM z OPNsense, postanowiłem zrobić to **The Hard Way** – używając czystego Linuxa.
+Zamiast kupować drogi router albo stawiać ciężkie VM z OPNsense, postanowiłem zrobić to **u podstaw** – używając czystego Linuxa.
 
 - **Hardware:** Netgear GS108T v2
 - **Router:** Kontener LXC Alpine Linux

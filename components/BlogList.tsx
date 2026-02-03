@@ -60,7 +60,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
               </p>
               
               <div className="flex items-center justify-between text-xs text-neutral-500 mt-auto pt-4 border-t border-neutral-700 font-mono uppercase">
-                <span>{new Date(post.date).toLocaleDateString()}</span>
+                <span>{new Date(post.date).toLocaleDateString('pl-PL', { day: '2-digit', month: '2-digit', year: 'numeric' })}</span>
                 <span className="flex items-center gap-1 group-hover:text-white transition-colors">
                   <BookOpen size={12} className="text-thinkpad-red" /> {post.readTime}
                 </span>
