@@ -22,7 +22,7 @@ The goal is to bridge the gap between theoretical knowledge and production-grade
 ## Engineering Philosophy
 
 ### Infrastructure as Code & GitOps
-Every component of this system is treated as code. The project emphasizes reproducibility and stability over manual configuration. The underlying infrastructure leverages bare-metal virtualization and containerization to ensure efficient resource utilization.
+Every component of this system is treated as code. The project emphasizes reproducibility and stability over manual configuration. The infrastructure is evolving towards a 3-node Kubernetes cluster, prioritizing declarative configuration and container orchestration standards.
 
 ### The "Vibe Coding" Protocol
 While the core infrastructure is built with rigorous DevOps standards, the frontend application follows an **AI-Assisted Development methodology**. Originally initiated as a static AI Studio template for a simple landing page, the project has been extensively transformed and engineered by me into a **full-featured blog engine**.
