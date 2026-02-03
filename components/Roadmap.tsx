@@ -39,13 +39,6 @@ const ROADMAP_DATA: RoadmapItem[] = [
     status: 'completed'
   },
   {
-    id: '15',
-    title: 'Hybrid Cloud & AWS',
-    description: 'Wyjście poza Homelab. Budowa hybrydowej infrastruktury, VPN do chmury, backupy off-site na S3 oraz zarządzanie tożsamością (IAM).',
-    tools: ['AWS', 'S3', 'IAM', 'WireGuard'],
-    status: 'in-progress'
-  },
-  {
     id: '7',
     title: 'CI/CD Pipelines',
     description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja własnych runnerów.',
@@ -85,6 +78,13 @@ const ROADMAP_DATA: RoadmapItem[] = [
     title: 'SRE & Observability',
     description: 'Pełna obserwowalność. Monitoring (Prometheus/Grafana), logi (ELK), Distributed Tracing i kultura SRE.',
     tools: ['Prometheus', 'Grafana', 'ELK', 'OpenTelemetry'],
+    status: 'pending'
+  },
+  {
+    id: '15',
+    title: 'Hybrid Cloud & AWS',
+    description: 'Wyjście poza Homelab. Budowa hybrydowej infrastruktury, VPN do chmury, backupy off-site na S3 oraz zarządzanie tożsamością (IAM).',
+    tools: ['AWS', 'S3', 'IAM', 'WireGuard'],
     status: 'pending'
   },
   {
