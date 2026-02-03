@@ -212,9 +212,8 @@ const Roadmap: React.FC = () => {
                         {item.title}
                       </h3>
                       {isCompleted && (
-                        <div className="relative flex items-center justify-center w-5 h-5">
-                          <div className="absolute w-full h-full rounded-full bg-thinkpad-red/20 border border-thinkpad-red/30 shadow-[0_0_10px_rgba(224,6,19,0.2)]"></div>
-                          <Check size={28} className="text-thinkpad-red relative z-10 drop-shadow-[0_0_8px_rgba(224,6,19,0.8)] translate-x-0.5 -translate-y-0.5" strokeWidth={4} />
+                        <div className="relative flex items-center justify-center">
+                          <Check size={28} className="text-thinkpad-red drop-shadow-[0_0_12px_rgba(224,6,19,1)]" strokeWidth={4} />
                         </div>
                       )}
                       {isInProgress && <Activity size={24} className="text-white animate-pulse stroke-[3px] drop-shadow-[0_0_10px_rgba(255,255,255,0.9)]" />}
