@@ -61,10 +61,10 @@ const App: React.FC = () => {
                 <>
                   <div className="relative text-center mb-16 max-w-4xl mx-auto">
                     <div 
-                      className="absolute inset-0 -z-10 bg-thinkpad-base/60 backdrop-blur-md"
+                      className="absolute -inset-12 -z-10 backdrop-blur-xl"
                       style={{
-                        maskImage: 'radial-gradient(ellipse at center, black 30%, transparent 70%)',
-                        WebkitMaskImage: 'radial-gradient(ellipse at center, black 30%, transparent 70%)'
+                        maskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)',
+                        WebkitMaskImage: 'radial-gradient(ellipse at center, black 40%, transparent 80%)'
                       }}
                     />
                     <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
