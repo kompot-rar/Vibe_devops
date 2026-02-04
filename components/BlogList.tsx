@@ -30,11 +30,11 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
             to={`/blog/${post.slug}`}
             className="group bg-thinkpad-surface border border-neutral-700 rounded-none overflow-hidden hover:border-thinkpad-red transition-all duration-300 cursor-pointer flex flex-col h-full shadow-lg hover:shadow-[0_0_20px_rgba(224,6,19,0.3)]"
           >
-            <div className="h-48 overflow-hidden relative transition-all duration-500">
+            <div className="h-48 overflow-hidden relative transition-all duration-700">
               <img 
                 src={post.imageUrl || 'https://picsum.photos/800/400'} 
                 alt={post.title} 
-                className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 scale-[1.05] group-hover:scale-110 origin-top transition-all duration-500 ease-in-out"
+                className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 scale-[1.06] group-hover:scale-110 origin-top transition-all duration-500 ease-in-out"
               />
               <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
             </div>
