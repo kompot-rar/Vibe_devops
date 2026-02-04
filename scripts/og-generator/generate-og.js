@@ -38,9 +38,21 @@ async function generateImage(title, date, outputPath, fontData) {
   const template = html`
     <div style="display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; background-color: #09090b; color: white; font-family: 'Roboto', sans-serif;">
       <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 40px; border: 2px solid #3f3f46; border-radius: 12px; background-color: #18181b; width: 90%; height: 80%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        <div style="font-size: 24px; color: #a1a1aa; margin-bottom: 20px; display: flex; align-items: center;">
-          <span style="margin-right: 10px;">⚡</span> Vibe DevOps
+        
+        <!-- Navbar-style Logo -->
+        <div style="display: flex; align-items: center; margin-bottom: 20px;">
+          <div style="background-color: #171717; border: 1px solid #404040; padding: 0 8px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 40px; margin-right: 12px;">
+            <span style="font-family: monospace; font-size: 24px; font-weight: bold; color: #ef4444; line-height: 1;">&gt;</span>
+            <span style="font-family: monospace; font-size: 24px; font-weight: bold; color: white; line-height: 1;">_</span>
+          </div>
+          <div style="font-family: monospace; font-size: 32px; font-weight: bold; letter-spacing: -2px;">
+            <span style="color: white">DevOps</span>
+            <span style="color: #ef4444">Zero</span>
+            <span style="color: white">To</span>
+            <span style="color: white">Hero</span>
+          </div>
         </div>
+
         <div style="font-size: 64px; font-weight: bold; line-height: 1.1; margin-bottom: 40px; background-image: linear-gradient(to right, #ffffff, #a1a1aa); background-clip: text; color: transparent;">
           ${title}
         </div>
