@@ -114,8 +114,8 @@ async function generate() {
   }
 
   // 2. Generate generic pages
-  await generateImage('Vibe DevOps Blog', 'Junior DevOps Journey', path.join(BASE_OUTPUT_DIR, 'home.png'), fontData);
-  await generateImage('Roadmapa 2026', 'Master Plan CKA', path.join(BASE_OUTPUT_DIR, 'roadmap.png'), fontData);
+  await generateImage('DevOps Adventure', 'Dokumentacja podróży w głąb infrastruktury', path.join(BASE_OUTPUT_DIR, 'home.png'), fontData);
+  await generateImage('Roadmapa 2026', '', path.join(BASE_OUTPUT_DIR, 'roadmap.png'), fontData);
   
   console.log('OG Images generated successfully!');
 }
