@@ -46,7 +46,7 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
             alt={post.title}
             className="w-full h-full object-cover overflow-hidden"
           />
-          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-thinkpad-surface via-thinkpad-surface/40 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-thinkpad-surface via-thinkpad-surface/80 to-transparent"></div>
           <div className="absolute bottom-0 left-0 p-6 sm:p-8 pb-4 sm:pb-6 w-full z-10">
              <h1 
                 className="text-3xl sm:text-5xl font-bold text-white leading-none tracking-tight font-mono mb-2"
