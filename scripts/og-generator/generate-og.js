@@ -49,21 +49,21 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
     const dataUrl = `data:${mimeType};base64,${base64Image}`;
 
     const template = html`
-      <div style="display: flex; flex-direction: column; height: 100%; width: 100%; position: relative; background-color: #000; overflow: hidden;">
+      <div style="display: flex; width: 100%; height: 100%; justify-content: flex-end; align-items: flex-end; padding: 30px; position: relative; background-color: #000; overflow: hidden;">
+         <!-- Background Image (Absolute) -->
          <img src="${dataUrl}" width="1200" height="630" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); transform-origin: center;" />
          
-         <div style="display: flex; width: 100%; height: 100%; justify-content: flex-end; align-items: flex-end; position: absolute; top: 0; left: 0; padding: 30px;">
-            <div style="display: flex; align-items: center; background-color: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
-                <div style="background-color: #171717; border: 1px solid #404040; padding: 0 8px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 32px; margin-right: 12px;">
-                    <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: #ef4444; line-height: 1;">&gt;</span>
-                    <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: white; line-height: 1;">_</span>
-                </div>
-                <div style="font-family: monospace; font-size: 24px; font-weight: bold; letter-spacing: -1px;">
-                    <span style="color: white">DevOps</span>
-                    <span style="color: #ef4444">Zero</span>
-                    <span style="color: white">To</span>
-                    <span style="color: white">Hero</span>
-                </div>
+         <!-- Watermark (Flex Item - z-index ensures it's on top) -->
+         <div style="display: flex; align-items: center; background-color: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2); position: relative; z-index: 10;">
+            <div style="background-color: #171717; border: 1px solid #404040; padding: 0 8px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 32px; margin-right: 12px;">
+                <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: #ef4444; line-height: 1;">&gt;</span>
+                <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: white; line-height: 1;">_</span>
+            </div>
+            <div style="font-family: monospace; font-size: 24px; font-weight: bold; letter-spacing: -1px;">
+                <span style="color: white">DevOps</span>
+                <span style="color: #ef4444">Zero</span>
+                <span style="color: white">To</span>
+                <span style="color: white">Hero</span>
             </div>
          </div>
       </div>
