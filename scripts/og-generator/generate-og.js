@@ -1,0 +1,111 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import satori from 'satori';
+import { html } from 'satori-html';
+import { Resvg } from '@resvg/resvg-js';
+import matter from 'gray-matter';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const POSTS_DIR = path.join(__dirname, '../../posts');
+const BASE_OUTPUT_DIR = path.join(__dirname, '../../public/og');
+const POSTS_OUTPUT_DIR = path.join(BASE_OUTPUT_DIR, 'posts');
+
+// Ensure output directories exist
+if (!fs.existsSync(POSTS_OUTPUT_DIR)) {
+  fs.mkdirSync(POSTS_OUTPUT_DIR, { recursive: true });
+}
+
+async function getFont() {
+  const fontPath = path.join(__dirname, 'Roboto-Regular.ttf');
+  if (fs.existsSync(fontPath)) {
+    return fs.readFileSync(fontPath);
+  } else {
+    console.log('Fetching font...');
+    const response = await fetch('https://raw.githubusercontent.com/openmaptiles/fonts/master/roboto/Roboto-Regular.ttf');
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    fs.writeFileSync(fontPath, buffer);
+    return buffer;
+  }
+}
+
+async function generateImage(title, date, outputPath, fontData) {
+  console.log(`Generating OG for: ${title}`);
+
+  const template = html`
+    <div style="display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; background-color: #09090b; color: white; font-family: 'Roboto', sans-serif;">
+      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 40px; border: 2px solid #3f3f46; border-radius: 12px; background-color: #18181b; width: 90%; height: 80%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+        <div style="font-size: 24px; color: #a1a1aa; margin-bottom: 20px; display: flex; align-items: center;">
+          <span style="margin-right: 10px;">⚡</span> Vibe DevOps
+        </div>
+        <div style="font-size: 64px; font-weight: bold; line-height: 1.1; margin-bottom: 40px; background-image: linear-gradient(to right, #ffffff, #a1a1aa); background-clip: text; color: transparent;">
+          ${title}
+        </div>
+        <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-end; margin-top: auto;">
+           <div style="font-size: 24px; color: #71717a;">
+              ${date}
+           </div>
+           <div style="display: flex; align-items: center;">
+              <div style="width: 40px; height: 40px; background-color: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; color: black; font-weight: bold;">K</div>
+              <div style="font-size: 24px; color: #e4e4e7;">Kompot</div>
+           </div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  const svg = await satori(template, {
+    width: 1200,
+    height: 630,
+    fonts: [
+      {
+        name: 'Roboto',
+        data: fontData,
+        weight: 400,
+        style: 'normal',
+      },
+    ],
+  });
+
+  const resvg = new Resvg(svg, {
+    background: '#09090b',
+    fitTo: {
+      mode: 'width',
+      value: 1200,
+      },
+  });
+
+  const pngData = resvg.render();
+  const pngBuffer = pngData.asPng();
+
+  fs.writeFileSync(outputPath, pngBuffer);
+}
+
+async function generate() {
+  const fontData = await getFont();
+  
+  // 1. Generate for Posts
+  const files = fs.readdirSync(POSTS_DIR).filter(file => file.endsWith('.md'));
+  for (const file of files) {
+    const filePath = path.join(POSTS_DIR, file);
+    const content = fs.readFileSync(filePath, 'utf-8');
+    const { data } = matter(content);
+    
+    const title = data.title || 'Vibe DevOps';
+    const date = data.date ? new Date(data.date).toLocaleDateString('pl-PL') : '';
+    const slug = file.replace('.md', '');
+    
+    await generateImage(title, date, path.join(POSTS_OUTPUT_DIR, `${slug}.png`), fontData);
+  }
+
+  // 2. Generate generic pages
+  await generateImage('Vibe DevOps Blog', 'Junior DevOps Journey', path.join(BASE_OUTPUT_DIR, 'home.png'), fontData);
+  await generateImage('Roadmapa 2026', 'Master Plan CKA', path.join(BASE_OUTPUT_DIR, 'roadmap.png'), fontData);
+  
+  console.log('OG Images generated successfully!');
+}
+
+generate().catch(console.error);

@@ -37,12 +37,18 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Generate Open Graph Images
+        run: node scripts/og-generator/generate-og.js
+
       - name: Build Project
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           REACT_APP_ADMIN_PASSWORD: ${{ secrets.REACT_APP_ADMIN_PASSWORD }}
           NODE_OPTIONS: "--max-old-space-size=4096"
         run: npm run build
+
+      - name: Patch Meta Tags for SEO
+        run: node scripts/og-generator/patch-meta.js
 
       - name: Debug Build Output
         run: |
