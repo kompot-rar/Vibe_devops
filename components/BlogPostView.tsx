@@ -48,19 +48,19 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
           />
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-thinkpad-surface via-thinkpad-surface/40 to-transparent"></div>
           <div className="absolute bottom-0 left-0 p-8 sm:p-12 w-full">
-             <div className="flex gap-2 mb-4 flex-wrap">
+             <h1 
+                className="text-3xl sm:text-5xl font-bold text-white leading-none tracking-tight font-mono mb-4"
+                style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,1)' }}
+             >
+                {post.title}
+             </h1>
+             <div className="flex gap-2 flex-wrap">
                 {post.tags.map(tag => (
                   <span key={tag} className="px-2 py-1 bg-black/70 text-thinkpad-red border border-thinkpad-red/50 text-xs font-mono font-bold uppercase tracking-wider rounded-none backdrop-blur-sm shadow-md">
                     #{tag}
                   </span>
                 ))}
              </div>
-             <h1 
-                className="text-3xl sm:text-5xl font-bold text-white leading-none tracking-tight font-mono mb-2"
-                style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,1)' }}
-             >
-                {post.title}
-             </h1>
           </div>
         </div>
 
