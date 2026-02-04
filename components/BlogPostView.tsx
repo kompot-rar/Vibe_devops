@@ -47,10 +47,10 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
             className="w-full h-full object-cover"
           />
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-thinkpad-surface via-thinkpad-surface/40 to-transparent"></div>
-          <div className="absolute bottom-0 left-0 p-6 sm:p-8 w-full">
+          <div className="absolute bottom-0 left-0 p-6 sm:p-8 pb-4 sm:pb-6 w-full">
              <h1 
                 className="text-3xl sm:text-5xl font-bold text-white leading-none tracking-tight font-mono mb-2"
-                style={{ textShadow: '0 2px 10px rgba(0,0,0,0.8), 0 0 2px rgba(0,0,0,1)' }}
+                style={{ textShadow: '0 4px 15px rgba(0,0,0,1), 0 0 10px rgba(0,0,0,0.8), 0 0 5px rgba(0,0,0,1)' }}
              >
                 {post.title}
              </h1>
