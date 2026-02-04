@@ -65,14 +65,14 @@ for (const file of files) {
 // 2. Patch Home Page
 const homeMetaTags = `
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Vibe DevOps | Junior DevOps Journey" />
-    <meta property="og:description" content="Platforma edukacyjna i blog dla początkujących inżynierów DevOps. Od zera do bohatera." />
+    <meta property="og:title" content="Łukasz Mróz | DevOps fromZEROtoHERO" />
+    <meta property="og:description" content="Dokumentacja podróży w głąb infrastruktury. Od pojedynczego skryptu do orkiestracji klastrów." />
     <meta property="og:image" content="${DOMAIN}/og/home.png" />
     <meta property="og:url" content="${DOMAIN}" />
     <meta property="og:logo" content="${DOMAIN}/bcr.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Vibe DevOps | Junior DevOps Journey" />
-    <meta name="twitter:description" content="Platforma edukacyjna i blog dla początkujących inżynierów DevOps." />
+    <meta name="twitter:title" content="Łukasz Mróz | DevOps fromZEROtoHERO" />
+    <meta name="twitter:description" content="Dokumentacja podróży w głąb infrastruktury. Od pojedynczego skryptu do orkiestracji klastrów." />
     <meta name="twitter:image" content="${DOMAIN}/og/home.png" />
 `;
 const homeHtml = templateHtml.replace('</head>', `${homeMetaTags}\n  </head>`);
