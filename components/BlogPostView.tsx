@@ -46,7 +46,7 @@ const BlogPostView: React.FC<BlogPostViewProps> = ({ posts }) => {
             alt={post.title}
             className="w-full h-full object-cover"
           />
-          <div className="absolute bottom-0 left-0 w-full h-3/4 bg-gradient-to-t from-thinkpad-surface via-thinkpad-surface/40 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-thinkpad-surface via-thinkpad-surface/40 to-transparent"></div>
           <div className="absolute bottom-0 left-0 p-8 sm:p-12 w-full">
              <div className="flex gap-2 mb-4 flex-wrap">
                 {post.tags.map(tag => (

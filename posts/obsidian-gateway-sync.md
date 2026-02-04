@@ -57,7 +57,7 @@ RandomizedDelaySec=5min
 WantedBy=timers.target
 ```
 
-## Organizacja
+## Organizacja: P.A.R.A
 
 Skoro już mamy techniczną synchronizację, warto wspomnieć o strukturze. Podpatrzyłem u **Mischa van den Burg** (którego mocno polecam każdemu DevOpsowi) świetne połączenie dwóch metod. Zacznijmy od **PARA** aby nie utonąć w morzu plików markdown:
 
