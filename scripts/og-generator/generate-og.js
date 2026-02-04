@@ -149,52 +149,152 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
 async function generateImage(title, date, outputPath, fontData) {
   console.log(`Generating OG for: ${title}`);
 
-  const template = html`
-    <div style="display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; background-color: #09090b; color: white; font-family: 'Roboto', sans-serif;">
-      <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 40px; border: 2px solid #3f3f46; border-radius: 12px; background-color: #18181b; width: 90%; height: 80%; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
-        
-        <!-- Navbar-style Logo -->
-        <div style="display: flex; align-items: center; margin-bottom: 20px;">
-          <div style="background-color: #171717; border: 1px solid #404040; padding: 0 8px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 40px; margin-right: 12px;">
-            <span style="font-family: monospace; font-size: 24px; font-weight: bold; color: #ef4444; line-height: 1;">&gt;</span>
-            <span style="font-family: monospace; font-size: 24px; font-weight: bold; color: white; line-height: 1;">_</span>
-          </div>
-          <div style="font-family: monospace; font-size: 32px; font-weight: bold; letter-spacing: -2px;">
-            <span style="color: white">DevOps</span>
-            <span style="color: #ef4444">Zero</span>
-            <span style="color: white">To</span>
-            <span style="color: white">Hero</span>
-          </div>
-        </div>
-
-        <div style="font-size: 64px; font-weight: bold; line-height: 1.1; margin-bottom: 40px; background-image: linear-gradient(to right, #ffffff, #a1a1aa); background-clip: text; color: transparent;">
-          ${title}
-        </div>
-        <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-end; margin-top: auto;">
-           <div style="font-size: 24px; color: #71717a;">
-              ${date}
-           </div>
-           <div style="display: flex; align-items: center;">
-              <div style="width: 40px; height: 40px; background-color: #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; color: black; font-weight: bold;">K</div>
-              <div style="font-size: 24px; color: #e4e4e7;">Kompot</div>
-           </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  const svg = await satori(template, {
-    width: 1200,
-    height: 630,
-    fonts: [
-      {
-        name: 'Roboto',
-        data: fontData,
-        weight: 400,
-        style: 'normal',
+  const svg = await satori(
+    {
+      type: 'div',
+      props: {
+        style: {
+          display: 'flex',
+          height: '100%',
+          width: '100%',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: '#09090b',
+          color: 'white',
+          fontFamily: "'Roboto', sans-serif",
+        },
+        children: [
+          {
+            type: 'div',
+            props: {
+              style: {
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+                padding: 40,
+                border: '2px solid #3f3f46',
+                borderRadius: 12,
+                backgroundColor: '#18181b',
+                width: '90%',
+                height: '80%',
+                boxShadow: '0 10px 30px rgba(0,0,0,0.5)',
+              },
+              children: [
+                // Navbar-style Logo
+                {
+                  type: 'div',
+                  props: {
+                    style: { display: 'flex', alignItems: 'center', marginBottom: 20 },
+                    children: [
+                      {
+                        type: 'div',
+                        props: {
+                          style: {
+                            backgroundColor: '#171717',
+                            border: '1px solid #404040',
+                            padding: '0 8px',
+                            borderRadius: 4,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            height: 40,
+                            marginRight: 12,
+                          },
+                          children: [
+                            { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 24, fontWeight: 'bold', color: '#ef4444', lineHeight: 1 }, children: '>' } },
+                            { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 24, fontWeight: 'bold', color: 'white', lineHeight: 1 }, children: '_' } }
+                          ]
+                        }
+                      },
+                      {
+                        type: 'div',
+                        props: {
+                          style: { fontFamily: 'monospace', fontSize: 32, fontWeight: 'bold', letterSpacing: '-2px', display: 'flex' },
+                          children: [
+                            { type: 'span', props: { style: { color: 'white' }, children: 'DevOps' } },
+                            { type: 'span', props: { style: { color: '#ef4444' }, children: 'Zero' } },
+                            { type: 'span', props: { style: { color: 'white' }, children: 'To' } },
+                            { type: 'span', props: { style: { color: 'white' }, children: 'Hero' } },
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                // Title
+                {
+                  type: 'div',
+                  props: {
+                    style: {
+                      fontSize: 64,
+                      fontWeight: 'bold',
+                      lineHeight: 1.1,
+                      marginBottom: 40,
+                      backgroundImage: 'linear-gradient(to right, #ffffff, #a1a1aa)',
+                      backgroundClip: 'text',
+                      color: 'transparent',
+                    },
+                    children: title
+                  }
+                },
+                // Footer (Date + Author)
+                {
+                  type: 'div',
+                  props: {
+                    style: { display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-end', marginTop: 'auto' },
+                    children: [
+                      {
+                        type: 'div',
+                        props: {
+                          style: { fontSize: 24, color: '#71717a' },
+                          children: date
+                        }
+                      },
+                      {
+                        type: 'div',
+                        props: {
+                          style: { display: 'flex', alignItems: 'center' },
+                          children: [
+                            {
+                              type: 'div',
+                              props: {
+                                style: { width: 40, height: 40, backgroundColor: '#22c55e', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginRight: 12, color: 'black', fontWeight: 'bold' },
+                                children: 'K'
+                              }
+                            },
+                            {
+                              type: 'div',
+                              props: {
+                                style: { fontSize: 24, color: '#e4e4e7' },
+                                children: 'Kompot'
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ],
       },
-    ],
-  });
+    },
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: 'Roboto',
+          data: fontData,
+          weight: 400,
+          style: 'normal',
+        },
+      ],
+    }
+  );
 
   const resvg = new Resvg(svg, {
     background: '#09090b',
