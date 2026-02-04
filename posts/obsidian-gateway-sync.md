@@ -25,6 +25,25 @@ Zbudowałem system trójwarstwowy, używając Google Drive jako bufora wymiany d
 
 **Efekt:** Mam wygodę Google Drive na telefonie i prywatność/szybkość Syncthinga na komputerze. Rclone jest klejem, który to spina.
 
+### Schemat Przepływu Danych
+
+```text
+    +-----------------------+              +-----------------------+
+    |   THINKPAD (Arch)     |              |   HOMELAB (Gateway)   |
+    |   Syncthing (LAN)     | <==========> |   Syncthing + rclone  |
+    |   (Notatki Lokalnie)  |  Local Mesh  |   (/media/ssd/vault)  |
+    +-----------------------+              +-----------+-----------+
+                                                       |
+                                                       | rclone sync
+                                                       | (00:00, 12:00, 20:05)
+                                                       v
+    +-----------------------+              +-----------------------+
+    |   ANDROID (Mobile)    |              |     GOOGLE DRIVE      |
+    |   FolderSync App      | <==========> |    (Neutral Ground)   |
+    |   (Dostęp z terenu)   |  Cloud Sync  |    (Folder: NOTES)    |
+    +-----------------------+              +-----------------------+
+```
+
 ## Implementacja
 
 ### 1. Most Rclone 
@@ -84,27 +103,6 @@ Na koniec dwa "game changery", bez których nie wyobrażam sobie pracy:
 
 1.  **Vim Mode:** Jako użytkownik Archa i ThinkPada, każda sekunda z ręką na myszce to sekunda stracona. Obsidian ma wbudowany tryb Vima. Nawigacja po notatkach `H/J/K/L` to czysta przyjemność i pamięć mięśniowa z terminala.
 2.  **Obsidian Canvas:** Nieskończona tablica, na której łączę notatki, schematy i PDF-y. Tutaj mogę na przykład rozrysować sobie architekturę klastrów pod egzamin **CKA**. Widok zależności między Podami, Serwisami a Ingressami na jednym "płótnie" pozwala lepiej zrozumieć flow ruchu sieciowego.
-
-## Architektura Synchronizacji
-
-Oto jak w praktyce krążą moje notatki między urządzeniami:
-
-```text
-    +-----------------------+              +-----------------------+
-    |   THINKPAD (Arch)     |              |   HOMELAB (Gateway)   |
-    |   Syncthing (LAN)     | <==========> |   Syncthing + rclone  |
-    |   (Notatki Lokalnie)  |  Local Mesh  |   (/media/ssd/vault)  |
-    +-----------------------+              +-----------+-----------+
-                                                       |
-                                                       | rclone sync
-                                                       | (00:00, 12:00, 20:05)
-                                                       v
-    +-----------------------+              +-----------------------+
-    |   ANDROID (Mobile)    |              |     GOOGLE DRIVE      |
-    |   FolderSync App      | <==========> |    (Neutral Ground)   |
-    |   (Dostęp z terenu)   |  Cloud Sync  |    (Folder: NOTES)    |
-    +-----------------------+              +-----------------------+
-```
 
 ### Bulletproofing
 
