@@ -36,15 +36,15 @@ for (const file of files) {
     <meta property="og:title" content="${title} | Vibe DevOps" />
     <meta property="og:description" content="${description}" />
     <meta property="og:image" content="${DOMAIN}/og/posts/${slug}.png" />
-    <meta property="og:url" content="${DOMAIN}/posts/${slug}" />
+    <meta property="og:url" content="${DOMAIN}/blog/${slug}" />
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="${title} | Vibe DevOps" />
     <meta name="twitter:description" content="${description}" />
     <meta name="twitter:image" content="${DOMAIN}/og/posts/${slug}.png" />
   `;
 
-  // Create post directory in dist
-  const postDir = path.join(DIST_DIR, 'posts', slug);
+  // Create post directory in dist (mapped to /blog/slug)
+  const postDir = path.join(DIST_DIR, 'blog', slug);
   if (!fs.existsSync(postDir)) {
     fs.mkdirSync(postDir, { recursive: true });
   }
@@ -54,7 +54,7 @@ for (const file of files) {
   </head>`);
 
   fs.writeFileSync(path.join(postDir, 'index.html'), patchedHtml);
-  console.log(`Patched: posts/${slug}/index.html`);
+  console.log(`Patched: blog/${slug}/index.html`);
 }
 
 console.log('Meta patching complete!');
