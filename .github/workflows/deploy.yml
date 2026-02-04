@@ -21,15 +21,18 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "DEPLOY_DIR=/var/www/html" >> $GITHUB_ENV
             echo "ENV_NAME=Production" >> $GITHUB_ENV
+            echo "PUBLIC_URL=https://devops.mrozy.org" >> $GITHUB_ENV
           else
             echo "DEPLOY_DIR=/var/www/vibe_dev" >> $GITHUB_ENV
             echo "ENV_NAME=Preview (Dev)" >> $GITHUB_ENV
+            echo "PUBLIC_URL=https://vibe-dev.mrozy.org" >> $GITHUB_ENV
           fi
 
       - name: Check Environment Info
         run: |
           echo "Target Environment: ${{ env.ENV_NAME }}"
           echo "Target Directory: ${{ env.DEPLOY_DIR }}"
+          echo "Public URL: ${{ env.PUBLIC_URL }}"
           echo "Node version:"
           node -v
           npm -v
@@ -48,6 +51,8 @@ jobs:
         run: npm run build
 
       - name: Patch Meta Tags for SEO
+        env:
+          PUBLIC_URL: ${{ env.PUBLIC_URL }}
         run: node scripts/og-generator/patch-meta.js
 
       - name: Debug Build Output

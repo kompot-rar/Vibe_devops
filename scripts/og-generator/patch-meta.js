@@ -9,7 +9,7 @@ const __dirname = path.dirname(__filename);
 
 const POSTS_DIR = path.join(__dirname, '../../posts');
 const DIST_DIR = path.join(__dirname, '../../dist');
-const DOMAIN = 'https://vibe-devops.pl';
+const DOMAIN = process.env.PUBLIC_URL || 'https://vibe-devops.pl';
 
 if (!fs.existsSync(DIST_DIR)) {
   console.error('Dist directory not found. Run npm run build first.');
