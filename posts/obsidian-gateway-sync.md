@@ -1,7 +1,7 @@
 ---
 id: '8'
 title: 'Obsidian Gateway: Jak spiąć ThinkPada, Homelab i Androida bez wystawiania serwera na świat.'
-date: '2026-01-25'
+date: '2026-01-21'
 tags: ['Obsidian', 'Syncthing', 'rclone', 'systemd', 'DevOps']
 readTime: '6 min'
 imageUrl: '/obsidian_gateway.png'
