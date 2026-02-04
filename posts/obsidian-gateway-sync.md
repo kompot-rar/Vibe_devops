@@ -57,9 +57,9 @@ RandomizedDelaySec=5min
 WantedBy=timers.target
 ```
 
-## Organizacja: P.A.R.A
+## Organizacja: P.A.R.A.
 
-Skoro już mamy techniczną synchronizację, warto wspomnieć o strukturze. Podpatrzyłem u **Mischa van den Burg** (którego mocno polecam każdemu DevOpsowi) świetne połączenie dwóch metod. Zacznijmy od **PARA** aby nie utonąć w morzu plików markdown:
+Skoro już mamy techniczną synchronizację, warto wspomnieć o strukturze. Podpatrzyłem u **Mischa van den Burg** świetne połączenie dwóch metod. Zacznijmy od **PARA** aby nie utonąć w morzu plików markdown:
 
 *   **P**rojects (Projekty): Aktywne zadania z terminem (np. "Migracja klastra na nowe node'y").
 *   **A**reas (Obszary): Stałe odpowiedzialności (np. "Dom", "Zdrowie", "Finanse").
