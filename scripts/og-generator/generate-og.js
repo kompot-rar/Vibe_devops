@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -10,7 +11,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const POSTS_DIR = path.join(__dirname, '../../posts');
-const BASE_OUTPUT_DIR = path.join(__dirname, '../../public/og');
+const PUBLIC_DIR = path.join(__dirname, '../../public');
+const BASE_OUTPUT_DIR = path.join(PUBLIC_DIR, 'og');
 const POSTS_OUTPUT_DIR = path.join(BASE_OUTPUT_DIR, 'posts');
 
 // Ensure output directories exist
@@ -30,6 +32,68 @@ async function getFont() {
     fs.writeFileSync(fontPath, buffer);
     return buffer;
   }
+}
+
+async function generateOptimizedBanner(imagePath, outputPath, fontData) {
+    console.log(`Optimizing banner for: ${path.basename(outputPath)}`);
+    
+    // Read image and convert to base64
+    const fullImagePath = path.join(PUBLIC_DIR, imagePath);
+    if (!fs.existsSync(fullImagePath)) {
+        console.warn(`Warning: Image not found at ${fullImagePath}, skipping optimization.`);
+        return;
+    }
+    const imageBuffer = fs.readFileSync(fullImagePath);
+    const base64Image = imageBuffer.toString('base64');
+    const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
+    const dataUrl = `data:${mimeType};base64,${base64Image}`;
+
+    const template = html`
+      <div style="display: flex; height: 100%; width: 100%; align-items: center; justify-content: center; background-color: #000; overflow: hidden; position: relative;">
+        <!-- Background Image with Zoom -->
+         <img src="${dataUrl}" width="1200" height="630" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transform: scale(1.1); transform-origin: center;" />
+         
+         <!-- Watermark Overlay -->
+         <div style="position: absolute; bottom: 30px; right: 30px; display: flex; align-items: center; background-color: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
+            <div style="background-color: #171717; border: 1px solid #404040; padding: 0 8px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 32px; margin-right: 12px;">
+                <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: #ef4444; line-height: 1;">&gt;</span>
+                <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: white; line-height: 1;">_</span>
+            </div>
+            <div style="font-family: monospace; font-size: 24px; font-weight: bold; letter-spacing: -1px;">
+                <span style="color: white">DevOps</span>
+                <span style="color: #ef4444">Zero</span>
+                <span style="color: white">To</span>
+                <span style="color: white">Hero</span>
+            </div>
+         </div>
+      </div>
+    `;
+
+    const svg = await satori(template, {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: 'Roboto',
+          data: fontData,
+          weight: 400,
+          style: 'normal',
+        },
+      ],
+    });
+
+    const resvg = new Resvg(svg, {
+      background: '#000',
+      fitTo: {
+        mode: 'width',
+        value: 1200,
+      },
+    });
+
+    const pngData = resvg.render();
+    const pngBuffer = pngData.asPng();
+
+    fs.writeFileSync(outputPath, pngBuffer);
 }
 
 async function generateImage(title, date, outputPath, fontData) {
@@ -109,8 +173,15 @@ async function generate() {
     const title = data.title || 'Vibe DevOps';
     const date = data.date ? new Date(data.date).toLocaleDateString('pl-PL') : '';
     const slug = file.replace('.md', '');
-    
-    await generateImage(title, date, path.join(POSTS_OUTPUT_DIR, `${slug}.png`), fontData);
+    const outputPath = path.join(POSTS_OUTPUT_DIR, `${slug}.png`);
+
+    if (data.imageUrl) {
+        // Optimize existing banner
+        await generateOptimizedBanner(data.imageUrl, outputPath, fontData);
+    } else {
+        // Generate text-based OG
+        await generateImage(title, date, outputPath, fontData);
+    }
   }
 
   // 2. Generate generic pages
