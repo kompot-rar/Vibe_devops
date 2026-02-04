@@ -34,7 +34,7 @@ const BlogList: React.FC<BlogListProps> = ({ posts }) => {
               <img 
                 src={post.imageUrl || 'https://picsum.photos/800/400'} 
                 alt={post.title} 
-                className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-500 ease-in-out"
+                className="w-full h-full object-cover grayscale-[0.5] group-hover:grayscale-0 scale-[1.05] group-hover:scale-110 origin-top transition-all duration-500 ease-in-out"
               />
               <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300" />
             </div>
