@@ -61,7 +61,7 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
             padding: 30,
             backgroundColor: '#000',
             backgroundImage: `url('${dataUrl}')`,
-            backgroundSize: '110%',
+            backgroundSize: 'cover', // Fix: Scale image to fill container
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
           },
