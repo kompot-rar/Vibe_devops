@@ -48,37 +48,89 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
     const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
     const dataUrl = `data:${mimeType};base64,${base64Image}`;
 
-    const template = html`
-      <div style="display: flex; width: 100%; height: 100%; justify-content: flex-end; align-items: flex-end; padding: 30px; background-color: #000; background-image: url('${dataUrl}'); background-size: 110%; background-position: center; background-repeat: no-repeat;">
-         
-         <!-- Watermark -->
-         <div style="display: flex; align-items: center; background-color: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.2);">
-            <div style="background-color: #171717; border: 1px solid #404040; padding: 0 8px; border-radius: 4px; display: flex; align-items: center; justify-content: center; height: 32px; margin-right: 12px;">
-                <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: #ef4444; line-height: 1;">&gt;</span>
-                <span style="font-family: monospace; font-size: 20px; font-weight: bold; color: white; line-height: 1;">_</span>
-            </div>
-            <div style="font-family: monospace; font-size: 24px; font-weight: bold; letter-spacing: -1px;">
-                <span style="color: white">DevOps</span>
-                <span style="color: #ef4444">Zero</span>
-                <span style="color: white">To</span>
-                <span style="color: white">Hero</span>
-            </div>
-         </div>
-      </div>
-    `;
-
-    const svg = await satori(template, {
-      width: 1200,
-      height: 630,
-      fonts: [
-        {
-          name: 'Roboto',
-          data: fontData,
-          weight: 400,
-          style: 'normal',
+    const svg = await satori(
+      {
+        type: 'div',
+        props: {
+          style: {
+            display: 'flex',
+            width: '100%',
+            height: '100%',
+            justifyContent: 'flex-end',
+            alignItems: 'flex-end',
+            padding: 30,
+            backgroundColor: '#000',
+            backgroundImage: `url('${dataUrl}')`,
+            backgroundSize: '110%',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          },
+          children: [
+            {
+              type: 'div',
+              props: {
+                style: {
+                  display: 'flex',
+                  alignItems: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.7)',
+                  padding: '10px 20px',
+                  borderRadius: 8,
+                  border: '1px solid rgba(255,255,255,0.2)',
+                },
+                children: [
+                  // Icon
+                  {
+                    type: 'div',
+                    props: {
+                      style: {
+                        backgroundColor: '#171717',
+                        border: '1px solid #404040',
+                        padding: '0 8px',
+                        borderRadius: 4,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: 32,
+                        marginRight: 12,
+                      },
+                      children: [
+                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 20, fontWeight: 'bold', color: '#ef4444', lineHeight: 1 }, children: '>' } },
+                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 20, fontWeight: 'bold', color: 'white', lineHeight: 1 }, children: '_' } }
+                      ]
+                    }
+                  },
+                  // Text
+                  {
+                    type: 'div',
+                    props: {
+                      style: { fontFamily: 'monospace', fontSize: 24, fontWeight: 'bold', letterSpacing: '-1px', display: 'flex' },
+                      children: [
+                        { type: 'span', props: { style: { color: 'white' }, children: 'DevOps' } },
+                        { type: 'span', props: { style: { color: '#ef4444' }, children: 'Zero' } },
+                        { type: 'span', props: { style: { color: 'white' }, children: 'To' } },
+                        { type: 'span', props: { style: { color: 'white' }, children: 'Hero' } },
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ],
         },
-      ],
-    });
+      },
+      {
+        width: 1200,
+        height: 630,
+        fonts: [
+          {
+            name: 'Roboto',
+            data: fontData,
+            weight: 400,
+            style: 'normal',
+          },
+        ],
+      }
+    );
 
     const resvg = new Resvg(svg, {
       background: '#000',
