@@ -72,10 +72,10 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
                 style: {
                   display: 'flex',
                   alignItems: 'center',
-                  backgroundColor: 'rgba(0,0,0,0.7)',
-                  padding: '10px 20px',
-                  borderRadius: 8,
-                  border: '1px solid rgba(255,255,255,0.2)',
+                  backgroundColor: 'rgba(0,0,0,0.8)', // Slightly darker for better contrast
+                  padding: '20px 40px', // Doubled padding
+                  borderRadius: 16, // Doubled border radius
+                  border: '2px solid rgba(255,255,255,0.2)', // Thicker border
                 },
                 children: [
                   // Icon
@@ -84,18 +84,18 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
                     props: {
                       style: {
                         backgroundColor: '#171717',
-                        border: '1px solid #404040',
-                        padding: '0 8px',
-                        borderRadius: 4,
+                        border: '2px solid #404040', // Thicker border
+                        padding: '0 16px', // Doubled padding
+                        borderRadius: 8, // Doubled radius
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        height: 32,
-                        marginRight: 12,
+                        height: 64, // Doubled height (was 32)
+                        marginRight: 24, // Doubled margin
                       },
                       children: [
-                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 20, fontWeight: 'bold', color: '#ef4444', lineHeight: 1 }, children: '>' } },
-                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 20, fontWeight: 'bold', color: 'white', lineHeight: 1 }, children: '_' } }
+                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 40, fontWeight: 'bold', color: '#ef4444', lineHeight: 1 }, children: '>' } }, // Font 40
+                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 40, fontWeight: 'bold', color: 'white', lineHeight: 1 }, children: '_' } }   // Font 40
                       ]
                     }
                   },
@@ -103,7 +103,7 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
                   {
                     type: 'div',
                     props: {
-                      style: { fontFamily: 'monospace', fontSize: 24, fontWeight: 'bold', letterSpacing: '-1px', display: 'flex' },
+                      style: { fontFamily: 'monospace', fontSize: 48, fontWeight: 'bold', letterSpacing: '-2px', display: 'flex' }, // Font 48 (was 24)
                       children: [
                         { type: 'span', props: { style: { color: 'white' }, children: 'DevOps' } },
                         { type: 'span', props: { style: { color: '#ef4444' }, children: 'Zero' } },
