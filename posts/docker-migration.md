@@ -103,7 +103,7 @@ Nie bawię się w półśrodki. Docker Compose na osobnym hostingu to dla mnie t
 Moja automatyzacja w GitHub Actions pilnuje teraz trzech różnych środowisk:
 1.  **Legacy Production (Branch `main`):** Stabilna, "produkcyjna" wersja bloga na serwerze LXC.
 2.  **Legacy Development (Branch `dev`):** Środowisko testowe dla nowych funkcji, również na LXC, ale w osobnym katalogu.
-3.  **Modern Staging (Branch `docker-migration`):** Tu dzieje się magia kontenera. Buduję, optymalizuję i testuję obraz, który docelowo trafi na klastra.
+3.  **Modern Staging (Branch `docker-migration`):** Tu dzieje się magia kontenera. Buduję, optymalizuję i testuję obraz, który docelowo trafi do klastra.
 
 ```yaml
 jobs:
