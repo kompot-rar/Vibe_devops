@@ -128,3 +128,5 @@ Ale rezultat jest satysfakcjonujący:
 4.  Link wklejony na Discorda wygląda jak milion dolarów.
 
 To jest właśnie DevOps. Nie chodzi tylko o Kubernetesy i chmury. Chodzi o to, żeby maszyny wykonywały nudną robotę za nas, i robiły to lepiej niż my.
+
+![OG Automation Demo](/og-automation-demo.png)
