@@ -23,7 +23,7 @@ Dziś wdrożyłem **Immutable Infrastructure**. Moja aplikacja jest zamknięta w
 
 ## Multi-Stage Build: Odchudzanie o 90%
 
-Zamiast wrzucać do kontenera cały śmietnik deweloperski, zastosowałem **Multi-Stage Build**. To technika, którą musisz znać, jeśli chcesz profesjonalnie konteneryzować aplikacje.
+Zamiast wrzucać do kontenera cały śmietnik deweloperski, zastosowałem **Multi-Stage Build**. To technika kluczowa dla optymalizacji zasobów oraz drastycznej redukcji rozmiaru obrazu końcowego.
 
 Spójrz na mój `Dockerfile`. Dzielę proces na dwa etapy:
 1.  **Etap 1: Budowanie (Builder)** – tu instaluję zależności i kompiluję aplikację.
