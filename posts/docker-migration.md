@@ -1,6 +1,6 @@
 ---
 id: '13'
-title: 'Docker i totalna dominacja. Ostatni przystanek przed Kubernetesem'
+title: 'Docker. Ostatni przystanek przed Kubernetesem'
 excerpt: 'Od reinstallowania Linuxa po instalacji Dockera, do 15-sekundowych buildów dzięki inteligentnemu cache''owaniu. Zobacz, jak przejąłem pełną kontrolę nad infrastrukturą mojego bloga.'
 date: '2026-02-05'
 tags: ['Docker', 'CI/CD', 'GitHub Actions', 'DevOps', 'Self-Hosted']
