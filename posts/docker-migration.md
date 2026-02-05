@@ -94,7 +94,7 @@ services:
     restart: unless-stopped
 ```
 
-![GitHub Container Registry: Obraz gotowy do pobrania](/ghcr-image-proof.png)
+![GitHub Container Registry: Obraz gotowy do pobrania](/ghcr-proof-v2.png)
 
 ## Strategia migracji: Trzy światy, jeden cel
 
