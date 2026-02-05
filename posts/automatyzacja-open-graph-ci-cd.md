@@ -4,7 +4,7 @@ title: 'Automatyzacja Open Graph: Czyli jak zmusiłem CI/CD do robienia miniatur
 date: '2026-02-04'
 tags: ['CI/CD', 'GitHub Actions', 'Automation', 'Node.js', 'Nginx']
 readTime: '6 min'
-imageUrl: '/og-automation-banner.png'
+imageUrl: '/og-automation-banner-v2.png'
 excerpt: 'Każdy szanujący się blog musi mieć ładne podglądy na LinkedInie. Ale czy DevOps będzie je robił ręcznie w Canvie? Oczywiście, że nie. Zobacz jak zaprzęgłem GitHuba i Nginxa do generowania grafik.'
 ---
 
