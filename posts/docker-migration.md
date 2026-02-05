@@ -13,7 +13,7 @@ author: 'Kompot'
 
 Serio. Wystarczyło jedno błędne polecenie in `iptables`, jedna zła zależność i system sypał się jak domek z kart. Myślałem wtedy, że konteneryzacja to czarna magia zarezerwowana dla gości z Doliny Krzemowej. Dziś? Dziś patrzę na te wspomnienia z uśmiechem politowania.
 
-Właśnie domknąłem projekt **Docker Migration**. To nie była tylko zmiana sposobu uruchamiania aplikacji. To była totalna demonstracja siły i kontroli nad własnym homelabem.
+Właśnie domknąłem projekt **Docker Migration**. To nie była tylko zmiana sposobu uruchamiania aplikacji – to była strategiczna migracja w stronę architektury **Cloud Native** i pełnej automatyzacji standardu produkcyjnego w moim homelabie.
 
 ## Koniec z "Mutable Infrastructure"
 
