@@ -17,7 +17,7 @@ Właśnie domknąłem projekt **Docker Migration**. To nie była tylko zmiana sp
 
 ## Koniec z "Mutable Infrastructure"
 
-Do tej pory mój blog działał na solidnym LXC, ale był więźniem systemu operacyjnego. Każda zmiana wersji Node.js czy konfiguracji Nginxa wymagała dłubania w "żywym organizmie" serwera. To był poziom amatorski.
+Do tej pory mój blog działał na solidnym LXC, ale nadal był więźniem systemu operacyjnego. Każda zmiana wersji Node.js czy konfiguracji Nginxa wymagała dłubania w "żywym organizmie" serwera.
 
 Dziś wdrożyłem **Immutable Infrastructure**. Moja aplikacja jest zamknięta w pancernej bańce kontenera. Nieważne, czy odpalam ją na moim Lenovo ThinkCentre, na laptopie, czy w chmurze – wstaje w ułamku sekundy, dokładnie w takiej samej konfiguracji. Żadnych niespodzianek. Żadnych "u mnie działa".
 
