@@ -4,7 +4,7 @@ services:
       context: .
       args:
         - GEMINI_API_KEY=${GEMINI_API_KEY}
-    image: vibe-blog:latest
+    image: ghcr.io/kompot-rar/vibe-blog:latest
     container_name: vibe-blog-prod
     ports:
       - "8080:80"

@@ -100,7 +100,11 @@ jobs:
       - name: Deploy Locally via Docker Compose
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          # Logowanie do GHCR na runnerze (wymagane do pulla)
+          echo $GITHUB_TOKEN | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+          
           # Pobieramy najnowszy obraz z rejestru
           docker compose pull
           # Restartujemy usługi (bez przestoju, o ile to możliwe)
