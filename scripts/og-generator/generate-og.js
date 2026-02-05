@@ -320,7 +320,7 @@ async function generate() {
     const content = fs.readFileSync(filePath, 'utf-8');
     const { data } = matter(content);
     
-    const title = data.title || 'Vibe DevOps';
+    const title = data.title || 'DevOps adventure';
     const date = data.date ? new Date(data.date).toLocaleDateString('pl-PL') : '';
     const slug = file.replace('.md', '');
     const outputPath = path.join(POSTS_OUTPUT_DIR, `${slug}.png`);

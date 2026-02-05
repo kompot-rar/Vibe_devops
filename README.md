@@ -30,6 +30,7 @@ While the core infrastructure is built with rigorous DevOps standards, the front
 Key enhancements include:
 *   **Dynamic Routing:** Full support for clean slug-based URLs.
 *   **Markdown Core:** Automated processing of Markdown-based blog posts.
+*   **Open Graph Automation:** Automated build-time generation of dynamic social preview images and metadata injection for enhanced social sharing.
 *   **Custom Infrastructure Integration:** Re-engineered for automated deployment and hosting.
 
 This strategic choice allows for:

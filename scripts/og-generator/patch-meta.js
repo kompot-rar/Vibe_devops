@@ -26,23 +26,21 @@ for (const file of files) {
   const content = fs.readFileSync(filePath, 'utf-8');
   const { data, content: markdownBody } = matter(content);
   
-  const title = data.title || 'Vibe DevOps Post';
-  const slug = file.replace('.md', '');
+      const title = data.title || 'DevOps adventure';  const slug = file.replace('.md', '');
   const description = data.description || markdownBody.slice(0, 150).replace(/[\r\n#*]/g, ' ').trim() + '...';
   
-  const metaTags = `
-    <meta property="og:type" content="article" />
-    <meta property="og:title" content="${title} | Vibe DevOps" />
-    <meta property="og:description" content="${description}" />
-    <meta property="og:image" content="${DOMAIN}/og/posts/${slug}.png" />
-    <meta property="og:url" content="${DOMAIN}/blog/${slug}" />
-    <meta property="og:logo" content="${DOMAIN}/bcr.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="${title} | Vibe DevOps" />
-    <meta name="twitter:description" content="${description}" />
-    <meta name="twitter:image" content="${DOMAIN}/og/posts/${slug}.png" />
+      const metaTags = `
+  <meta property="og:type" content="article" />
+  <meta property="og:title" content="${title} | DevOps adventure" />
+  <meta property="og:description" content="${description}" />
+  <meta property="og:image" content="${DOMAIN}/og/posts/${slug}.png" />
+  <meta property="og:url" content="${DOMAIN}/blog/${slug}" />
+  <meta property="og:logo" content="${DOMAIN}/bcr.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="${title} | DevOps adventure" />
+  <meta name="twitter:description" content="${description}" />
+  <meta name="twitter:image" content="${DOMAIN}/og/posts/${slug}.png" />
   `;
-
   const postDir = path.join(DIST_DIR, 'blog', slug);
   if (!fs.existsSync(postDir)) {
     fs.mkdirSync(postDir, { recursive: true });
@@ -74,18 +72,17 @@ console.log('Patched: index.html (Home)');
 
 // 3. Patch Roadmap Page
 const roadmapMetaTags = `
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Roadmapa 2026 | Vibe DevOps" />
-    <meta property="og:description" content="Master Plan CKA 2026. Moja ścieżka rozwoju i certyfikacji DevOps." />
-    <meta property="og:image" content="${DOMAIN}/og/roadmap.png" />
-    <meta property="og:url" content="${DOMAIN}/roadmap" />
-    <meta property="og:logo" content="${DOMAIN}/bcr.png" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Roadmapa 2026 | Vibe DevOps" />
-    <meta name="twitter:description" content="Master Plan CKA 2026. Moja ścieżka rozwoju." />
-    <meta name="twitter:image" content="${DOMAIN}/og/roadmap.png" />
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Roadmapa 2026 | DevOps adventure" />
+<meta property="og:description" content="Master Plan CKA 2026. Moja ścieżka rozwoju i certyfikacji DevOps." />
+<meta property="og:image" content="${DOMAIN}/og/roadmap.png" />
+<meta property="og:url" content="${DOMAIN}/roadmap" />
+<meta property="og:logo" content="${DOMAIN}/bcr.png" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Roadmapa 2026 | DevOps adventure" />
+<meta name="twitter:description" content="Master Plan CKA 2026. Moja ścieżka rozwoju." />
+<meta name="twitter:image" content="${DOMAIN}/og/roadmap.png" />
 `;
-
 const roadmapDir = path.join(DIST_DIR, 'roadmap');
 if (!fs.existsSync(roadmapDir)) {
   fs.mkdirSync(roadmapDir, { recursive: true });

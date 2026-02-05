@@ -13,13 +13,13 @@ excerpt: 'Każdy szanujący się blog musi mieć ładne podglądy na LinkedInie.
 Pisanie postów jest fajne. Konfigurowanie klastrów jest fajne. Ale robienie ręcznie obrazka "Social Preview" dla każdego nowego wpisu? To brzmi jak kara.
 A bez tego linki na LinkedInie czy Discordzie wyglądają jak "broken links" – puste, smutne, nieprofesjonalne.
 
-Jako inżynier aspirujący do miana **Senior DevOps**, wyznaję zasadę: **Jeśli musisz coś zrobić więcej niż dwa razy, zautomatyzuj to.**
+> Ale tutaj wyznajemy zasadę: "Jeśli musisz coś zrobić więcej niż dwa razy, zautomatyzuj to."
 
 Postanowiłem więc, że grafiki Open Graph (OG) będą generować się same, w locie, podczas każdego `git push`. A przy okazji stało się to świetnym ćwiczeniem z modyfikacji pipeline'u CI/CD i konfiguracji Nginxa.
 
 ## Architektura rozwiązania
 
-Nie chciałem zewnętrznych serwisów SaaS. Chciałem, żeby to działo się na moim runnerze.
+Nie chciałem zewnętrznych serwisów. Chciałem, żeby to działo się na moim runnerze.
 Plan był prosty:
 1.  **Trigger:** Push do repozytorium.
 2.  **Build Script:** Node.js skanuje pliki `.md`.
@@ -60,7 +60,7 @@ Efekt? Pełna kontrola nad renderowaniem.
 
 ## Krok 2: Optymalizacja (7MB -> 400KB)
 
-Moje zrzuty ekranu z monitoringu 4K ważyły po 7-8 MB. LinkedIn i Twitter odrzucają takie kobyły.
+Moje zrzuty ekranu z monitora 2K ważyły po 7-8 MB. LinkedIn i Twitter odrzucają takie kobyły.
 Zamiast zmniejszać je ręcznie, dodałem logikę do skryptu:
 
 1.  Wczytaj plik z dysku.
