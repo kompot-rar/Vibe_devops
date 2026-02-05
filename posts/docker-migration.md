@@ -94,6 +94,8 @@ services:
     restart: unless-stopped
 ```
 
+![GitHub Container Registry: Obraz gotowy do pobrania](/ghcr-image-proof.png)
+
 ## Strategia migracji: Trzy światy, jeden cel
 
 Nie bawię się w półśrodki. Docker Compose na osobnym hostingu to dla mnie tylko poligon doświadczalny. Używam wzorca **Strangler Fig**, żeby bezpiecznie przygotować się do wielkiego skoku.
