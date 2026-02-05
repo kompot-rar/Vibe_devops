@@ -94,22 +94,24 @@ services:
     restart: unless-stopped
 ```
 
-## Strategia migracji: Obraz to dopiero początek
+## Strategia migracji: Trzy światy, jeden cel
 
 Nie bawię się w półśrodki. Docker Compose na osobnym hostingu to dla mnie tylko poligon doświadczalny. Używam wzorca **Strangler Fig**, żeby bezpiecznie przygotować się do wielkiego skoku.
 
-Moja automatyzacja w GitHub Actions pilnuje dwóch światów:
-1.  **Legacy (Branch `main`):** Stary, stabilny deployment plików na serwer LXC. To działa, dopóki nie będziemy gotowi.
-2.  **Staging (Branch `docker-migration`):** Tu dzieje się magia kontenera. Buduję, optymalizuję i testuję obraz.
+Moja automatyzacja w GitHub Actions pilnuje teraz trzech różnych środowisk:
+1.  **Legacy Production (Branch `main`):** Stabilna, "produkcyjna" wersja bloga na serwerze LXC.
+2.  **Legacy Development (Branch `dev`):** Środowisko testowe dla nowych funkcji, również na LXC, ale w osobnym katalogu.
+3.  **Modern Staging (Branch `docker-migration`):** Tu dzieje się magia kontenera. Buduję, optymalizuję i testuję obraz, który docelowo trafi na klastra.
 
 ```yaml
 jobs:
-  # STARY ŚWIAT: Pliki na LXC
+  # STARY ŚWIAT: Pliki na LXC (obsługuje main i dev)
   deploy-legacy:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
     runs-on: [self-hosted, linux, homelab]
     steps:
-       - run: sudo cp -r dist/. /var/www/html/
+       - name: Deploy to Nginx
+         run: sudo cp -r dist/. ${{ env.DEPLOY_DIR }}/
 
   # NOWY ŚWIAT: Testowanie obrazu
   deploy-test-image:
