@@ -48,77 +48,89 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
     const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
     const dataUrl = `data:${mimeType};base64,${base64Image}`;
 
-    const svg = await satori(
-      {
-        type: 'div',
-        props: {
-          style: {
-            display: 'flex',
-            width: '100%',
-            height: '100%',
-            justifyContent: 'flex-end',
-            alignItems: 'flex-end',
-            padding: 30,
-            backgroundColor: '#000',
-            backgroundImage: `url('${dataUrl}')`,
-            backgroundSize: 'cover', // Fix: Scale image to fill container
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          },
-          children: [
-            {
-              type: 'div',
-              props: {
-                style: {
-                  display: 'flex',
-                  alignItems: 'center',
-                  backgroundColor: 'rgba(0,0,0,0.8)', // Slightly darker for better contrast
-                  padding: '20px 40px', // Doubled padding
-                  borderRadius: 16, // Doubled border radius
-                  border: '2px solid rgba(255,255,255,0.2)', // Thicker border
-                },
-                children: [
-                  // Icon
-                  {
-                    type: 'div',
-                    props: {
-                      style: {
-                        backgroundColor: '#171717',
-                        border: '2px solid #404040', // Thicker border
-                        padding: '0 16px', // Doubled padding
-                        borderRadius: 8, // Doubled radius
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: 64, // Doubled height (was 32)
-                        marginRight: 24, // Doubled margin
-                      },
-                      children: [
-                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 40, fontWeight: 'bold', color: '#ef4444', lineHeight: 1 }, children: '>' } }, // Font 40
-                        { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 40, fontWeight: 'bold', color: 'white', lineHeight: 1 }, children: '_' } }   // Font 40
-                      ]
-                    }
-                  },
-                  // Text
-                  {
-                    type: 'div',
-                    props: {
-                      style: { fontFamily: 'monospace', fontSize: 48, fontWeight: 'bold', letterSpacing: '-2px', display: 'flex' }, // Font 48 (was 24)
-                      children: [
-                        { type: 'span', props: { style: { color: 'white' }, children: 'DevOps' } },
-                        { type: 'span', props: { style: { color: '#ef4444' }, children: 'Zero' } },
-                        { type: 'span', props: { style: { color: 'white' }, children: 'To' } },
-                        { type: 'span', props: { style: { color: 'white' }, children: 'Hero' } },
-                      ]
-                    }
+      const svg = await satori(
+        {
+          type: 'div',
+          props: {
+            style: {
+              display: 'flex',
+              width: '100%',
+              height: '100%',
+              backgroundColor: '#000',
+              position: 'relative',
+            },
+            children: [
+              // Background Image with proper scaling
+              {
+                type: 'img',
+                props: {
+                  src: dataUrl,
+                  style: {
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
                   }
-                ]
+                }
+              },
+              // Content Overlay
+              {
+                type: 'div',
+                props: {
+                  style: {
+                    display: 'flex',
+                    alignItems: 'center',
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    padding: '20px 40px',
+                    borderRadius: 16,
+                    border: '2px solid rgba(255,255,255,0.2)',
+                    position: 'absolute',
+                    bottom: 30,
+                    right: 30,
+                  },
+                  children: [
+                    // Icon
+                    {
+                      type: 'div',
+                      props: {
+                        style: {
+                          backgroundColor: '#171717',
+                          border: '2px solid #404040',
+                          padding: '0 16px',
+                          borderRadius: 8,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          height: 64,
+                          marginRight: 24,
+                        },
+                        children: [
+                          { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 40, fontWeight: 'bold', color: '#ef4444', lineHeight: 1 }, children: '>' } },
+                          { type: 'span', props: { style: { fontFamily: 'monospace', fontSize: 40, fontWeight: 'bold', color: 'white', lineHeight: 1 }, children: '_' } }
+                        ]
+                      }
+                    },
+                    // Text
+                    {
+                      type: 'div',
+                      props: {
+                        style: { fontFamily: 'monospace', fontSize: 48, fontWeight: 'bold', letterSpacing: '-2px', display: 'flex' },
+                        children: [
+                          { type: 'span', props: { style: { color: 'white' }, children: 'DevOps' } },
+                          { type: 'span', props: { style: { color: '#ef4444' }, children: 'Zero' } },
+                          { type: 'span', props: { style: { color: 'white' }, children: 'To' } },
+                          { type: 'span', props: { style: { color: 'white' }, children: 'Hero' } },
+                        ]
+                      }
+                    }
+                  ]
+                }
               }
-            }
-          ],
-        },
-      },
-      {
+            ],
+          },
+        },      {
         width: 1200,
         height: 630,
         fonts: [
