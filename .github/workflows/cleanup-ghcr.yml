@@ -1,0 +1,21 @@
+name: Cleanup Old Images (Garbage Collector)
+
+on:
+  workflow_dispatch: # Możliwość ręcznego uruchomienia przyciskiem
+  schedule:
+    - cron: '0 0 * * 0' # Automatycznie w każdą niedzielę o północy
+
+jobs:
+  prune-ghcr:
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write # Wymagane uprawnienie do usuwania
+    
+    steps:
+      - name: Prune old images
+        uses: actions/delete-package-versions@v5
+        with: 
+          package-name: 'docker-migration' # Nazwa Twojego obrazu
+          package-type: 'container'
+          min-versions-to-keep: 5 # Zostawiamy 5 ostatnich wersji na wszelki wypadek
+          delete-only-untagged-versions: 'false' # Usuwaj też stare otagowane wersje
