@@ -5,7 +5,7 @@ excerpt: 'Od reinstallowania Linuxa po instalacji Dockera, do 15-sekundowych bui
 date: '2026-02-05'
 tags: ['Docker', 'CI/CD', 'GitHub Actions', 'DevOps', 'Self-Hosted']
 readTime: '6 min'
-imageUrl: '/docker-god-mode-proof.png'
+imageUrl: '/docker-proof.png'
 author: 'Kompot'
 ---
 
@@ -137,4 +137,4 @@ Wiem, że wciąż jestem na początku drogi i Kubernetes jeszcze nieraz sprowadz
 
 Następny cel: 3-węzłowy klaster K3s. Bo jeden kontener to dopiero rozgrzewka przed prawdziwą orkiestracją.
 
-![Dowód zbrodni: Docker na produkcji](/docker-god-mode-proof.png)
+![Dowód zbrodni: Docker na produkcji](/docker-proof.png)
