@@ -51,27 +51,32 @@ W fazie K3s:
 ## 2. Action Plan: Wdrożenie K3s (Roadmap)
 
 ### Faza 1: Infrastruktura (Hardcore Mode)
-**Cel:** 3 węzły fizyczne/VM (M710, M83, M710q).
-1.  **Decyzja OS:**
-    *   *Opcja Standard:* Debian 12 + K3s Ansible.
-    *   *Opcja "Rozkurwiacz":* **Talos Linux**. (Brak SSH, API-first, Immutable OS).
-2.  **Cluster Init:**
+**Cel:** 3 węzły fizyczne/VM (M710, M83, M710q) + "Kuźnia".
+1.  **Decyzja OS:** **Debian 12 + K3s**. (Stabilność, znane środowisko, ratunkowe SSH). Talos zostawiamy na przyszłość.
+2.  **The Forge ("Kuźnia"):**
+    *   Dedykowany kontener LXC na Proxmoxie.
+    *   Role: **GitHub Runner** + **Local Docker Registry** (port 5000).
+    *   Zysk: Buildy i deploymenty całkowicie wewnątrz sieci LAN (Gigabit speed). Zero zależności od Internetu przy skalowaniu.
+3.  **Cluster Init:**
     *   1x Server (Control Plane).
     *   2x Agents (Workers).
-3.  **Storage:** Konfiguracja `Longhorn` lub `NFS Client Provisioner` (korzystając z NAS-a na Proxmoxie) dla persistent volumes (jeśli potrzebne).
+4.  **Storage:** **NFS Client Provisioner**.
+    *   Wykorzystamy zasoby NAS z Proxmoxa.
+    *   Unikamy Longhorna w pierwszej fazie, aby nie przeciążyć małych dysków SSD (120GB) replikacją.
 
 ### Faza 2: Translacja na Manifesty K8s
 Musimy zamienić `docker-compose.yml` na obiekty Kubernetes.
 
 | Docker Compose | Kubernetes Kind | Uwagi |
 | :--- | :--- | :--- |
+| `image: ghcr.io/...` | `image: kuznia:5000/...` | Zmiana adresu rejestru na lokalny. |
 | `services: vibe-blog` | `Deployment` | Ustawimy `replicas: 2` lub `3` dla HA. |
 | `ports: 8080:80` | `Service` (ClusterIP) | Nie wystawiamy portów węzła, ruch idzie przez Ingress. |
 | - | `Ingress` | Routing ruchu (np. Traefik lub Nginx Ingress) + Cert-Manager (SSL). |
 
 ### Faza 3: GitOps (Dominacja)
 1.  Instalacja ArgoCD na klastrze.
-2.  GitHub Actions: Tylko buduje obraz i aktualizuje plik `k8s/deployment.yaml` (zmienia tag obrazu).
+2.  GitHub Actions (na Kuźni): Buduje obraz, pcha do `localhost:5000`, aktualizuje manifest.
 3.  ArgoCD: Widzi zmianę w repozytorium i sam synchronizuje klaster.
 
 ### Faza 4: The Great Switch (Merge to Main)
@@ -84,7 +89,8 @@ Musimy zamienić `docker-compose.yml` na obiekty Kubernetes.
 ---
 
 ## 3. Ryzyka i Notes
+*   **Local Registry Trust:** K3s domyślnie wymaga HTTPS dla rejestrów. Będziemy musieli skonfigurować plik `registries.yaml` na każdym nodzie (lub w K3s config), aby ufał naszej Kuźni po HTTP (`insecure-registries: ["kuznia:5000"]`).
 *   **Networking:** Podsieć K3s (CNI - Flannel/Cilium) nie może gryźć się z VLANami domowymi.
 *   **Load Balancing:** Potrzebujemy VIP (Virtual IP) dla klastra (Kube-VIP), żeby High Availability miało sens.
 
-**Next Step:** Provisioning maszyn pod K3s.
+**Next Step:** Provisioning maszyn pod K3s i postawienie LXC "Kuźnia".
