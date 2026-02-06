@@ -94,17 +94,26 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
-          build-args: |
-            GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: Deploy Locally via Docker Compose
+      - name: Cleanup & Deploy Locally via Docker Compose
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
         run: |
+          echo "🧹 Cleaning up old containers and ports..."
+          # Stop containers defined in compose
+          docker compose down --remove-orphans || true
+          
+          # Force kill any remaining container using port 8080 (Safety Net)
+          EXISTING_CONTAINER=$(docker ps -q --filter "publish=8080")
+          if [ ! -z "$EXISTING_CONTAINER" ]; then
+             echo "⚠️ Found rogue container blocking port 8080. Killing it..."
+             docker rm -f $EXISTING_CONTAINER
+          fi
+          
+          echo "🚀 Deploying new version..."
           echo $GITHUB_TOKEN | docker login ghcr.io -u ${{ github.actor }} --password-stdin
           docker compose pull
           docker compose up -d
