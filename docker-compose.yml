@@ -2,8 +2,6 @@ services:
   devops-blog:
     build:
       context: .
-      args:
-        - GEMINI_API_KEY=${GEMINI_API_KEY}
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/${IMAGE_NAME}:latest
     container_name: devops-blog-prod
     ports:

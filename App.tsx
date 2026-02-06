@@ -17,7 +17,6 @@ const About: React.FC = () => (
     <p className="text-thinkpad-muted mb-6 leading-relaxed font-mono text-sm">
       Witaj na moim blogu! Nazywam się Łukasz Mróz i jestem zafascynowany DevOps. 
       Stworzyłem tę stronę, aby dokumentować moją naukę i dzielić się wiedzą z innymi.
-      Korzystam z pomocy sztucznej inteligencji, aby szybciej zrozumieć trudne koncepty.
     </p>
     
     {/* Sekcja ikonek z animacją */}

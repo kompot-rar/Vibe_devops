@@ -12,8 +12,6 @@
 Kluczowa jest strategia Multi-Stage. W K8s użyjemy dokładnie tego samego obrazu.
 ```dockerfile
 FROM node:22-alpine AS build
-ARG GEMINI_API_KEY
-ENV GEMINI_API_KEY=$GEMINI_API_KEY
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
@@ -69,11 +67,9 @@ Musimy zamienić `docker-compose.yml` na obiekty Kubernetes.
 | :--- | :--- | :--- |
 | `services: vibe-blog` | `Deployment` | Ustawimy `replicas: 2` lub `3` dla HA. |
 | `ports: 8080:80` | `Service` (ClusterIP) | Nie wystawiamy portów węzła, ruch idzie przez Ingress. |
-| `environment` | `Secret` / `ConfigMap` | Klucze API jako K8s Secrets (zakodowane base64). |
 | - | `Ingress` | Routing ruchu (np. Traefik lub Nginx Ingress) + Cert-Manager (SSL). |
 
 ### Faza 3: GitOps (Dominacja)
-Zamiast robić `kubectl apply` z CI/CD (Push-based), wdrożymy **ArgoCD** (Pull-based).
 1.  Instalacja ArgoCD na klastrze.
 2.  GitHub Actions: Tylko buduje obraz i aktualizuje plik `k8s/deployment.yaml` (zmienia tag obrazu).
 3.  ArgoCD: Widzi zmianę w repozytorium i sam synchronizuje klaster.
@@ -90,6 +86,5 @@ Zamiast robić `kubectl apply` z CI/CD (Push-based), wdrożymy **ArgoCD** (Pull-
 ## 3. Ryzyka i Notes
 *   **Networking:** Podsieć K3s (CNI - Flannel/Cilium) nie może gryźć się z VLANami domowymi.
 *   **Load Balancing:** Potrzebujemy VIP (Virtual IP) dla klastra (Kube-VIP), żeby High Availability miało sens.
-*   **Gemini API Key:** Musi być wstrzyknięty podczas *budowania* obrazu (ARG), ale jeśli zmienimy architekturę na pobieranie klucza w Runtime, będziemy potrzebować K8s Secrets. (Obecnie: Build time).
 
 **Next Step:** Provisioning maszyn pod K3s.

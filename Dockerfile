@@ -1,11 +1,6 @@
 # Etap 1: Budowanie aplikacji
 FROM node:22-alpine AS build
 
-# Przyjmujemy klucz API jako argument budowania
-ARG GEMINI_API_KEY
-# Ustawiamy go jako zmienną środowiskową dla procesu build
-ENV GEMINI_API_KEY=$GEMINI_API_KEY
-
 WORKDIR /app
 COPY package*.json ./
 RUN npm install
