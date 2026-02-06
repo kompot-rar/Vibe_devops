@@ -1,11 +1,11 @@
 services:
-  vibe-blog:
+  devops-blog:
     build:
       context: .
       args:
         - GEMINI_API_KEY=${GEMINI_API_KEY}
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/${IMAGE_NAME}:latest
-    container_name: vibe-blog-prod
+    container_name: devops-blog-prod
     ports:
       - "8080:80"
     restart: unless-stopped

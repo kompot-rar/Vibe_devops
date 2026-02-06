@@ -1,6 +1,6 @@
 ---
 id: '13'
-title: 'Docker. Ostatni przystanek przed Kubernetesem'
+title: 'Prosta konteneryzacja – ostatni przystanek przed orkiestryzacją'
 excerpt: 'Od reinstallowania Linuxa po instalacji Dockera, do 15-sekundowych buildów dzięki inteligentnemu cache''owaniu. Zobacz, jak przejąłem pełną kontrolę nad infrastrukturą mojego bloga.'
 date: '2026-02-05'
 tags: ['Docker', 'CI/CD', 'GitHub Actions', 'DevOps', 'Self-Hosted']
@@ -85,10 +85,10 @@ Tak wygląda mój `docker-compose.yml`. Zauważ dynamiczne nazewnictwo obrazów 
 
 ```yaml
 services:
-  vibe-blog:
+  devops-blog:
     # Dynamiczna nazwa obrazu zależna od brancha (np. 'docker-migration' lub 'main')
     image: ghcr.io/${GITHUB_REPOSITORY_OWNER}/${IMAGE_NAME}:latest
-    container_name: vibe-blog-prod
+    container_name: devops-blog-prod
     ports:
       - "8080:80"
     restart: unless-stopped
