@@ -5,7 +5,14 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+
+# Generowanie obrazków Open Graph PRZED buildem (żeby trafiły do dist)
+RUN node scripts/og-generator/generate-og.js
+
 RUN npm run build
+
+# Patchowanie meta tagów w plikach HTML PO buildzie
+RUN node scripts/og-generator/patch-meta.js
 
 # Etap 2: Serwowanie aplikacji przez Nginx
 FROM nginx:alpine
