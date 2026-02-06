@@ -28,6 +28,7 @@ Every component of this system is treated as code. The project emphasizes reprod
 While the core infrastructure is built with rigorous DevOps standards, the frontend application follows an **AI-Assisted Development methodology**. Originally initiated as a static AI Studio template for a simple landing page, the project has been extensively transformed and engineered by me into a **full-featured blog engine**.
 
 Key enhancements include:
+*   **AI Studio Debloat:** Complete removal of legacy AI templates, chat widgets, and unused API keys to minimize attack surface and codebase size.
 *   **Dynamic Routing:** Full support for clean slug-based URLs.
 *   **Markdown Core:** Automated processing of Markdown-based blog posts.
 *   **Open Graph Automation:** Automated build-time generation of dynamic social preview images and metadata injection for enhanced social sharing.
