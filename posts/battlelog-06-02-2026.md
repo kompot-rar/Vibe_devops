@@ -3,7 +3,7 @@ title: 'Battlelog: 06.02.2026'
 date: '2026-02-06'
 excerpt: '6 minut vs 51 sekund. Jak przestałem wysyłać bajty na wakacje do USA i zrozumiałem fizykę Homelaba.'
 tags: ['ci-cd', 'optimization', 'docker', 'github-actions']
-imageUrl: '/docker-god-mode-proof.png'
+imageUrl: '/docker-proof.png'
 ---
 
 Są dwa typy inżynierów DevOps. Ci, którzy kopiują rozwiązania z chmury 1:1 na własny serwer, i ci, którzy szanują swój czas. Do dzisiaj byłem w tej pierwszej grupie.
