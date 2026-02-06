@@ -38,6 +38,21 @@ Zrozumiałem, że w środowisku on-premise, gdzie Runner *jest* Hostem, muszę z
 
 Wyciąłem pośrednika. Docker buduje obraz, taguje go i **natychmiast** podnosi kontener. Push do rejestru (jako backup) leci w tle, kiedy aplikacja już wstaje.
 
+```yaml
+- name: ⚡ Local Build & Deploy (Homelab Speed)
+  env:
+    FULL_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/docker-migration:latest
+  run: |
+    # Budujemy obraz bezpośrednio w lokalnym Dockerze
+    docker build -t $FULL_IMAGE_NAME .
+    
+    # Natychmiastowe wdrożenie bez ściągania z sieci
+    docker compose up -d
+    
+    # Push do chmury leci jako backup w tle
+    docker push $FULL_IMAGE_NAME
+```
+
 **Wynik? Zjazd z 5m 53s na 0m 51s.** To jest prawie 700% optymalizacji.
 
 ## "Scorched Earth" Cleanup
