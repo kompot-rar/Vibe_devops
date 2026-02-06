@@ -83,3 +83,5 @@ Dodałem też **Automated Garbage Collector** do GHCR. GitHub daje 500MB na pryw
 Docker Compose to tylko rozgrzewka. W ten weekend wjeżdża **K3s**. Szykuję architekturę "The Forge" – lokalny rejestr obrazów wewnątrz sieci LAN, żeby klaster 3 węzłów instalował się z prędkością światłowodu, a nie Neostrady.
 
 Nie sztuką jest użyć gotowego narzędzia. Sztuką jest zrozumieć, kiedy to narzędzie działa przeciwko Tobie.
+
+![Dowód optymalizacji](/docker-proof.png)
