@@ -12,7 +12,7 @@ Miał być luźny sobotni wieczór. Kumpel (Lead od systemów ERP) wpadł z fizy
 *"Zainstalujesz mi Proxmoxa? Bo chcę się pobawić, a Ty w tym ostatnio siedzisz".*
 
 Jasne. Godzinka roboty, konfiguracja sieci, może jakieś piwko – standard.
-Skończyliśmy trzy dni później, w niedzielę w nocy, z działającym MVP systemu do obsługi Krajowego Systemu e-Faktur.
+Skończyliśmy w niedzielę w nocy, z działającym MVP systemu do obsługi Krajowego Systemu e-Faktur.
 
 ![tak powstają startupy :D](/startupy.png)
 *tak powstają startupy :D*
