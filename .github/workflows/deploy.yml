@@ -58,12 +58,12 @@ jobs:
           sudo chmod -R 755 ${{ env.DEPLOY_DIR }}
 
   # ==========================================
-  # ☸️ KUBERNETES PIPELINE (Dev → K8s via GHCR)
+  # ☸️ KUBERNETES PIPELINE (Dev → K8s via Local Registry & GHCR)
   # ==========================================
   build-k8s:
     name: Build & Push for Kubernetes
     if: github.ref == 'refs/heads/dev'
-    runs-on: [self-hosted, linux, docker]
+    runs-on: k3s-dev
 
     steps:
       - name: Checkout code
@@ -76,12 +76,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Image
+      - name: Build & Push (Local & GHCR)
         env:
-          IMAGE: ghcr.io/${{ github.repository_owner }}/vibe-devops:dev
+          GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/vibe-devops:dev
+          LOCAL_IMAGE: localhost:5000/vibe-devops:dev
         run: |
-          docker build -t $IMAGE .
-          docker push $IMAGE
+          echo "Building image on The Forge (Kuznia)..."
+          docker build -t $GHCR_IMAGE -t $LOCAL_IMAGE .
+          
+          echo "Pushing to local registry (Gigabit LAN speed)..."
+          docker push $LOCAL_IMAGE
+          
+          echo "Pushing to GHCR (Cloud Backup)..."
+          docker push $GHCR_IMAGE
+          
           docker image prune -f
 
   # ==========================================
