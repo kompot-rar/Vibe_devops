@@ -17,22 +17,22 @@ Skończyliśmy trzy dni później, w niedzielę w nocy, z działającym MVP syst
 ![tak powstają startupy :D](/startupy.png)
 *tak powstają startupy :D*
 
-## 🍺 Geneza: "Potrzymaj mi klawiaturę"
+##  Geneza: "Potrzymaj mi klawiaturę"
 
 Zamiast skończyć na gołym hypervisorze, zaczęliśmy projektować. On potrzebował środowiska pod testy integracji z nowym API KSeF 2.0. Ja potrzebowałem poligonu, żeby sprawdzić swoją wiedzę w boju, a nie tylko na suchych labach.
 
 Podział ról wyklarował się naturalnie w 5 minut:
-*   **On (Dev):** Logika biznesowa, schematy faktur, frontend w React.
+*   **On (Dev):** Logika biznesowa, schematy faktur, backend i bazy danych.
 *   **Ja (Ops):** Frontend i wszystko to, co sprawia, że nasz kod działa, jest bezpieczny i dostępny.
 
-## 🛠️ Stack: Solidny fundament
+##  Stack: Solidny fundament
 
 Nie bawiliśmy się w Kubernetesy (na to przyjdice czas). Liczył się *Time to Market* i stabilność.
 1.  **Proxmox:** Baza. Trzy maszyny wirtualne (Postgres DB, Frontend/Node.js, Sandbox).
 2.  **PostgreSQL:** Z tuningiem pod przyszłą replikację i automatycznymi backupami przez API Proxmoxa.
 3.  **GitHub Actions:** Serce operacji.
 
-## 💡 Moment "Aha!": Czym właściwie jest DevOps?
+##  Moment "Aha!": Czym właściwie jest DevOps?
 
 Przez ten weekend zrozumiałem więcej niż wszytko to co wyczytałem z kursów do tej pory. DevOps to nie "pisanie skryptów w Bashu". To **usuwanie przeszkód**.
 
@@ -43,9 +43,9 @@ Kiedy pushował kod do repozytorium, GitHub Actions automatycznie:
 3.  Wrzucały migracje na bazę danych.
 4.  Deployowały całość na odpowiednią VM-kę.
 
-Nie musiał pytać *"jak to wrzucić?"*. On po prostu pisał kod, a ten kod *"się dział"*. Widziałem ten błysk w oku, gdy 2 minuty po commicie, jego zmiana była live, spięta z rządowym API testowym. Żadnego ręcznego kopiowania plików, żadnego *"u mnie działa"*.
+Nie musiał pytać *"jak to wrzucić?"*. On po prostu pisał kod, a ten kod *"się dział"*. Widziałem ten błysk w oku, gdy 2 minuty po commicie, jego zmiana była live, spięta z API.
 
-## 🐛 Rzeczywistość weryfikuje teorię
+##  Rzeczywistość weryfikuje teorię
 
 Oczywiście, że nie było różowo.
 *   Pierwsze próby łączenia backendu z frontendem
@@ -56,7 +56,7 @@ Oczywiście, że nie było różowo.
 Ale zamiast paniki *"serwer nie działa"*, była inżynierska diagnostyka. Logi, metryki, szybki fix, deploy. Pętla zwrotna skrócona do minimum. Działaliśmy jak zgrany, dwuosobowy zespół produktowy.
 
 
-## 📝 Wnioski Juniora
+##  Wnioski Juniora
 
 Ten weekend wyglądał z zewnątrz jak zalążek projektu z komercyjnym potencjałem, ale prawda jest prostsza: nie chcieliśmy budować „14. SaaS-a do KSeF”. Chodziło nam o sprawdzian w boju — czy potrafimy dowieźć działający przepływ end‑to‑end w warunkach presji czasu, błędów i ciągłych zmian, a nie o tworzenie kolejnego produktu „pod rynek”.
 
