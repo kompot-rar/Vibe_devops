@@ -1,4 +1,4 @@
-name: Deploy System (Legacy & Modern)
+name: Deploy System (Legacy, Docker & Kubernetes)
 
 on:
   push:
@@ -17,9 +17,9 @@ jobs:
   # ==========================================
   deploy-legacy:
     name: Legacy Deploy (LXC)
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/dev'
+    if: github.ref == 'refs/heads/main'
     runs-on: [self-hosted, linux, homelab]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,15 +27,9 @@ jobs:
       - name: Set Environment Variables
         id: set-env
         run: |
-          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            echo "DEPLOY_DIR=/var/www/html" >> $GITHUB_ENV
-            echo "ENV_NAME=Production" >> $GITHUB_ENV
-            echo "PUBLIC_URL=https://devops.mrozy.org" >> $GITHUB_ENV
-          else
-            echo "DEPLOY_DIR=/var/www/vibe_dev" >> $GITHUB_ENV
-            echo "ENV_NAME=Preview (Dev)" >> $GITHUB_ENV
-            echo "PUBLIC_URL=https://vibe-dev.mrozy.org" >> $GITHUB_ENV
-          fi
+          echo "DEPLOY_DIR=/var/www/html" >> $GITHUB_ENV
+          echo "ENV_NAME=Production" >> $GITHUB_ENV
+          echo "PUBLIC_URL=https://devops.mrozy.org" >> $GITHUB_ENV
 
       - name: Install Dependencies
         run: npm install
@@ -64,13 +58,40 @@ jobs:
           sudo chmod -R 755 ${{ env.DEPLOY_DIR }}
 
   # ==========================================
+  # ☸️ KUBERNETES PIPELINE (Dev → K8s via GHCR)
+  # ==========================================
+  build-k8s:
+    name: Build & Push for Kubernetes
+    if: github.ref == 'refs/heads/dev'
+    runs-on: [self-hosted, linux, docker]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Image
+        env:
+          IMAGE: ghcr.io/${{ github.repository_owner }}/vibe-devops:dev
+        run: |
+          docker build -t $IMAGE .
+          docker push $IMAGE
+          docker image prune -f
+
+  # ==========================================
   # 🚀 MODERN PIPELINE (Docker / GHCR)
   # ==========================================
   deploy-modern:
     name: Modern Deploy (Docker + Buildx)
     if: github.ref == 'refs/heads/docker-migration'
     runs-on: [self-hosted, linux, docker]
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -85,29 +106,26 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: ⚡ Local Build & Deploy (Homelab Speed)
+      - name: Local Build & Deploy (Homelab Speed)
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
           FULL_IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
         run: |
-          echo "🏗️ Building image locally..."
-          # Build directly to local docker daemon using layer caching
+          echo "Building image locally..."
           docker build -t $FULL_IMAGE_NAME .
-          
-          echo "🧹 Cleaning up old containers..."
+
+          echo "Cleaning up old containers..."
           docker compose down --remove-orphans || true
-          
-          # Safety net for port 8080
+
           if [ ! -z "$(docker ps -q --filter "publish=8080")" ]; then
              docker rm -f $(docker ps -q --filter "publish=8080")
           fi
-          
-          echo "🚀 Deploying instantly (No Pull)..."
-          # Start using the image we just built locally
+
+          echo "Deploying instantly (No Pull)..."
           docker compose up -d
-          
-          echo "📤 Pushing to registry (Background/Backup)..."
+
+          echo "Pushing to registry (Background/Backup)..."
           docker push $FULL_IMAGE_NAME
-          
+
           docker image prune -f

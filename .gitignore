@@ -26,3 +26,18 @@ dist-ssr
 # Gemini CLI state
 .gemini/
 public/og/
+
+# Secrets and Credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+id_rsa*
+
+# Infrastructure as Code (Terraform)
+.terraform/
+*.tfvars
+*.tfvars.json
+*.tfstate
+*.tfstate.backup
