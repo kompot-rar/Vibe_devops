@@ -1,7 +1,7 @@
 ---
 id: '15'
 title: 'Wdrożenie Świętej Trójcy: Terraform, Ansible i ArgoCD'
-date: '2026-02-09'
+date: '2026-02-10'
 tags: ['Kubernetes', 'GitOps', 'IaC', 'Homelab', 'DevOps']
 readTime: '6 min'
 imageUrl: '/holy-trinity-banner.png'
