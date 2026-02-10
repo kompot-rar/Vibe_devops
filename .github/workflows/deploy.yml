@@ -31,9 +31,11 @@ jobs:
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "TAG=latest" >> $GITHUB_ENV
             echo "ENV=prod" >> $GITHUB_ENV
+            echo "PUBLIC_URL=https://devops.mrozy.org" >> $GITHUB_ENV
           else
             echo "TAG=dev" >> $GITHUB_ENV
             echo "ENV=dev" >> $GITHUB_ENV
+            echo "PUBLIC_URL=https://dev-devops.mrozy.org" >> $GITHUB_ENV
           fi
 
       - name: Login to GitHub Container Registry
