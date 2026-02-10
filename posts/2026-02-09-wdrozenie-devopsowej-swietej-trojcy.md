@@ -59,8 +59,6 @@ Zamiast doraźnych poprawek i łatania dziur ręcznie, postawiłem na chłodną 
 2.  **Refaktor Kodu:** Zmodyfikowałem rolę Ansible, wyłączając `servicelb` w K3s i nadając Kube-VIP uprawnienia administratora sieci (`NET_ADMIN`), aby mógł legalnie zarządzać ruchem.
 3.  **Nuke & Pave:** Zamiast naprawiać uszkodzony klaster, po prostu go zniszczyłem. Jedna komenda Ansible (`ansible-playbook reset.yml`) wyczyściła wszystko do zera, a kolejna postawiła poprawioną wersję.
 
-![Proces czyszczenia i odbudowy klastra przez Ansible](/ansible-reset-nuke.png)
-
 W 8 minut byłem z powrotem online. To jest właśnie potęga IaC.
 
 ## Faza 3: GitOps z ArgoCD
