@@ -52,7 +52,7 @@ jobs:
           
           # Budujemy obraz z wieloma tagami
           if [[ "${{ env.ENV }}" == "prod" ]]; then
-            docker build -t $GHCR_IMAGE:latest -t $GHCR_IMAGE:${{ env.SHORT_SHA }} -t $LOCAL_IMAGE:latest -t $LOCAL_IMAGE:${{ env.SHORT_SHA }} .
+            docker build --build-arg PUBLIC_URL=${{ env.PUBLIC_URL }} -t $GHCR_IMAGE:latest -t $GHCR_IMAGE:${{ env.SHORT_SHA }} -t $LOCAL_IMAGE:latest -t $LOCAL_IMAGE:${{ env.SHORT_SHA }} .
             
             echo "Pushing Production images..."
             docker push $LOCAL_IMAGE:latest
@@ -60,7 +60,7 @@ jobs:
             docker push $GHCR_IMAGE:latest
             docker push $GHCR_IMAGE:${{ env.SHORT_SHA }}
           else
-            docker build -t $GHCR_IMAGE:dev -t $LOCAL_IMAGE:dev .
+            docker build --build-arg PUBLIC_URL=${{ env.PUBLIC_URL }} -t $GHCR_IMAGE:dev -t $LOCAL_IMAGE:dev .
             
             echo "Pushing Dev images..."
             docker push $LOCAL_IMAGE:dev

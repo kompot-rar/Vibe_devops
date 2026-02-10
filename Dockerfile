@@ -11,6 +11,10 @@ RUN node scripts/og-generator/generate-og.js
 
 RUN npm run build
 
+# Przyjmujemy adres publiczny jako argument budowania
+ARG PUBLIC_URL
+ENV PUBLIC_URL=$PUBLIC_URL
+
 # Patchowanie meta tagów w plikach HTML PO buildzie
 RUN node scripts/og-generator/patch-meta.js
 
