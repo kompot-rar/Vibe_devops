@@ -8,7 +8,7 @@
 ![AI Assisted](https://img.shields.io/badge/Workflow-AI_Assisted-8A2BE2?style=flat-square)
 ![Infrastructure First](https://img.shields.io/badge/Infrastructure-Hardened-00C853?style=flat-square)
 
-[**LIVE DEMO: devops.mrozy.org**](https://devops.mrozy.org) &nbsp;&nbsp;&nbsp; [**DEV PREVIEW: vibe-dev.mrozy.org**](https://vibe-dev.mrozy.org)
+[**LIVE DEMO: devops.mrozy.org**](https://devops.mrozy.org) &nbsp;&nbsp;&nbsp; [**DEV PREVIEW: dev-devops.mrozy.org**](https://dev-devops.mrozy.org/)
 
 </div>
 
@@ -22,7 +22,9 @@ The goal is to bridge the gap between theoretical knowledge and production-grade
 ## Engineering Philosophy
 
 ### Infrastructure as Code & GitOps
-Every component of this system is treated as code. The project emphasizes reproducibility and stability over manual configuration. The infrastructure is evolving towards a 3-node Kubernetes cluster, prioritizing declarative configuration and container orchestration standards.
+Every component of this system is treated as code. The project emphasizes reproducibility and stability over manual configuration. The infrastructure is running on a **3-node K3s Kubernetes cluster**, managed via **ArgoCD** for full GitOps implementation.
+
+> **Note:** The full Infrastructure as Code (Ansible, Terraform, Kubernetes manifests) documentation and source code is maintained in a separate repository to ensure separation of concerns.
 
 ### The "Vibe Coding" Protocol
 While the core infrastructure is built with rigorous DevOps standards, the frontend application follows an **AI-Assisted Development methodology**. Originally initiated as a static AI Studio template for a simple landing page, the project has been extensively transformed and engineered by me into a **full-featured blog engine**.
@@ -43,7 +45,7 @@ This strategic choice allows for:
 ### Core Components
 *   **Infrastructure:** Private Homelab cluster.
 *   **Virtualization:** Proxmox VE Cluster.
-*   **Containerization & Orchestration:** containerd & Kubernetes coming soon (currently exploring low-level runtimes).
+*   **Containerization & Orchestration:** **K3s Kubernetes Cluster** (3 nodes) with **ArgoCD**.
 *   **Networking:** Zero Trust architecture using Cloudflare Tunnels; no exposed inbound ports.
 *   **Storage:** Network File System (NFS) for shared persistent storage across nodes.
 
