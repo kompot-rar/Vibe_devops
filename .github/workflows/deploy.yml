@@ -67,9 +67,17 @@ jobs:
             docker push $GHCR_IMAGE:dev
           fi
 
+      - name: Setup Kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
       - name: Trigger Rollout (DevOps Magic)
         run: |
-          # Restartujemy deployment, aby K3s odświeżył obraz (szczególnie ważne dla tagów :dev i :latest)
+          # Wskazujemy config klastra (Kuźnia powinna mieć go w standardowym miejscu lub w env runnera)
+          # Jeśli K3s jest lokalnie, config to często /etc/rancher/k3s/k3s.yaml
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          
           if [[ "${{ env.ENV }}" == "prod" ]]; then
             kubectl rollout restart deployment/blog-devops-prod -n vibe-prod
           else
