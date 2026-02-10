@@ -13,61 +13,28 @@ permissions:
 
 jobs:
   # ==========================================
-  # 🏛️ LEGACY PIPELINE (LXC / Direct Copy)
+  # ☸️ KUBERNETES PIPELINE (Dev & Prod via Local Registry & GHCR)
   # ==========================================
-  deploy-legacy:
-    name: Legacy Deploy (LXC)
-    if: github.ref == 'refs/heads/main'
-    runs-on: [self-hosted, linux, homelab]
+  build-and-deploy:
+    name: Build, Push & Deploy to K3s
+    if: github.ref == 'refs/heads/dev' || github.ref == 'refs/heads/main'
+    runs-on: k3s-dev
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set Environment Variables
-        id: set-env
+        id: vars
         run: |
-          echo "DEPLOY_DIR=/var/www/html" >> $GITHUB_ENV
-          echo "ENV_NAME=Production" >> $GITHUB_ENV
-          echo "PUBLIC_URL=https://devops.mrozy.org" >> $GITHUB_ENV
-
-      - name: Install Dependencies
-        run: npm install
-
-      - name: Generate Open Graph Images
-        run: node scripts/og-generator/generate-og.js
-
-      - name: Build Project
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          REACT_APP_ADMIN_PASSWORD: ${{ secrets.REACT_APP_ADMIN_PASSWORD }}
-          NODE_OPTIONS: "--max-old-space-size=4096"
-        run: npm run build
-
-      - name: Patch Meta Tags for SEO
-        env:
-          PUBLIC_URL: ${{ env.PUBLIC_URL }}
-        run: node scripts/og-generator/patch-meta.js
-
-      - name: Deploy to Nginx
-        run: |
-          sudo mkdir -p ${{ env.DEPLOY_DIR }}
-          sudo rm -rf ${{ env.DEPLOY_DIR }}/*
-          sudo cp -r dist/. ${{ env.DEPLOY_DIR }}/
-          sudo chown -R www-data:www-data ${{ env.DEPLOY_DIR }}
-          sudo chmod -R 755 ${{ env.DEPLOY_DIR }}
-
-  # ==========================================
-  # ☸️ KUBERNETES PIPELINE (Dev → K8s via Local Registry & GHCR)
-  # ==========================================
-  build-k8s:
-    name: Build & Push for Kubernetes
-    if: github.ref == 'refs/heads/dev'
-    runs-on: k3s-dev
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+          echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+          if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            echo "TAG=latest" >> $GITHUB_ENV
+            echo "ENV=prod" >> $GITHUB_ENV
+          else
+            echo "TAG=dev" >> $GITHUB_ENV
+            echo "ENV=dev" >> $GITHUB_ENV
+          fi
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -76,19 +43,38 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push (Local & GHCR)
+      - name: Build & Push
         env:
-          GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/vibe-devops:dev
-          LOCAL_IMAGE: localhost:5000/vibe-devops:dev
+          GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/blog-devops
+          LOCAL_IMAGE: localhost:5000/blog-devops
         run: |
-          echo "Building image on The Forge (Kuznia)..."
-          docker build -t $GHCR_IMAGE -t $LOCAL_IMAGE .
+          echo "Building image for ${{ env.ENV }} environment..."
           
-          echo "Pushing to local registry (Gigabit LAN speed)..."
-          docker push $LOCAL_IMAGE
-          
-          echo "Pushing to GHCR (Cloud Backup)..."
-          docker push $GHCR_IMAGE
+          # Budujemy obraz z wieloma tagami
+          if [[ "${{ env.ENV }}" == "prod" ]]; then
+            docker build -t $GHCR_IMAGE:latest -t $GHCR_IMAGE:${{ env.SHORT_SHA }} -t $LOCAL_IMAGE:latest -t $LOCAL_IMAGE:${{ env.SHORT_SHA }} .
+            
+            echo "Pushing Production images..."
+            docker push $LOCAL_IMAGE:latest
+            docker push $LOCAL_IMAGE:${{ env.SHORT_SHA }}
+            docker push $GHCR_IMAGE:latest
+            docker push $GHCR_IMAGE:${{ env.SHORT_SHA }}
+          else
+            docker build -t $GHCR_IMAGE:dev -t $LOCAL_IMAGE:dev .
+            
+            echo "Pushing Dev images..."
+            docker push $LOCAL_IMAGE:dev
+            docker push $GHCR_IMAGE:dev
+          fi
+
+      - name: Trigger Rollout (DevOps Magic)
+        run: |
+          # Restartujemy deployment, aby K3s odświeżył obraz (szczególnie ważne dla tagów :dev i :latest)
+          if [[ "${{ env.ENV }}" == "prod" ]]; then
+            kubectl rollout restart deployment/blog-devops-prod -n vibe-prod
+          else
+            kubectl rollout restart deployment/blog-devops-dev -n blog
+          fi
           
           docker image prune -f
 
