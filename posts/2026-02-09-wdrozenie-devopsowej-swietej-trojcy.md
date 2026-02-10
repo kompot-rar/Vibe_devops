@@ -5,15 +5,7 @@ date: '2026-02-09'
 tags: ['Kubernetes', 'GitOps', 'IaC', 'Homelab', 'DevOps']
 readTime: '6 min'
 imageUrl: '/holy-trinity-banner.png'
-excerpt: 'Infrastructure as Code to polisa ubezpieczeniowa. Wdrożyłem "God Mode" Cluster – środowisko K3s HA w pełni zautomatyzowane za pomocą Terraform, Ansible i ArgoCD.'
----
-
-Infrastructure as Code to nie tylko wygoda. To polisa ubezpieczeniowa. W tej fazie projektu przekonałem się, że kompletny stack Kubernetes (HA, GitOps, Ingress) można traktować jak proces efemeryczny. Zniszcz. Odtwórz. Zapomnij.
-
-Wdrożyłem **Święty Graal DevOps**: Terraform + Ansible + ArgoCD. Cel był prosty: Totalna automatyzacja. Zero manualnych kroków. Zero litości dla "ClickOps".
-
-Oto jak zbudowałem **"God Mode" Cluster** – środowisko K3s High Availability, które jest nieśmiertelne dzięki kodowi.
-
+excerpt: 'Wdrożyłem "God Mode" Cluster – środowisko K3s HA w pełni zautomatyzowane za pomocą Terraform, Ansible i ArgoCD.'
 ---
 
 ## Architektura: Święta Trójca DevOps
@@ -23,6 +15,8 @@ Chęć traktowania mojego klastra jak zasobu w chmurze doprowadziła do pierwszy
 1.  **Terraform (Provisioning):** Twórca światów. Definiuje maszyny wirtualne w kodzie.
 2.  **Ansible (Configuration):** Zarządca. Instaluje, konfiguruje i hartuje systemy operacyjne oraz klaster K3s.
 3.  **ArgoCD (Deployment):** Autopilot. Pilnuje, by to, co jest w Gitcie, zawsze działało na klastrze.
+
+Wybrałem K3s, bo to genialny przykład inżynierskiego odchudzania – dostaję pełną certyfikację CNCF i wszystkie mechanizmy, których muszę się nauczyć do CKA, ale bez zbędnego balastu. Na moich ThinkCentre każda setka megabajtów RAMu jest na wagę złota, a K3s traktuje zasoby z ogromnym szacunkiem, pozwalając mi budować gęstą sieć usług zamiast karmić samą infrastrukturę klastra.
 
 ## Faza 1: Terraform & Ansible (Nuke & Pave)
 
@@ -99,6 +93,8 @@ spec:
 Chcę dodać Ingress? Commit do Gita. Chcę zmienić monitoring? Commit do Gita. ArgoCD wykrywa zmianę i synchronizuje stan klastra.
 
 Jeśli ktoś wejdzie na serwer i ręcznie coś zmieni, ArgoCD to wykryje i automatycznie cofnie te zmiany. To jest właśnie **Self-Healing Infrastructure**.
+
+![Widok synchronizacji i mechanizmu Self-Healing w ArgoCD](/argocd-self-healing.png)
 
 ## Podsumowanie
 
