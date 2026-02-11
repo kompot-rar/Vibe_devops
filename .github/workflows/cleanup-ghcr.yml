@@ -15,7 +15,7 @@ jobs:
       - name: Prune old images
         uses: actions/delete-package-versions@v5
         with: 
-          package-name: 'docker-migration' # Nazwa Twojego obrazu
+          package-name: 'blog-devops' # Nazwa aktualnego obrazu (zmieniona z docker-migration)
           package-type: 'container'
           min-versions-to-keep: 5 # Zostawiamy 5 ostatnich wersji na wszelki wypadek
           delete-only-untagged-versions: 'false' # Usuwaj też stare otagowane wersje
