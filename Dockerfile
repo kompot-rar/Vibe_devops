@@ -6,6 +6,9 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 
+# Optymalizacja obrazów (resize do max 1920px + kompresja)
+RUN node scripts/optimize-images.js
+
 # Generowanie obrazków Open Graph PRZED buildem (żeby trafiły do dist)
 RUN node scripts/og-generator/generate-og.js
 

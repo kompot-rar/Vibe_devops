@@ -6,6 +6,11 @@ import satori from 'satori';
 import { html } from 'satori-html';
 import { Resvg } from '@resvg/resvg-js';
 import matter from 'gray-matter';
+import sharp from 'sharp';
+
+const OG_WIDTH = 1200;
+const OG_HEIGHT = 630;
+const OG_PNG_QUALITY = 80;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,16 +42,18 @@ async function getFont() {
 async function generateOptimizedBanner(imagePath, outputPath, fontData) {
     console.log(`Optimizing banner for: ${path.basename(outputPath)}`);
     
-    // Read image and convert to base64
+    // Pre-resize source image via sharp to save memory in satori
     const fullImagePath = path.join(PUBLIC_DIR, imagePath);
     if (!fs.existsSync(fullImagePath)) {
         console.warn(`Warning: Image not found at ${fullImagePath}, skipping optimization.`);
         return;
     }
-    const imageBuffer = fs.readFileSync(fullImagePath);
-    const base64Image = imageBuffer.toString('base64');
-    const mimeType = imagePath.endsWith('.png') ? 'image/png' : 'image/jpeg';
-    const dataUrl = `data:${mimeType};base64,${base64Image}`;
+    const resizedBuffer = await sharp(fullImagePath)
+        .resize(OG_WIDTH, OG_HEIGHT, { fit: 'cover' })
+        .png()
+        .toBuffer();
+    const base64Image = resizedBuffer.toString('base64');
+    const dataUrl = `data:image/png;base64,${base64Image}`;
 
       const svg = await satori(
         {
@@ -148,14 +155,21 @@ async function generateOptimizedBanner(imagePath, outputPath, fontData) {
       background: '#000',
       fitTo: {
         mode: 'width',
-        value: 1200,
+        value: OG_WIDTH,
       },
     });
 
     const pngData = resvg.render();
     const pngBuffer = pngData.asPng();
 
-    fs.writeFileSync(outputPath, pngBuffer);
+    // Compress final OG image via sharp
+    const compressed = await sharp(pngBuffer)
+        .resize(OG_WIDTH, OG_HEIGHT, { fit: 'fill' })
+        .png({ quality: OG_PNG_QUALITY, compressionLevel: 9, palette: true })
+        .toBuffer();
+
+    fs.writeFileSync(outputPath, compressed);
+    console.log(`  -> ${(pngBuffer.length / 1024).toFixed(0)}KB -> ${(compressed.length / 1024).toFixed(0)}KB`);
 }
 
 async function generateImage(title, date, outputPath, fontData) {
@@ -312,14 +326,21 @@ async function generateImage(title, date, outputPath, fontData) {
     background: '#09090b',
     fitTo: {
       mode: 'width',
-      value: 1200,
+      value: OG_WIDTH,
       },
   });
 
   const pngData = resvg.render();
   const pngBuffer = pngData.asPng();
 
-  fs.writeFileSync(outputPath, pngBuffer);
+  // Compress final OG image via sharp
+  const compressed = await sharp(pngBuffer)
+      .resize(OG_WIDTH, OG_HEIGHT, { fit: 'fill' })
+      .png({ quality: OG_PNG_QUALITY, compressionLevel: 9, palette: true })
+      .toBuffer();
+
+  fs.writeFileSync(outputPath, compressed);
+  console.log(`  -> ${(pngBuffer.length / 1024).toFixed(0)}KB -> ${(compressed.length / 1024).toFixed(0)}KB`);
 }
 
 async function generate() {
