@@ -1,7 +1,7 @@
 ---
 id: '16'
 title: 'Migracja na K3s: Zamieniłem prostego Dockera w DevOpsową Gwiazdę Śmierci'
-date: '2026-02-09'
+date: '2026-02-11'
 tags: ['K3s', 'Kubernetes', 'Terraform', 'Ansible', 'CI/CD', 'Homelab']
 readTime: '5 min'
 imageUrl: '/k3s-migration-banner.png'
