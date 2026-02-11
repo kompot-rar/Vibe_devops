@@ -3,7 +3,7 @@ FROM node:22-alpine AS build
 
 WORKDIR /app
 COPY package*.json ./
-RUN npm install
+RUN npm ci
 COPY . .
 
 # Optymalizacja obrazów (resize do max 1920px + kompresja)
