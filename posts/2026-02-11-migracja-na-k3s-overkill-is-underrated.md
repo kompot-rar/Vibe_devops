@@ -4,7 +4,7 @@ title: 'Migracja na K3s: Zamieniłem prostego Dockera w DevOpsową Gwiazdę Śmi
 date: '2026-02-11'
 tags: ['K3s', 'Kubernetes', 'Terraform', 'Ansible', 'CI/CD', 'Homelab']
 readTime: '5 min'
-imageUrl: '/k3s-migration-banner.png'
+imageUrl: '/k3s-migration-v2-1770824382.png'
 excerpt: 'Od Terraformowania LXC, przez Ansible, aż po hybrydowe CI/CD z lokalnym rejestrem. Pełny zapis walki o idealną infrastrukturę.'
 ---
 
