@@ -28,12 +28,22 @@ for (const file of files) {
   
   const title = data.title || 'DevOps Adventure';
   const slug = file.replace('.md', '');
-  const description = data.excerpt || data.description || markdownBody.slice(0, 150).replace(/[\r\n#*]/g, ' ').trim() + '...';
+  
+  // Improved description cleaning: remove links, code, and special MD chars
+  const cleanDescription = (data.excerpt || data.description || markdownBody)
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // Remove MD links, keep text
+    .replace(/[`#*|_~]/g, '')                // Remove MD formatting
+    .replace(/(\r\n|\n|\r)/gm, ' ')          // Replace newlines with spaces
+    .replace(/\s+/g, ' ')                    // Collapse multiple spaces
+    .trim()
+    .slice(0, 160);
+
+  const description = cleanDescription.length >= 160 ? cleanDescription + '...' : cleanDescription;
   
   const metaTags = `
   <meta name="description" content="${description}" />
   <meta property="og:type" content="article" />
-  <meta property="og:title" content="${title} | DevOps Adventure" />
+  <meta property="og:title" content="${title}" />
   <meta property="og:description" content="${description}" />
   <meta property="og:image" content="${DOMAIN}/og/posts/${slug}.png" />
   <meta property="og:image:width" content="1200" />
@@ -43,7 +53,7 @@ for (const file of files) {
   <meta property="og:locale" content="pl_PL" />
   <meta property="og:logo" content="${DOMAIN}/bcr.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="${title} | DevOps Adventure" />
+  <meta name="twitter:title" content="${title}" />
   <meta name="twitter:description" content="${description}" />
   <meta name="twitter:image" content="${DOMAIN}/og/posts/${slug}.png" />
   `;
@@ -62,7 +72,7 @@ const homeDescription = "Dokumentacja podróży w głąb infrastruktury. Od poje
 const homeMetaTags = `
     <meta name="description" content="${homeDescription}" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Łukasz Mróz | DevOps Adventure" />
+    <meta property="og:title" content="DevOps Adventure" />
     <meta property="og:description" content="${homeDescription}" />
     <meta property="og:image" content="${DOMAIN}/og/home.png" />
     <meta property="og:image:width" content="1200" />
@@ -72,7 +82,7 @@ const homeMetaTags = `
     <meta property="og:locale" content="pl_PL" />
     <meta property="og:logo" content="${DOMAIN}/bcr.png" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Łukasz Mróz | DevOps Adventure" />
+    <meta name="twitter:title" content="DevOps Adventure" />
     <meta name="twitter:description" content="${homeDescription}" />
     <meta name="twitter:image" content="${DOMAIN}/og/home.png" />
 `;
@@ -86,7 +96,7 @@ const roadmapDescription = "Master Plan CKA 2026. Moja ścieżka rozwoju i certy
 const roadmapMetaTags = `
 <meta name="description" content="${roadmapDescription}" />
 <meta property="og:type" content="website" />
-<meta property="og:title" content="Roadmapa 2026 | DevOps Adventure" />
+<meta property="og:title" content="Roadmapa 2026" />
 <meta property="og:description" content="${roadmapDescription}" />
 <meta property="og:image" content="${DOMAIN}/og/roadmap.png" />
 <meta property="og:image:width" content="1200" />
@@ -96,7 +106,7 @@ const roadmapMetaTags = `
 <meta property="og:locale" content="pl_PL" />
 <meta property="og:logo" content="${DOMAIN}/bcr.png" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:title" content="Roadmapa 2026 | DevOps Adventure" />
+<meta name="twitter:title" content="Roadmapa 2026" />
 <meta name="twitter:description" content="${roadmapDescription}" />
 <meta name="twitter:image" content="${DOMAIN}/og/roadmap.png" />
 `;
