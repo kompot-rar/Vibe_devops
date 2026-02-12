@@ -101,7 +101,7 @@ Mój `.github/workflows/deploy.yml` po tuningu:
           docker push $GHCR_IMAGE
 ```
 
-## 4. Kubernetes & GitOps: Finał
+## 4. Finał: K3s, GitOps i Cloudflare
 
 Na końcu K3s pobiera obraz z lokalnego rejestru (`10.0.20.50:5000`). Musiałem przekonać K3s, żeby ufał rejestrowi HTTP (insecure), ale Ansiblem podmieniłem `registries.yaml` na wszystkich nodach w 3 sekundy.
 
@@ -125,7 +125,7 @@ spec:
         imagePullPolicy: Always
 ```
 
-## Finał!
+## Podsumowanie i dalsze plany
 
 Ostateczny test przyszedł 10 lutego, kiedy branch `main` oficjalnie wjechał na klaster. Po drodze musiałem jeszcze powalczyć z KUBECONFIG-iem dla zewnętrznego runnera (wskazanie na VIP klastra 10.0.20.10 było kluczowe) i odświeżyć tunel Cloudflare, ale efekt końcowy jest wart każdej minuty debugowania. Blog pod adresem [devops.mrozy.org](https://devops.mrozy.org) działa teraz jako pełnoprawna usługa klastrowa, a każde `git push` wyzwala lokalny build w "Kuźni" i automatyczny deployment przez ArgoCD.
 
