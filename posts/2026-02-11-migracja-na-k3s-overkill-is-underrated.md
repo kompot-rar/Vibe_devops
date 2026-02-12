@@ -70,7 +70,7 @@ Fragment `setup_kuznia.yml`:
         --unattended
 ```
 
-## 3. Pipeline: Hybrydowe CI/CD (Lokalnie + Chmura)
+## 3. Pipeline: Lokalny build i błyskawiczny push
 
 Pipeline działa tak:
 1. **GitHub** widzi pusha.
@@ -101,13 +101,13 @@ Mój `.github/workflows/deploy.yml` po tuningu:
           docker push $GHCR_IMAGE
 ```
 
-## 4. Finał: K3s, GitOps i Cloudflare
+## 4. Produkcja: GitOps i bezpieczny tunel na świat
 
 Na końcu K3s pobiera obraz z lokalnego rejestru (`10.0.20.50:5000`). Musiałem przekonać K3s, żeby ufał rejestrowi HTTP (insecure), ale Ansiblem podmieniłem `registries.yaml` na wszystkich nodach w 3 sekundy.
 
 Aplikacja jest wystawiona na świat przez **Cloudflare Tunnel**. Zero otwartych portów na routerze, pełny SSL, zero stresu.
 
-Manifest `deployment.yaml` (czysta poezja):
+Manifest `deployment.yaml`:
 
 ```yaml
 apiVersion: apps/v1
