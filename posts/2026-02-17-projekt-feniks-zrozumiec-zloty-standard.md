@@ -38,3 +38,5 @@ HardWay", pisanie własnych skryptów i drążenie "pod maskę" są kluczowe, ż
 Technologia dla samej technologii to hobby. Technologia rozwiązująca problemy biznesowe to inżynieria. "Projekt Feniks" pokazał mi **"Dlaczego"**, podczas gdy moja Roadmapa pokazuje mi **"Jak"**.
 
 DevOps to przede wszystkim kultura pracy i rozwiązywanie problemów, a dopiero potem technologia. Jeśli jeszcze nie czytaliście – nadróbcie koniecznie. To fundament, który sprawia, że codzienna nauka nabiera zupełnie innego sensu. 
+
+![Projekt Feniks - Banner](/projekt-feniks-banner.jpg)
