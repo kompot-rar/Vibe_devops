@@ -81,7 +81,7 @@ jobs:
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           
           if [[ "${{ env.ENV }}" == "prod" ]]; then
-            kubectl rollout restart deployment/blog-devops-prod -n vibe-prod
+            kubectl rollout restart deployment/blog-devops-prod -n blog-prod
           else
             kubectl rollout restart deployment/blog-devops-dev -n blog
           fi
