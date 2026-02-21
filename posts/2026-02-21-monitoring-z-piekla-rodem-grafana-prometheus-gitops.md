@@ -4,14 +4,14 @@ title: 'Monitoring z Piekła Rodem: Grafana + Prometheus w moim klastrze Proxmox
 date: '2026-02-21'
 tags: ['Kubernetes', 'Grafana', 'Prometheus', 'ArgoCD', 'GitOps', 'Proxmox', 'LenovoTiny']
 readTime: '6 min'
-imageUrl: '/monitoring-banner.png'
+imageUrl: '/monitoring-banner-v4.png'
 excerpt: 'Wdrożenie kube-prometheus-stack przez ArgoCD. Bitwa o CRD, wyzwania z mDNS na Archu i Server-Side Apply w praktyce. Koniec ze zgadywaniem, czas na twarde metryki.'
 ---
 
 
 Pamiętacie mój post o budowie **Homelaba 2.0**? Ten specyficzny projekt złożony z pasji i sprzętu ze śmietnika, który nazywałem "generatorem entropii"? No więc, nadal żyje i ma się świetnie, ale nadszedł czas, żeby przestać zgadywać, czy wszystko działa poprawnie, czy tylko stwarza takie pozory.
 
-Dzisiaj wdrożyłem fundament, bez którego żaden klaster nie ma racji bytu w środowisku produkcyjnym. Bo co z tego, że Twój blog wyświetla się w przeglądarce, skoro nie mam pojęcia, czy moje nody Lenovo nie zbliżają się do limitu zasobów przy większym ruchu?
+Dzisiaj wdrożyłem fundament, bez którego żaden klaster nie ma racji bytu w środowisku produkcyjnym. Bo co z tego, że mój blog wyświetla się w przeglądarce, skoro nie mam pojęcia, czy moje nody Lenovo nie zbliżają się do limitu zasobów przy większym ruchu?
 
 ## 1. Co właściwie postawiłem?
 
@@ -136,7 +136,7 @@ Mój manifest ArgoCD dla Prometheusa:
 ### 4.4. Diagnoza: Sekcja zwłok dysku na żywo
 Po przepchnięciu synca w ArgoCD i restartach, w końcu zobaczyłem prawdę. Nie szukałem już w ciemno. Użyłem zapytania `smartmon_reallocated_event_count_raw_value` dla instancji `10.0.10.13`.
 
-**Wynik: 4.**
+**Wynik: 4 relokowane sektory**
 
 ![Dying Disk Logs](/dying-disk-logs.png)
 
