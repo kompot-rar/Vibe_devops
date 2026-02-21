@@ -1,11 +1,11 @@
 ---
 id: '18'
-title: 'Monitoring z Piekła Rodem: Grafana + Prometheus w moim klastrze Proxmox (GitOps Style!)'
+title: 'K3s Monitoring: Prometheus & Grafana via ArgoCD (GitOps Style)'
 date: '2026-02-21'
 tags: ['Kubernetes', 'Grafana', 'Prometheus', 'ArgoCD', 'GitOps', 'Proxmox', 'LenovoTiny']
 readTime: '6 min'
 imageUrl: '/monitoring-banner-v4.png'
-excerpt: 'Wdrożenie kube-prometheus-stack przez ArgoCD. Bitwa o CRD, wyzwania z mDNS na Archu i Server-Side Apply w praktyce. Koniec ze zgadywaniem, czas na twarde metryki.'
+excerpt: 'Pełna automatyzacja stacku monitoringu. Dowiedz się, jak wdrożyć i skonfigurować observability.'
 ---
 
 
