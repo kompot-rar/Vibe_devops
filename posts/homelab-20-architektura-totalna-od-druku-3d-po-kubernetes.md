@@ -16,7 +16,7 @@ Wynik?
 Czerwona ściana tekstu.
 - **Reallocated Sector Count:** Wyczerpane.
 - **Available Spare Areas:** 0%.
-- **Life Remaining:** 20%.
+- **Life Remaining:** 30%.
 
 Każdy "racjonalny" człowiek wyrzuciłby go z powrotem do kosza.
 
