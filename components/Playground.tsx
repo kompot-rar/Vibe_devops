@@ -220,7 +220,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
           href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/monitoring/status-proxy.yaml"
           target="_blank"
           rel="noopener noreferrer"
-          className="font-mono text-xs text-thinkpad-muted hover:text-white transition-colors duration-200 flex items-center gap-1.5 group"
+          className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
         >
           <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
           View Source: GitOps Manifest &amp; PromQL Logic
