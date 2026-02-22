@@ -26,11 +26,11 @@ interface NodeInfo {
 
 interface ChaosMonkeyMetrics {
   reported_uncorrectable_ecc: number;
-  reallocated_sectors: number;
   reallocated_events: number;
   offline_uncorrectable: number;
-  ssd_wear_cycles: number;
   avg_write_lat_sec: number;
+  lifetime_remain_pct: number;
+  power_on_hours: number;
 }
 
 interface ChaosMonkeyAudit {
@@ -326,6 +326,30 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
 
 // --- Chaos Monkey Disk Audit widget ---
 
+const CircularProgress: React.FC<{
+  pct: number; stroke: string; textColor: string;
+}> = ({ pct, stroke, textColor }) => {
+  const r             = 18;
+  const circumference = 2 * Math.PI * r;
+  const dash          = (Math.min(100, Math.max(0, pct)) / 100) * circumference;
+  return (
+    <div className="relative inline-flex items-center justify-center" style={{ width: 48, height: 48 }}>
+      <svg width="48" height="48" viewBox="0 0 48 48" style={{ transform: 'rotate(-90deg)' }}>
+        <circle cx="24" cy="24" r={r} fill="none" stroke="#1e2028" strokeWidth="3.5" />
+        <circle
+          cx="24" cy="24" r={r} fill="none"
+          stroke={stroke} strokeWidth="3.5"
+          strokeDasharray={`${dash} ${circumference - dash}`}
+          strokeLinecap="round"
+        />
+      </svg>
+      <span className={`absolute font-mono text-[11px] font-bold tabular-nums ${textColor}`}>
+        {pct}%
+      </span>
+    </div>
+  );
+};
+
 const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => {
   const { metrics } = audit;
   const s           = getAlertLevelCfg(audit.alert_level);
@@ -334,6 +358,15 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
   const latMs    = metrics.avg_write_lat_sec * 1000;
   const latLabel = latMs < 10 ? latMs.toFixed(2) : latMs.toFixed(1);
   const latColor = latMs > 100 ? 'text-thinkpad-red' : latMs > 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
+
+  const lifeRemain  = metrics.lifetime_remain_pct;
+  const lifeStroke  = lifeRemain < 20 ? '#ff002b' : lifeRemain < 50 ? '#b8864e' : '#5a9e85';
+  const lifeColor   = lifeRemain < 20 ? 'text-thinkpad-red' : lifeRemain < 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
+
+  const poDays = Math.floor(metrics.power_on_hours / 24);
+  const poSub  = poDays >= 365
+    ? `≈ ${(poDays / 365).toFixed(1)} lat · ${metrics.power_on_hours.toLocaleString('pl-PL')} h`
+    : `${metrics.power_on_hours.toLocaleString('pl-PL')} h · power_on_hours`;
 
   return (
     <div className={`border ${s.border} ${s.bg}`}>
@@ -414,21 +447,45 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
         </div>
       </div>
 
-      {/* Secondary counters — reallocated + offline */}
-      <div className="grid grid-cols-3 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
+      {/* Life Remaining + Combat Experience */}
+      <div className="grid grid-cols-2 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+          title="Pozostała żywotność nośnika NAND. Poniżej 30% — strefa niebezpieczna. Zero = koniec.">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Gauge size={10} /> Life Remaining
+          </span>
+          <div className="flex items-center gap-3">
+            <CircularProgress pct={lifeRemain} stroke={lifeStroke} textColor={lifeColor} />
+            <div className="flex flex-col gap-0.5">
+              <span className={`font-mono text-xs leading-tight ${lifeColor}`}>
+                {100 - lifeRemain}% wear level
+              </span>
+              <span className="font-mono text-xs text-neutral-600 leading-tight">
+                lifetime_remain_pct
+              </span>
+            </div>
+          </div>
+        </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Fizycznie uszkodzone sektory zastąpione rezerwowymi. Rosnący licznik = degradacja nośnika.">
+          title="Łączny czas pracy dysku. Dłuższy staż = wyższe zużycie. Ten dysk walczył.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <AlertTriangle size={10} /> Realok. sektory
+            <Clock size={10} /> Czas w służbie
           </span>
-          <span className={`font-mono text-2xl font-bold tabular-nums ${
-            metrics.reallocated_sectors > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
-          }`}>
-            {metrics.reallocated_sectors}
-          </span>
-          <span className="font-mono text-xs text-neutral-600">reallocated_sectors</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className="font-mono text-2xl font-bold tabular-nums text-white">
+              {poDays}
+            </span>
+            <span className="font-mono text-sm text-thinkpad-muted">dni</span>
+          </div>
+          <span className="font-mono text-xs text-neutral-600 leading-relaxed">{poSub}</span>
         </div>
+
+      </div>
+
+      {/* Incydenty + Nieczytelne + Tętno */}
+      <div className="grid grid-cols-3 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
           title="Liczba zdarzeń relokacji — ile razy kontroler przeniósł dane z uszkodzonego sektora do rezerwowego.">
@@ -456,22 +513,6 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           <span className="font-mono text-xs text-neutral-600">offline_uncorrectable</span>
         </div>
 
-      </div>
-
-      {/* Tertiary — wear + latency */}
-      <div className="grid grid-cols-2 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
-
-        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Wear leveling count — łączna liczba cykli zapisu (P/E). Im wyższa, tym bliżej kresu żywotności nośnika flash.">
-          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Gauge size={10} /> Przebieg
-          </span>
-          <span className="font-mono text-2xl font-bold tabular-nums text-[#b8864e]">
-            {metrics.ssd_wear_cycles.toLocaleString('pl-PL')}
-          </span>
-          <span className="font-mono text-xs text-neutral-600">wear cycles (P/E)</span>
-        </div>
-
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
           title="Średnie opóźnienie zapisu. Zdrowy SSD: &lt;1ms. Powyżej 100ms dysk zaczyna 'mulić'.">
           <span className={`font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 ${
@@ -479,23 +520,24 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           }`}>
             <Activity size={10} /> Tętno
           </span>
-          <span className={`font-mono text-2xl font-bold tabular-nums ${latColor}`}>
-            {latLabel}
-          </span>
-          <span className="font-mono text-xs text-neutral-600">ms avg write lat</span>
+          <div className="flex items-baseline gap-1.5">
+            <span className={`font-mono text-2xl font-bold tabular-nums ${latColor}`}>
+              {latLabel}
+            </span>
+            <span className="font-mono text-sm text-thinkpad-muted">ms</span>
+          </div>
+          <span className="font-mono text-xs text-neutral-600">avg write lat</span>
         </div>
 
       </div>
 
       {/* Footer */}
-      <div className="px-5 py-3 border-t border-neutral-800/60 flex justify-between items-center">
-        <span className="font-mono text-xs text-neutral-700 italic">
-          // chaos engineering · deliberate failure source · k8s self-healing on real hardware
-        </span>
+      <div className="px-5 py-3 border-t border-neutral-800/60">
         <a
           href="/blog/homelab-20-architektura-totalna-od-druku-3d-po-kubernetes"
           className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
         >
+          // chaos engineering · k8s self-healing on real hardware ·
           <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
           origin story ↗
         </a>
@@ -654,6 +696,13 @@ const Playground: React.FC = () => {
                   </div>
             ))}
           </div>
+        </div>
+
+        {/* Placeholder */}
+        <div className="border border-dashed border-neutral-800 p-6 text-center">
+          <p className="font-mono text-xs text-neutral-700">
+            // więcej widgetów wkrótce — network, storage, ArgoCD apps...
+          </p>
         </div>
 
       </div>
