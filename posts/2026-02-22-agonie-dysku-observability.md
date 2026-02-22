@@ -8,13 +8,13 @@ imageUrl: '/observability-banner.png'
 excerpt: 'Jak zamienić agonię sprzętu w interaktywny projekt Observability? Dowiedz się, jak monitoruję umierający dysk SSD w moim klastrze.'
 ---
 
-# 🚀 Tętno Homelaba: Gdy hardware zdycha
+# Tętno Homelaba: Gdy hardware zdycha
 
 Większość ludzi panikuje, gdy ich serwer zaczyna sypać błędami I/O. Ja poczułem ekscytację. Gdy mój trzeci node (Lenovo Tiny) zaczął "krzyczeć" błędami w logach, wiedziałem jedno: **Mamy idealnego ochotnika do Chaos Monkey.**
 
 Mając już postawiony pełny stack **Observability (Grafana + Prometheus)**, który monitoruje każdy oddech klastra, uznałem, że czas na odrobinę zabawy. Skoro i tak widzę wszystko wewnątrz, dlaczego nie stworzyć małego projektu – **Playgroundu na blogu**, który pokaże "na żywo", jak hardware walczy o przetrwanie? Tak powstał **Status-Proxy** – mikroserwis, który zamienia śmierć krzemu w publiczny dowód odporności systemu.
 
-## 🏗️ Geneza: "Dysk ze śmietnika" jako Generator Entropii
+## Geneza: "Dysk ze śmietnika" jako Generator Entropii
 
 W moim klastrze nic się nie marnuje. Trzeci węzeł dostał dysk SSD Crucial MX300, który już dawno powinien być zutylizowany. To był świadomy wybór: **wprowadzenie kontrolowanego chaosu do klastra.**
 
@@ -23,7 +23,7 @@ W moim klastrze nic się nie marnuje. Trzeci węzeł dostał dysk SSD Crucial MX
 
 ---
 
-## 🛠️ Architektura: Most nad przepaścią
+## Architektura: Most nad przepaścią
 
 Zasada **Zero Trust** jest u mnie święta. Nie wystawiam Prometheusa na świat.  Zastosowałem wzorzec **Internal API Proxy**:
 
@@ -33,7 +33,7 @@ Zasada **Zero Trust** jest u mnie święta. Nie wystawiam Prometheusa na świat.
 
 ---
 
-## ☢️ Chaos Engineering w praktyce 
+## Chaos Engineering w praktyce 
 
 Dzięki temu, że dysk w Node 3 faktycznie zdycha, mój blogowy playground nie jest statycznym obrazkiem. To jest **Live Forensic**:
 
@@ -45,7 +45,7 @@ Dzięki temu widzę na żywo, jak Scheduler reaguje na błędy. Czy pody zostan�
 
 ---
 
-## 🧠 Logika
+## Logika
 
 Każdy potrafi wystawić `Hello World`. Ja wystawiam **Stan Świadomości Klastra**:
 
@@ -67,7 +67,7 @@ Każdy potrafi wystawić `Hello World`. Ja wystawiam **Stan Świadomości Klastr
 
 ---
 
-## 💡 Czego mnie to nauczyło?
+## Czego mnie to nauczyło?
 
 Ten projekt to nie tylko kod. To zmiana myślenia:
 1.  **Awaria to dane.** Nie naprawiaj od razu – najpierw ometrykuj, żeby zrozumieć mechanizm upadku.
