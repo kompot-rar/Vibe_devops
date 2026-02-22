@@ -1,6 +1,6 @@
 ---
 id: '19'
-title: 'Oczy Boga: Jak przekułem agonię dysku w projekt Observability'
+title: 'Jak przekułem agonię dysku w projekt Observability'
 date: '2026-02-22'
 tags: ['Kubernetes', 'Prometheus', 'Chaos Engineering', 'SRE', 'GitOps']
 readTime: '5 min'
