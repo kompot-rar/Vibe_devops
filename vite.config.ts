@@ -10,6 +10,12 @@ export default defineConfig(({ mode }) => {
       server: {
         port: 3000,
         host: '0.0.0.0',
+        proxy: {
+          '/api': {
+            target: env.VITE_API_TARGET || 'http://10.0.10.11:8080',
+            changeOrigin: true,
+          },
+        },
       },
       plugins: [
         react(),

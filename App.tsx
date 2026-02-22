@@ -4,6 +4,7 @@ import Navbar from './components/Navbar';
 import BlogList from './components/BlogList';
 import BlogPostView from './components/BlogPostView';
 import Roadmap from './components/Roadmap';
+import Playground from './components/Playground';
 import CursorCodeEffect from './components/CursorCodeEffect';
 import { Github, Linkedin, Server } from 'lucide-react';
 import { getPosts } from './services/postService';
@@ -78,6 +79,7 @@ const App: React.FC = () => {
               } />
               <Route path="/blog/:slug" element={<BlogPostView posts={posts} />} />
               <Route path="/roadmap" element={<Roadmap />} />
+              <Route path="/playground" element={<Playground />} />
 
               <Route path="/about" element={<About />} />
             </Routes>
