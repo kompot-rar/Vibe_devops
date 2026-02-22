@@ -193,8 +193,8 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
               {cluster.restarts24h === 0
                 ? 'brak zdarzeń'
                 : cluster.restarts24h === 1
-                  ? 'zdarzenie · naprawiono'
-                  : 'zdarzenia · naprawiono'}
+                  ? 'event · recovered'
+                  : 'events · recovered'}
             </span>
           </div>
         </div>
