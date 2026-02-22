@@ -39,6 +39,13 @@ const ROADMAP_DATA: RoadmapItem[] = [
     status: 'completed'
   },
   {
+    id: '6',
+    title: 'Konteneryzacja',
+    description: 'Inżynieria obrazów. Tworzenie bezpiecznych i lekkich kontenerów, zarządzanie rejestrami i budowanie wewnątrz klastra.',
+    tools: ['containerd', 'Kaniko', 'BuildKit', 'Distroless'],
+    status: 'completed'
+  },
+  {
     id: '7',
     title: 'CI/CD Pipelines',
     description: 'Automatyzacja wdrażania aplikacji. GitLab CI, GitHub Actions oraz konfiguracja własnych runnerów.',
@@ -50,13 +57,6 @@ const ROADMAP_DATA: RoadmapItem[] = [
     title: 'Automatyzacja & Python',
     description: 'Programowanie infrastruktury. Skrypty w Pythonie, automatyzacja zadań Bash i interakcja z API.',
     tools: ['Python', 'Boto3', 'API', 'Automation'],
-    status: 'in-progress'
-  },
-  {
-    id: '6',
-    title: 'Konteneryzacja',
-    description: 'Inżynieria obrazów. Tworzenie bezpiecznych i lekkich kontenerów, zarządzanie rejestrami i budowanie wewnątrz klastra.',
-    tools: ['containerd', 'Kaniko', 'BuildKit', 'Distroless'],
     status: 'in-progress'
   },
   {
