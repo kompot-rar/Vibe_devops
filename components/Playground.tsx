@@ -25,13 +25,22 @@ interface NodeInfo {
 }
 
 interface ChaosMonkeyMetrics {
-  uncorrectable_errors: number;
+  reported_uncorrectable_ecc: number;
+  reallocated_sectors: number;
+  reallocated_events: number;
+  offline_uncorrectable: number;
   ssd_wear_cycles: number;
   avg_write_lat_sec: number;
 }
 
 interface ChaosMonkeyAudit {
-  health_status: 'Stable' | 'Dying' | 'Throttling' | string;
+  target: string;
+  serial: string;
+  node: string;
+  health_status: string;
+  alert_level: 'Radioactive' | 'Critical' | 'Warning' | 'Nominal' | string;
+  firmware_verdict: string;
+  sre_message: string;
   metrics: ChaosMonkeyMetrics;
 }
 
@@ -66,16 +75,17 @@ const clusterStatusCfg: Record<string, {
 const getStatusCfg = (status: string) =>
   clusterStatusCfg[status] ?? clusterStatusCfg['Observed'];
 
-const chaosStatusCfg: Record<string, {
-  color: string; dotColor: string; bg: string; border: string; label: string;
+const alertLevelCfg: Record<string, {
+  color: string; dotColor: string; bg: string; border: string;
 }> = {
-  Dying:      { color: 'text-thinkpad-red', dotColor: 'bg-thinkpad-red', bg: 'bg-thinkpad-red/5',  border: 'border-thinkpad-red/40',  label: 'DYING'      },
-  Throttling: { color: 'text-[#b8864e]',   dotColor: 'bg-[#b8864e]',   bg: 'bg-[#7a5530]/10',   border: 'border-[#7a5530]/50',    label: 'THROTTLING' },
-  Stable:     { color: 'text-[#5a9e85]',   dotColor: 'bg-[#5a9e85]',   bg: 'bg-[#5a9e85]/5',    border: 'border-[#2a6654]/50',    label: 'STABLE'     },
+  Radioactive: { color: 'text-[#a855f7]',      dotColor: 'bg-[#a855f7]',      bg: 'bg-[#4c1d95]/10',   border: 'border-[#7c3aed]/40'  },
+  Critical:    { color: 'text-thinkpad-red',    dotColor: 'bg-thinkpad-red',    bg: 'bg-thinkpad-red/5', border: 'border-thinkpad-red/40' },
+  Warning:     { color: 'text-[#b8864e]',       dotColor: 'bg-[#b8864e]',       bg: 'bg-[#7a5530]/10',   border: 'border-[#7a5530]/50'  },
+  Nominal:     { color: 'text-[#5a9e85]',       dotColor: 'bg-[#5a9e85]',       bg: 'bg-[#5a9e85]/5',    border: 'border-[#2a6654]/50'  },
 };
 
-const getChaosStatusCfg = (status: string) =>
-  chaosStatusCfg[status] ?? chaosStatusCfg['Throttling'];
+const getAlertLevelCfg = (level: string) =>
+  alertLevelCfg[level] ?? alertLevelCfg['Warning'];
 
 // --- Helpers ---
 
@@ -317,16 +327,35 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
 // --- Chaos Monkey Disk Audit widget ---
 
 const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => {
-  const { health_status, metrics } = audit;
-  const s        = getChaosStatusCfg(health_status);
-  const isDying  = health_status === 'Dying';
+  const { metrics } = audit;
+  const s           = getAlertLevelCfg(audit.alert_level);
+  const isCritical  = audit.alert_level === 'Radioactive' || audit.alert_level === 'Critical';
 
   const latMs    = metrics.avg_write_lat_sec * 1000;
   const latLabel = latMs < 10 ? latMs.toFixed(2) : latMs.toFixed(1);
-  const latColor = latMs > 200 ? 'text-thinkpad-red' : latMs > 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
+  const latColor = latMs > 100 ? 'text-thinkpad-red' : latMs > 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
 
   return (
     <div className={`border ${s.border} ${s.bg}`}>
+
+      {/* Hardware identity strip */}
+      <div className="px-5 py-2.5 border-b border-neutral-800/40 flex items-center gap-3 flex-wrap">
+        <div className="flex items-center gap-1.5 min-w-0">
+          <HardDrive size={10} className="text-thinkpad-muted shrink-0" />
+          <span className="font-mono text-xs text-neutral-400 uppercase tracking-wider truncate">
+            {audit.target}
+          </span>
+        </div>
+        <span className="text-neutral-800 shrink-0">·</span>
+        <span className="font-mono text-xs text-neutral-600 shrink-0">
+          S/N:&nbsp;{audit.serial}
+        </span>
+        <span className="text-neutral-800 shrink-0">·</span>
+        <span className="font-mono text-xs text-neutral-600 flex items-center gap-1.5 shrink-0">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#2e5f80]" />
+          {audit.node}
+        </span>
+      </div>
 
       {/* Status header */}
       <div className="px-5 py-4 flex items-start justify-between gap-4">
@@ -337,8 +366,8 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           </span>
           <div>
             <div className="flex items-center gap-3 flex-wrap">
-              <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color} ${isDying ? 'animate-pulse' : ''}`}>
-                {s.label}
+              <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color} ${isCritical ? 'animate-pulse' : ''}`}>
+                {audit.health_status}
               </span>
               <span className="font-mono text-xs border border-neutral-700 px-2 py-0.5 text-neutral-500 flex items-center gap-1.5"
                 title="Self-Monitoring, Analysis and Reporting Technology — dane wprost z dysku, bez pośredników.">
@@ -346,37 +375,92 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
                 S.M.A.R.T. monitor
               </span>
             </div>
-            <p className="font-mono text-xs text-thinkpad-muted mt-1 leading-relaxed">
-              Zamiast symulować awarie — wdrożyłem je. Dysk ze śmietnika, aktywny węzeł klastra.
+            <p className="font-mono text-xs text-thinkpad-muted mt-1.5 leading-relaxed">
+              {audit.sre_message}
+            </p>
+            <p className="font-mono text-xs text-neutral-700 mt-1 italic"
+              title="Oficjalna diagnoza sprzętowa. Przymknij oko na te kilkanaście tysięcy błędów.">
+              self-diagnosis:&nbsp;{audit.firmware_verdict}
             </p>
           </div>
         </div>
-        {isDying && (
-          <span className="font-mono text-xs text-thinkpad-red border border-thinkpad-red/30 px-2 py-0.5 shrink-0 flex items-center gap-1.5 animate-pulse">
-            <span className="inline-block w-1.5 h-1.5 rounded-full bg-thinkpad-red" />
-            CRITICAL
+        {isCritical && (
+          <span className={`font-mono text-xs border px-2 py-0.5 shrink-0 flex items-center gap-1.5 animate-pulse ${
+            audit.alert_level === 'Radioactive'
+              ? 'text-[#a855f7] border-[#7c3aed]/40'
+              : 'text-thinkpad-red border-thinkpad-red/30'
+          }`}>
+            <span className={`inline-block w-1.5 h-1.5 rounded-full ${s.dotColor}`} />
+            {audit.alert_level.toUpperCase()}
           </span>
         )}
       </div>
 
-      {/* Trzy metryki */}
+      {/* Primary counter — reported_uncorrectable_ecc */}
+      <div className="border-t border-neutral-800/60 px-5 py-4"
+        title="Błędy ECC, których sprzętowy korektor nie zdołał naprawić. Każdy to potencjalna trwała utrata danych.">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 mb-2">
+              <Skull size={10} /> Błędy ECC bez korekcji
+            </span>
+            <span className={`font-mono text-4xl font-bold tabular-nums leading-none ${s.color}`}>
+              {metrics.reported_uncorrectable_ecc.toLocaleString('pl-PL')}
+            </span>
+          </div>
+          <span className="font-mono text-xs text-neutral-800 text-right mt-1 shrink-0 leading-relaxed">
+            reported_<br />uncorrectable_ecc
+          </span>
+        </div>
+      </div>
+
+      {/* Secondary counters — reallocated + offline */}
       <div className="grid grid-cols-3 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
 
-        {/* Martwe sektory */}
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Uncorrectable errors — sektory, których kontroler dysku nie jest w stanie naprawić. Każdy to nieodwracalna utrata danych. Licznik tylko rośnie.">
+          title="Fizycznie uszkodzone sektory zastąpione rezerwowymi. Rosnący licznik = degradacja nośnika.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Skull size={10} /> Martwe sektory
+            <AlertTriangle size={10} /> Realok. sektory
           </span>
           <span className={`font-mono text-2xl font-bold tabular-nums ${
-            metrics.uncorrectable_errors > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
+            metrics.reallocated_sectors > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
           }`}>
-            {metrics.uncorrectable_errors}
+            {metrics.reallocated_sectors}
           </span>
-          <span className="font-mono text-xs text-neutral-600">uncorrectable errors</span>
+          <span className="font-mono text-xs text-neutral-600">reallocated_sectors</span>
         </div>
 
-        {/* Przebieg */}
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
+          title="Liczba zdarzeń relokacji — ile razy kontroler przeniósł dane z uszkodzonego sektora do rezerwowego.">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <RefreshCw size={10} /> Incydenty
+          </span>
+          <span className={`font-mono text-2xl font-bold tabular-nums ${
+            metrics.reallocated_events > 0 ? 'text-[#b8864e]' : 'text-[#5a9e85]'
+          }`}>
+            {metrics.reallocated_events}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">reallocated_events</span>
+        </div>
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
+          title="Sektory nieczytelne podczas offline scan — dane bezpowrotnie utracone lub niedostępne.">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Skull size={10} /> Nieczytelne
+          </span>
+          <span className={`font-mono text-2xl font-bold tabular-nums ${
+            metrics.offline_uncorrectable > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
+          }`}>
+            {metrics.offline_uncorrectable}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">offline_uncorrectable</span>
+        </div>
+
+      </div>
+
+      {/* Tertiary — wear + latency */}
+      <div className="grid grid-cols-2 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
+
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
           title="Wear leveling count — łączna liczba cykli zapisu (P/E). Im wyższa, tym bliżej kresu żywotności nośnika flash.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
@@ -388,11 +472,10 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           <span className="font-mono text-xs text-neutral-600">wear cycles (P/E)</span>
         </div>
 
-        {/* Tętno */}
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Średnie opóźnienie zapisu — im wyższe, tym bardziej dysk się 'dusi'. Zdrowy SSD: &lt;1ms. Ten dysk... robi co może.">
+          title="Średnie opóźnienie zapisu. Zdrowy SSD: &lt;1ms. Powyżej 100ms dysk zaczyna 'mulić'.">
           <span className={`font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 ${
-            isDying ? 'animate-pulse' : ''
+            isCritical ? 'animate-pulse' : ''
           }`}>
             <Activity size={10} /> Tętno
           </span>
