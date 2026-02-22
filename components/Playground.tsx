@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Thermometer, RefreshCw, AlertTriangle,
-  Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box,
+  Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity,
 } from 'lucide-react';
 
 // --- Types ---
 
 interface ClusterInfo {
   totalPods: string;
-  status: string;
+  status: 'Healthy' | 'Warning' | 'Observed' | string;
+  message: string;
+  restarts24h: number;
   lastUpdate: string;
 }
 
@@ -25,7 +27,7 @@ interface ApiResponse {
   nodes: NodeInfo[];
 }
 
-// --- Helpers ---
+// --- Paleta ---
 
 const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
   if (temp < 70) return 'ok';
@@ -33,15 +35,24 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
   return 'hot';
 };
 
-// Temp level config — muted, technical palette inspired by Grafana dark / btop color logic.
-// ok:   desaturated slate-teal. Not neutral-gray-boring, but cool and calm.
-// warm: desaturated amber-ochre. "Thermal" without neon screaming.
-// hot:  thinkpad-red — the one moment full brand color is semantically justified.
 const tempCfg = {
-  ok:   { label: 'OK',   color: 'text-[#7a9fad]',  barColor: 'bg-[#3a6678]',  accentBorder: '#2a4a58' },
-  warm: { label: 'WARM', color: 'text-[#b8864e]',  barColor: 'bg-[#7a5530]',  accentBorder: '#5a3c1e' },
-  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014' },
+  ok:   { label: 'OK',   color: 'text-[#7a9fad]',    barColor: 'bg-[#3a6678]',    accentBorder: '#2a4a58' },
+  warm: { label: 'WARM', color: 'text-[#b8864e]',    barColor: 'bg-[#7a5530]',    accentBorder: '#5a3c1e' },
+  hot:  { label: 'HOT',  color: 'text-thinkpad-red',  barColor: 'bg-thinkpad-red', accentBorder: '#7a0014' },
 };
+
+const clusterStatusCfg: Record<string, {
+  color: string; dotColor: string; bg: string; border: string;
+}> = {
+  Healthy:  { color: 'text-[#5a9e85]', dotColor: 'bg-[#5a9e85]', bg: 'bg-[#5a9e85]/5',   border: 'border-[#2a6654]/50' },
+  Warning:  { color: 'text-[#b8864e]', dotColor: 'bg-[#b8864e]', bg: 'bg-[#7a5530]/10',  border: 'border-[#7a5530]/50' },
+  Observed: { color: 'text-[#6a9fbf]', dotColor: 'bg-[#6a9fbf]', bg: 'bg-[#2e5f80]/10',  border: 'border-[#2e5f80]/50' },
+};
+
+const getStatusCfg = (status: string) =>
+  clusterStatusCfg[status] ?? clusterStatusCfg['Observed'];
+
+// --- Helpers ---
 
 const formatUptime = (days: string) => {
   const d = parseFloat(days);
@@ -54,20 +65,16 @@ const formatUptime = (days: string) => {
 
 const formatTimestamp = (iso: string) => {
   try {
-    return new Date(iso).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-  } catch {
-    return iso;
-  }
+    return new Date(iso).toLocaleTimeString('pl-PL', {
+      hour: '2-digit', minute: '2-digit', second: '2-digit',
+    });
+  } catch { return iso; }
 };
 
 // --- Sub-components ---
 
-// Bar track uses a slightly warm dark rather than flat neutral-800,
-// giving the filled portion contrast without a harsh jump.
 const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
-  value,
-  colorClass,
-  max = 100,
+  value, colorClass, max = 100,
 }) => (
   <div className="h-[3px] bg-[#1e2028] rounded-sm overflow-hidden">
     <div
@@ -78,14 +85,8 @@ const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
 );
 
 const MetricRow: React.FC<{
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-  unit: string;
-  barValue: number;
-  barMax?: number;
-  barColor: string;
-  valueColor?: string;
+  icon: React.ReactNode; label: string; value: string; unit: string;
+  barValue: number; barMax?: number; barColor: string; valueColor?: string;
 }> = ({ icon, label, value, unit, barValue, barMax, barColor, valueColor = 'text-white' }) => (
   <div className="grid grid-cols-[6rem_4rem_1fr] items-center gap-3">
     <div className="flex items-center gap-1.5 text-thinkpad-muted">
@@ -99,6 +100,83 @@ const MetricRow: React.FC<{
   </div>
 );
 
+// --- Cluster Overview widget ---
+
+const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
+  const s = getStatusCfg(cluster.status);
+
+  return (
+    <div className={`border ${s.border} ${s.bg}`}>
+      {/* Główny status + message */}
+      <div className="px-5 py-4 flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <span className="relative flex h-3 w-3 shrink-0 mt-1">
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${s.dotColor} opacity-40`} />
+            <span className={`relative inline-flex rounded-full h-3 w-3 ${s.dotColor}`} />
+          </span>
+          <div>
+            <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color}`}>
+              {cluster.status}
+            </span>
+            <p className="font-mono text-xs text-thinkpad-muted mt-1 max-w-md leading-relaxed">
+              {cluster.message}
+            </p>
+          </div>
+        </div>
+        <span className="font-mono text-xs text-thinkpad-muted border border-neutral-800 px-2 py-0.5 shrink-0 flex items-center gap-1.5">
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#5a9e85] animate-pulse" />
+          LIVE
+        </span>
+      </div>
+
+      {/* Trzy metryki klastra */}
+      <div className="grid grid-cols-3 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Box size={10} /> Pods running
+          </span>
+          <span className="font-mono text-2xl font-bold text-white tabular-nums">
+            {cluster.totalPods}
+          </span>
+        </div>
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <ShieldCheck size={10} /> Self-healed (24h)
+          </span>
+          <div className="flex items-baseline gap-2">
+            <span className={`font-mono text-2xl font-bold tabular-nums ${
+              cluster.restarts24h === 0 ? 'text-white' : 'text-[#b8864e]'
+            }`}>
+              {cluster.restarts24h}
+            </span>
+            <span className="font-mono text-xs text-thinkpad-muted">
+              {cluster.restarts24h === 0
+                ? 'no events'
+                : cluster.restarts24h === 1
+                  ? 'event · recovered'
+                  : 'events · recovered'}
+            </span>
+          </div>
+        </div>
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Activity size={10} /> Last scraped
+          </span>
+          <span className="font-mono text-base font-semibold text-white tabular-nums">
+            {formatTimestamp(cluster.lastUpdate)}
+          </span>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+// --- Node Card ---
+
 const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) => {
   const temp  = parseFloat(node.temp);
   const cpu   = parseFloat(node.cpu);
@@ -111,12 +189,9 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
       className="bg-thinkpad-base border-l-2 border border-neutral-800/50 px-5 py-4 transition-colors duration-300"
       style={{
         borderLeftColor: cfg.accentBorder,
-        // Subtle inset top highlight at 6% opacity — gives the card a "panel" depth
-        // without adding extra DOM elements. Color matches the left accent border.
         backgroundImage: `linear-gradient(to bottom, ${cfg.accentBorder}0f 0px, transparent 40px)`,
       }}
     >
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Server size={12} className="text-thinkpad-muted" />
@@ -124,7 +199,7 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
             node-{String(index + 1).padStart(2, '0')}
           </span>
           <span className="font-mono text-xs text-neutral-700">/</span>
-          <span className="font-mono text-sm text-neutral-400">{node.name}</span>
+          <span className="font-mono text-sm text-neutral-300 font-semibold">{node.name}</span>
         </div>
         <div className="flex items-center gap-3">
           <span className="font-mono text-xs text-neutral-600 flex items-center gap-1">
@@ -137,44 +212,29 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
         </div>
       </div>
 
-      {/* Metrics */}
       <div className="space-y-3">
         <MetricRow
-          icon={<Thermometer size={11} />}
-          label="temp"
-          value={temp.toFixed(1)}
-          unit="°C"
-          barValue={temp}
-          barMax={100}
-          barColor={cfg.barColor}
-          valueColor={cfg.color}
+          icon={<Thermometer size={11} />} label="temp"
+          value={temp.toFixed(1)} unit="°C"
+          barValue={temp} barMax={100}
+          barColor={cfg.barColor} valueColor={cfg.color}
         />
-        {/* CPU — steel-blue: neon-blue (#0ea5e9) pulled down to ~25% sat/brightness */}
         <MetricRow
-          icon={<Cpu size={11} />}
-          label="cpu"
-          value={cpu.toFixed(1)}
-          unit="%"
-          barValue={cpu}
-          barColor="bg-[#2e5f80]"
-          valueColor="text-[#6a9fbf]"
+          icon={<Cpu size={11} />} label="cpu"
+          value={cpu.toFixed(1)} unit="%"
+          barValue={cpu} barColor="bg-[#2e5f80]" valueColor="text-[#6a9fbf]"
         />
-        {/* RAM — muted teal-green: distinct from blue, reads "memory" via LCD-green lineage */}
         <MetricRow
-          icon={<MemoryStick size={11} />}
-          label="ram"
-          value={ram.toFixed(1)}
-          unit="%"
-          barValue={ram}
-          barColor="bg-[#2a6654]"
-          valueColor="text-[#5a9e85]"
+          icon={<MemoryStick size={11} />} label="ram"
+          value={ram.toFixed(1)} unit="%"
+          barValue={ram} barColor="bg-[#2a6654]" valueColor="text-[#5a9e85]"
         />
       </div>
     </div>
   );
 };
 
-// --- Main component ---
+// --- Main ---
 
 const Playground: React.FC = () => {
   const [data, setData]               = useState<ApiResponse | null>(null);
@@ -217,7 +277,7 @@ const Playground: React.FC = () => {
         {!loading && (
           error
             ? <WifiOff size={13} className="text-thinkpad-red" />
-            : <Wifi    size={13} className="text-emerald-400" />
+            : <Wifi    size={13} className="text-[#5a9e85]" />
         )}
         <button
           onClick={fetchData}
@@ -238,8 +298,11 @@ const Playground: React.FC = () => {
       </div>
     );
     if (error) return (
-      <div className="flex items-center gap-3 py-8 text-thinkpad-red font-mono text-sm justify-center">
-        <AlertTriangle size={15} /> Błąd połączenia: {error}
+      <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
+        <div className="flex items-center gap-2 text-thinkpad-red">
+          <AlertTriangle size={15} /> Brak połączenia z klastrem
+        </div>
+        <p className="text-xs text-thinkpad-muted">{error}</p>
       </div>
     );
     return children;
@@ -247,7 +310,6 @@ const Playground: React.FC = () => {
 
   return (
     <div className="animate-fade-in">
-      {/* Page header */}
       <div className="relative text-center mb-16 max-w-4xl mx-auto">
         <div
           className="absolute -inset-16 -z-10 backdrop-blur-xl"
@@ -273,35 +335,8 @@ const Playground: React.FC = () => {
             'Cluster Overview',
             ':: k3s',
           )}
-          <div className="px-6 py-5">
-            {bodyState(data && (
-              <div className="flex flex-wrap items-center gap-6 font-mono text-sm">
-                <div className="flex items-center gap-2">
-                  <span className={`inline-block w-2 h-2 rounded-full ${
-                    data.cluster.status === 'Healthy' ? 'bg-emerald-400' : 'bg-thinkpad-red'
-                  }`} />
-                  <span className={data.cluster.status === 'Healthy' ? 'text-emerald-400' : 'text-thinkpad-red'}>
-                    {data.cluster.status}
-                  </span>
-                </div>
-
-                <span className="text-neutral-700">|</span>
-
-                <div className="flex items-center gap-2 text-thinkpad-muted">
-                  <Box size={13} />
-                  <span>Pods:</span>
-                  <span className="text-white">{data.cluster.totalPods}</span>
-                </div>
-
-                <span className="text-neutral-700">|</span>
-
-                <div className="flex items-center gap-2 text-thinkpad-muted">
-                  <Clock size={13} />
-                  <span>Last update:</span>
-                  <span className="text-white">{formatTimestamp(data.cluster.lastUpdate)}</span>
-                </div>
-              </div>
-            ))}
+          <div className="p-6">
+            {bodyState(data && <ClusterOverview cluster={data.cluster} />)}
           </div>
         </div>
 
