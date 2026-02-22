@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Thermometer, RefreshCw, AlertTriangle,
-  Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity,
+  Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity, GitBranch,
 } from 'lucide-react';
 
 // --- Types ---
@@ -132,23 +132,21 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
               <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color}`}>
                 {cluster.status}
               </span>
-              {/* GitOps badge */}
+              {/* ArgoCD GitOps badge */}
               <span
                 className={`font-mono text-xs border px-2 py-0.5 flex items-center gap-1.5 cursor-default ${
                   cluster.gitops === 'Synced'
                     ? 'text-[#5a9e85] border-[#2a6654]/60'
                     : 'text-[#b8864e] border-[#7a5530]/60'
                 }`}
-                title="Live Kubernetes cluster is in 100% synchronization with the declarative state defined in the GitHub repository via ArgoCD. Changes go through Git — never applied manually."
+                title="ArgoCD continuously reconciles the live Kubernetes cluster against the declarative state in the GitHub repository. Changes go through Git — never applied manually."
               >
-                <span className={`inline-block w-1.5 h-1.5 rounded-full ${
-                  cluster.gitops === 'Synced'
-                    ? 'bg-[#5a9e85]'
-                    : 'bg-[#b8864e] animate-pulse'
-                }`} />
-                {cluster.gitops === 'Synced'
-                  ? 'Infrastructure: code-complete'
-                  : 'Manual drift detected — syncing...'}
+                <GitBranch size={11} />
+                <span className="text-neutral-500">ArgoCD</span>
+                <span className="text-neutral-700">·</span>
+                <span className={cluster.gitops !== 'Synced' ? 'animate-pulse' : ''}>
+                  {cluster.gitops === 'Synced' ? 'Synced' : 'Out of Sync'}
+                </span>
               </span>
             </div>
             <p className="font-mono text-xs text-thinkpad-muted mt-1 max-w-md leading-relaxed flex items-start gap-1.5">
