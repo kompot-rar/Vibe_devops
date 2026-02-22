@@ -34,6 +34,7 @@ Key enhancements include:
 *   **Dynamic Routing:** Full support for clean slug-based URLs.
 *   **Markdown Core:** Automated processing of Markdown-based blog posts.
 *   **Open Graph Automation:** Automated build-time generation of dynamic social preview images and metadata injection for enhanced social sharing.
+*   **Live Cluster Playground:** A real-time monitoring dashboard integrated with the **Prometheus API**, providing live visibility into cluster health, node temperatures, and resource utilization.
 *   **Custom Infrastructure Integration:** Re-engineered for automated deployment and hosting.
 
 This strategic choice allows for:
