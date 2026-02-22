@@ -60,6 +60,13 @@ const ROADMAP_DATA: RoadmapItem[] = [
     status: 'in-progress'
   },
   {
+    id: '11',
+    title: 'SRE & Observability',
+    description: 'Pełna obserwowalność. Monitoring, logi, Distributed Tracing i kultura SRE.',
+    tools: ['Prometheus', 'Grafana', 'ELK', 'OpenTelemetry'],
+    status: 'in-progress'
+  },
+  {
     id: '8',
     title: 'Kubernetes Core',
     description: 'Orkiestracja kontenerów. Instalacja K3s, zarządzanie i konfiguracja sieci klastra.',
@@ -71,13 +78,6 @@ const ROADMAP_DATA: RoadmapItem[] = [
     title: 'DatabaseOps & Storage',
     description: 'Utrzymanie aplikacji stanowych. Klastry HA baz danych, strategie Backup & Restore i replikacja.',
     tools: ['PostgreSQL', 'Redis', 'MinIO', 'pgBackRest'],
-    status: 'pending'
-  },
-  {
-    id: '11',
-    title: 'SRE & Observability',
-    description: 'Pełna obserwowalność. Monitoring, logi, Distributed Tracing i kultura SRE.',
-    tools: ['Prometheus', 'Grafana', 'ELK', 'OpenTelemetry'],
     status: 'pending'
   },
   {
