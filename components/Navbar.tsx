@@ -11,8 +11,8 @@ const Navbar: React.FC = () => {
   const navItems = [
     { name: 'Blog', path: '/' },
     { name: 'Roadmapa', path: '/roadmap' },
-    { name: 'Playground', path: '/playground' },
     { name: 'O Projekcie', path: '/about' },
+    { name: 'Playground', path: '/playground' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
