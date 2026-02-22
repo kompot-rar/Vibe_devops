@@ -10,7 +10,8 @@ interface ClusterInfo {
   totalPods: string;
   status: 'Healthy' | 'Warning' | 'Observed' | string;
   message: string;
-  restarts24h: number;
+  restarts1h: number;
+  gitops: 'Synced' | 'Out of Sync' | string;
   lastUpdate: string;
 }
 
@@ -115,9 +116,25 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
             <span className={`relative inline-flex rounded-full h-3 w-3 ${s.dotColor}`} />
           </span>
           <div>
-            <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color}`}>
-              {cluster.status}
-            </span>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color}`}>
+                {cluster.status}
+              </span>
+              {/* GitOps badge */}
+              <span
+                className={`font-mono text-xs border px-2 py-0.5 flex items-center gap-1.5 cursor-default ${
+                  cluster.gitops === 'Synced'
+                    ? 'text-[#5a9e85] border-[#2a6654]/60'
+                    : 'text-[#b8864e] border-[#7a5530]/60 animate-pulse'
+                }`}
+                title="Indicates that the live Kubernetes cluster is in 100% synchronization with the declarative state defined in the GitHub repository via ArgoCD."
+              >
+                <span className={`inline-block w-1.5 h-1.5 rounded-full ${
+                  cluster.gitops === 'Synced' ? 'bg-[#5a9e85]' : 'bg-[#b8864e]'
+                }`} />
+                GitOps: {cluster.gitops}
+              </span>
+            </div>
             <p className="font-mono text-xs text-thinkpad-muted mt-1 max-w-md leading-relaxed">
               {cluster.message}
             </p>
@@ -143,18 +160,18 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <ShieldCheck size={10} /> Self-healed (24h)
+            <ShieldCheck size={10} /> Recovery events (1h)
           </span>
           <div className="flex items-baseline gap-2">
             <span className={`font-mono text-2xl font-bold tabular-nums ${
-              cluster.restarts24h === 0 ? 'text-white' : 'text-[#b8864e]'
+              cluster.restarts1h === 0 ? 'text-white' : 'text-[#b8864e]'
             }`}>
-              {cluster.restarts24h}
+              {cluster.restarts1h}
             </span>
             <span className="font-mono text-xs text-thinkpad-muted">
-              {cluster.restarts24h === 0
+              {cluster.restarts1h === 0
                 ? 'no events'
-                : cluster.restarts24h === 1
+                : cluster.restarts1h === 1
                   ? 'event · recovered'
                   : 'events · recovered'}
             </span>
