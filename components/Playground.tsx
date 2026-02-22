@@ -28,8 +28,8 @@ interface ApiResponse {
 // --- Helpers ---
 
 const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
-  if (temp < 55) return 'ok';
-  if (temp < 65) return 'warm';
+  if (temp < 70) return 'ok';
+  if (temp < 85) return 'warm';
   return 'hot';
 };
 
@@ -296,7 +296,7 @@ const Playground: React.FC = () => {
           <div className="p-6">
             {bodyContent(data && (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex flex-col gap-4">
                   {data.nodes.map((node, i) => (
                     <NodeCard key={node.name} node={node} index={i} />
                   ))}
