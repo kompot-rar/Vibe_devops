@@ -149,8 +149,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
                 </span>
               </span>
             </div>
-            <p className="font-mono text-xs text-thinkpad-muted mt-1 max-w-md leading-relaxed flex items-start gap-1.5">
-              <span className="inline-block w-1 h-1 rounded-full bg-thinkpad-muted/50 animate-pulse mt-1.5 shrink-0" />
+            <p className="font-mono text-xs text-thinkpad-muted mt-1 leading-relaxed">
               {cluster.message}
             </p>
           </div>
@@ -166,7 +165,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Box size={10} /> Pods running
+            <Box size={10} /> Pody aktywne
           </span>
           <span className="font-mono text-2xl font-bold text-white tabular-nums">
             {cluster.totalPods}
@@ -175,7 +174,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <ShieldCheck size={10} /> Recovery events (24h)
+            <ShieldCheck size={10} /> Self-healing (24h)
           </span>
           <div
             className="flex items-baseline gap-2"
@@ -192,17 +191,17 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
             </span>
             <span className="font-mono text-xs text-thinkpad-muted">
               {cluster.restarts24h === 0
-                ? 'no events'
+                ? 'brak zdarzeń'
                 : cluster.restarts24h === 1
-                  ? 'event · recovered'
-                  : 'events · recovered'}
+                  ? 'zdarzenie · naprawiono'
+                  : 'zdarzenia · naprawiono'}
             </span>
           </div>
         </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Activity size={10} /> Last sync
+            <Activity size={10} /> Ostatni sync
           </span>
           <span className="font-mono text-base font-semibold text-white tabular-nums">
             {timeAgo(cluster.lastUpdate)}
