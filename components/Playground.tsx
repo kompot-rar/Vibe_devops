@@ -10,7 +10,7 @@ interface ClusterInfo {
   totalPods: string;
   status: 'Healthy' | 'Warning' | 'Observed' | string;
   message: string;
-  restarts1h: number;
+  restarts24h: number;
   gitops: 'Synced' | 'Out of Sync' | string;
   lastUpdate: string;
 }
@@ -72,6 +72,18 @@ const formatTimestamp = (iso: string) => {
   } catch { return iso; }
 };
 
+const timeAgo = (iso: string): string => {
+  try {
+    const diff = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diff / 60000);
+    if (mins < 1) return 'just now';
+    if (mins < 60) return `${mins}m ago`;
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
+  } catch { return '—'; }
+};
+
 // --- Sub-components ---
 
 const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
@@ -125,17 +137,22 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
                 className={`font-mono text-xs border px-2 py-0.5 flex items-center gap-1.5 cursor-default ${
                   cluster.gitops === 'Synced'
                     ? 'text-[#5a9e85] border-[#2a6654]/60'
-                    : 'text-[#b8864e] border-[#7a5530]/60 animate-pulse'
+                    : 'text-[#b8864e] border-[#7a5530]/60'
                 }`}
-                title="Indicates that the live Kubernetes cluster is in 100% synchronization with the declarative state defined in the GitHub repository via ArgoCD."
+                title="Live Kubernetes cluster is in 100% synchronization with the declarative state defined in the GitHub repository via ArgoCD. Changes go through Git — never applied manually."
               >
                 <span className={`inline-block w-1.5 h-1.5 rounded-full ${
-                  cluster.gitops === 'Synced' ? 'bg-[#5a9e85]' : 'bg-[#b8864e]'
+                  cluster.gitops === 'Synced'
+                    ? 'bg-[#5a9e85]'
+                    : 'bg-[#b8864e] animate-pulse'
                 }`} />
-                GitOps: {cluster.gitops}
+                {cluster.gitops === 'Synced'
+                  ? 'Infrastructure: code-complete'
+                  : 'Manual drift detected — syncing...'}
               </span>
             </div>
-            <p className="font-mono text-xs text-thinkpad-muted mt-1 max-w-md leading-relaxed">
+            <p className="font-mono text-xs text-thinkpad-muted mt-1 max-w-md leading-relaxed flex items-start gap-1.5">
+              <span className="inline-block w-1 h-1 rounded-full bg-thinkpad-muted/50 animate-pulse mt-1.5 shrink-0" />
               {cluster.message}
             </p>
           </div>
@@ -160,18 +177,25 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <ShieldCheck size={10} /> Recovery events (1h)
+            <ShieldCheck size={10} /> Recovery events (24h)
           </span>
-          <div className="flex items-baseline gap-2">
+          <div
+            className="flex items-baseline gap-2"
+            title={
+              cluster.restarts24h > 0
+                ? `W ciągu ostatnich 24h klaster wykrył i automatycznie naprawił ${cluster.restarts24h} incydent${cluster.restarts24h === 1 ? '' : cluster.restarts24h < 5 ? 'y' : 'ów'} bez ingerencji człowieka.`
+                : 'Zero incydentów w ciągu ostatnich 24h. Klaster operuje w pełnej stabilności.'
+            }
+          >
             <span className={`font-mono text-2xl font-bold tabular-nums ${
-              cluster.restarts1h === 0 ? 'text-white' : 'text-[#b8864e]'
+              cluster.restarts24h === 0 ? 'text-white' : 'text-[#b8864e]'
             }`}>
-              {cluster.restarts1h}
+              {cluster.restarts24h}
             </span>
             <span className="font-mono text-xs text-thinkpad-muted">
-              {cluster.restarts1h === 0
+              {cluster.restarts24h === 0
                 ? 'no events'
-                : cluster.restarts1h === 1
+                : cluster.restarts24h === 1
                   ? 'event · recovered'
                   : 'events · recovered'}
             </span>
@@ -180,14 +204,32 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Activity size={10} /> Last scraped
+            <Activity size={10} /> Last sync
           </span>
           <span className="font-mono text-base font-semibold text-white tabular-nums">
+            {timeAgo(cluster.lastUpdate)}
+          </span>
+          <span className="font-mono text-xs text-neutral-700 tabular-nums">
             {formatTimestamp(cluster.lastUpdate)}
           </span>
         </div>
 
       </div>
+
+      {/* View Source */}
+      <div className="px-5 py-3 border-t border-neutral-800/60 flex justify-end">
+        <a
+          href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/monitoring/status-proxy.yaml"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs text-thinkpad-muted hover:text-white transition-colors duration-200 flex items-center gap-1.5 group"
+        >
+          <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
+          View Source: GitOps Manifest &amp; PromQL Logic
+          <span className="text-neutral-700">↗</span>
+        </a>
+      </div>
+
     </div>
   );
 };
