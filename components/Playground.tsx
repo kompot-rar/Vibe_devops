@@ -34,9 +34,9 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
 };
 
 const tempCfg = {
-  ok:   { label: 'OK',   color: 'text-emerald-400', barColor: 'bg-emerald-400', border: 'border-emerald-400/20' },
-  warm: { label: 'WARM', color: 'text-yellow-400',  barColor: 'bg-yellow-400',  border: 'border-yellow-400/20' },
-  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', border: 'border-thinkpad-red/30' },
+  ok:   { label: 'OK',   color: 'text-emerald-400', barColor: 'bg-emerald-400', accentBorder: '#34d399' },
+  warm: { label: 'WARM', color: 'text-yellow-400',  barColor: 'bg-yellow-400',  accentBorder: '#facc15' },
+  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#ff002b' },
 };
 
 const formatUptime = (days: string) => {
@@ -58,93 +58,102 @@ const formatTimestamp = (iso: string) => {
 
 // --- Sub-components ---
 
+const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
+  value,
+  colorClass,
+  max = 100,
+}) => (
+  <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+    <div
+      className={`h-full ${colorClass} rounded-full transition-all duration-700`}
+      style={{ width: `${Math.min(100, (value / max) * 100)}%` }}
+    />
+  </div>
+);
+
 const MetricRow: React.FC<{
+  icon: React.ReactNode;
   label: string;
   value: string;
   unit: string;
-  barWidth: number;
+  barValue: number;
+  barMax?: number;
   barColor: string;
-}> = ({ label, value, unit, barWidth, barColor }) => (
-  <div>
-    <div className="flex justify-between items-baseline mb-1">
-      <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">{label}</span>
-      <span className="font-mono text-sm text-white">
-        {value}<span className="text-xs text-thinkpad-muted">{unit}</span>
-      </span>
+  valueColor?: string;
+}> = ({ icon, label, value, unit, barValue, barMax, barColor, valueColor = 'text-white' }) => (
+  <div className="grid grid-cols-[6rem_4rem_1fr] items-center gap-3">
+    <div className="flex items-center gap-1.5 text-thinkpad-muted">
+      {icon}
+      <span className="font-mono text-xs uppercase tracking-wider">{label}</span>
     </div>
-    <div className="h-px bg-neutral-800">
-      <div
-        className={`h-full ${barColor} transition-all duration-700`}
-        style={{ width: `${Math.min(100, barWidth)}%` }}
-      />
-    </div>
+    <span className={`font-mono text-sm font-semibold ${valueColor} text-right tabular-nums`}>
+      {value}<span className="text-xs font-normal text-thinkpad-muted">{unit}</span>
+    </span>
+    <Bar value={barValue} colorClass={barColor} max={barMax} />
   </div>
 );
 
 const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) => {
-  const temp = parseFloat(node.temp);
-  const cpu  = parseFloat(node.cpu);
-  const ram  = parseFloat(node.ram);
+  const temp  = parseFloat(node.temp);
+  const cpu   = parseFloat(node.cpu);
+  const ram   = parseFloat(node.ram);
   const level = getTempLevel(temp);
   const cfg   = tempCfg[level];
 
   return (
-    <div className={`bg-thinkpad-base border ${cfg.border} p-5 rounded-none`}>
+    <div
+      className="bg-thinkpad-base border-l-2 border border-neutral-800/60 px-5 py-4 transition-colors duration-300"
+      style={{ borderLeftColor: cfg.accentBorder }}
+    >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Server size={13} className="text-thinkpad-muted" />
-          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">
+          <Server size={12} className="text-thinkpad-muted" />
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-widest">
             node-{String(index + 1).padStart(2, '0')}
           </span>
+          <span className="font-mono text-xs text-neutral-700">/</span>
+          <span className="font-mono text-sm text-neutral-400">{node.name}</span>
         </div>
-        <span className={`font-mono text-xs ${cfg.color} tracking-widest`}>[{cfg.label}]</span>
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-xs text-neutral-600 flex items-center gap-1">
+            <Clock size={10} />
+            {formatUptime(node.uptime)}
+          </span>
+          <span className={`font-mono text-xs ${cfg.color} tracking-widest`}>
+            [{cfg.label}]
+          </span>
+        </div>
       </div>
 
-      <div className="font-mono text-sm text-neutral-500 mb-5 tracking-tight">{node.name}</div>
-
       {/* Metrics */}
-      <div className="space-y-4">
-        {/* Temp */}
-        <div>
-          <div className="flex justify-between items-baseline mb-1">
-            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1">
-              <Thermometer size={11} /> temp
-            </span>
-            <span className={`font-mono text-lg font-bold ${cfg.color} leading-none`}>
-              {temp.toFixed(1)}<span className="text-xs font-normal">°C</span>
-            </span>
-          </div>
-          <div className="h-px bg-neutral-800">
-            <div
-              className={`h-full ${cfg.barColor} transition-all duration-700`}
-              style={{ width: `${Math.min(100, temp)}%` }}
-            />
-          </div>
-        </div>
-
+      <div className="space-y-3">
         <MetricRow
+          icon={<Thermometer size={11} />}
+          label="temp"
+          value={temp.toFixed(1)}
+          unit="°C"
+          barValue={temp}
+          barMax={100}
+          barColor={cfg.barColor}
+          valueColor={cfg.color}
+        />
+        <MetricRow
+          icon={<Cpu size={11} />}
           label="cpu"
           value={cpu.toFixed(1)}
           unit="%"
-          barWidth={cpu}
-          barColor="bg-neon-blue"
+          barValue={cpu}
+          barColor="bg-thinkpad-red"
         />
         <MetricRow
+          icon={<MemoryStick size={11} />}
           label="ram"
           value={ram.toFixed(1)}
           unit="%"
-          barWidth={ram}
-          barColor="bg-violet-500"
+          barValue={ram}
+          barColor="bg-neon-blue"
         />
-
-        {/* Uptime */}
-        <div className="flex items-center justify-between pt-1 border-t border-neutral-800">
-          <span className="font-mono text-xs text-thinkpad-muted flex items-center gap-1">
-            <Clock size={11} /> uptime
-          </span>
-          <span className="font-mono text-xs text-neutral-400">{formatUptime(node.uptime)}</span>
-        </div>
       </div>
     </div>
   );
@@ -207,7 +216,7 @@ const Playground: React.FC = () => {
     </div>
   );
 
-  const bodyContent = (children: React.ReactNode) => {
+  const bodyState = (children: React.ReactNode) => {
     if (loading) return (
       <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
         <RefreshCw size={15} className="animate-spin" /> Łączenie z klastrem...
@@ -250,32 +259,27 @@ const Playground: React.FC = () => {
             ':: k3s',
           )}
           <div className="px-6 py-5">
-            {bodyContent(data && (
+            {bodyState(data && (
               <div className="flex flex-wrap items-center gap-6 font-mono text-sm">
-                {/* Status */}
                 <div className="flex items-center gap-2">
-                  <span
-                    className={`inline-block w-2 h-2 rounded-full ${
-                      data.cluster.status === 'Healthy' ? 'bg-emerald-400' : 'bg-thinkpad-red'
-                    }`}
-                  />
+                  <span className={`inline-block w-2 h-2 rounded-full ${
+                    data.cluster.status === 'Healthy' ? 'bg-emerald-400' : 'bg-thinkpad-red'
+                  }`} />
                   <span className={data.cluster.status === 'Healthy' ? 'text-emerald-400' : 'text-thinkpad-red'}>
                     {data.cluster.status}
                   </span>
                 </div>
 
-                <div className="text-neutral-700">|</div>
+                <span className="text-neutral-700">|</span>
 
-                {/* Pods */}
                 <div className="flex items-center gap-2 text-thinkpad-muted">
                   <Box size={13} />
                   <span>Pods:</span>
                   <span className="text-white">{data.cluster.totalPods}</span>
                 </div>
 
-                <div className="text-neutral-700">|</div>
+                <span className="text-neutral-700">|</span>
 
-                {/* Last update from cluster */}
                 <div className="flex items-center gap-2 text-thinkpad-muted">
                   <Clock size={13} />
                   <span>Last update:</span>
@@ -294,15 +298,15 @@ const Playground: React.FC = () => {
             `:: ${data?.nodes.length ?? '—'} nodes`,
           )}
           <div className="p-6">
-            {bodyContent(data && (
+            {bodyState(data && (
               <>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col gap-3">
                   {data.nodes.map((node, i) => (
                     <NodeCard key={node.name} node={node} index={i} />
                   ))}
                 </div>
                 {lastUpdated && (
-                  <div className="mt-6 text-right font-mono text-xs text-neutral-700">
+                  <div className="mt-5 text-right font-mono text-xs text-neutral-700">
                     updated: {lastUpdated.toLocaleTimeString('pl-PL')}&nbsp;·&nbsp;auto-refresh: 30s
                   </div>
                 )}
