@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Thermometer, RefreshCw, AlertTriangle,
   Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity, GitBranch,
+  HardDrive, Skull, Gauge,
 } from 'lucide-react';
 
 // --- Types ---
@@ -23,9 +24,21 @@ interface NodeInfo {
   uptime: string;
 }
 
+interface ChaosMonkeyMetrics {
+  uncorrectable_errors: number;
+  ssd_wear_cycles: number;
+  avg_write_lat_sec: number;
+}
+
+interface ChaosMonkeyAudit {
+  health_status: 'Stable' | 'Dying' | 'Throttling' | string;
+  metrics: ChaosMonkeyMetrics;
+}
+
 interface ApiResponse {
   cluster: ClusterInfo;
   nodes: NodeInfo[];
+  chaos_monkey_audit?: ChaosMonkeyAudit;
 }
 
 // --- Paleta ---
@@ -52,6 +65,17 @@ const clusterStatusCfg: Record<string, {
 
 const getStatusCfg = (status: string) =>
   clusterStatusCfg[status] ?? clusterStatusCfg['Observed'];
+
+const chaosStatusCfg: Record<string, {
+  color: string; dotColor: string; bg: string; border: string; label: string;
+}> = {
+  Dying:      { color: 'text-thinkpad-red', dotColor: 'bg-thinkpad-red', bg: 'bg-thinkpad-red/5',  border: 'border-thinkpad-red/40',  label: 'DYING'      },
+  Throttling: { color: 'text-[#b8864e]',   dotColor: 'bg-[#b8864e]',   bg: 'bg-[#7a5530]/10',   border: 'border-[#7a5530]/50',    label: 'THROTTLING' },
+  Stable:     { color: 'text-[#5a9e85]',   dotColor: 'bg-[#5a9e85]',   bg: 'bg-[#5a9e85]/5',    border: 'border-[#2a6654]/50',    label: 'STABLE'     },
+};
+
+const getChaosStatusCfg = (status: string) =>
+  chaosStatusCfg[status] ?? chaosStatusCfg['Throttling'];
 
 // --- Helpers ---
 
@@ -290,6 +314,114 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
   );
 };
 
+// --- Chaos Monkey Disk Audit widget ---
+
+const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => {
+  const { health_status, metrics } = audit;
+  const s        = getChaosStatusCfg(health_status);
+  const isDying  = health_status === 'Dying';
+
+  const latMs    = metrics.avg_write_lat_sec * 1000;
+  const latLabel = latMs < 10 ? latMs.toFixed(2) : latMs.toFixed(1);
+  const latColor = latMs > 200 ? 'text-thinkpad-red' : latMs > 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
+
+  return (
+    <div className={`border ${s.border} ${s.bg}`}>
+
+      {/* Status header */}
+      <div className="px-5 py-4 flex items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <span className="relative flex h-3 w-3 shrink-0 mt-1">
+            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${s.dotColor} opacity-40`} />
+            <span className={`relative inline-flex rounded-full h-3 w-3 ${s.dotColor}`} />
+          </span>
+          <div>
+            <div className="flex items-center gap-3 flex-wrap">
+              <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color} ${isDying ? 'animate-pulse' : ''}`}>
+                {s.label}
+              </span>
+              <span className="font-mono text-xs border border-neutral-700 px-2 py-0.5 text-neutral-500 flex items-center gap-1.5"
+                title="Self-Monitoring, Analysis and Reporting Technology — dane wprost z dysku, bez pośredników.">
+                <HardDrive size={10} />
+                S.M.A.R.T. monitor
+              </span>
+            </div>
+            <p className="font-mono text-xs text-thinkpad-muted mt-1 leading-relaxed">
+              Zamiast symulować awarie — wdrożyłem je. Dysk ze śmietnika, aktywny węzeł klastra.
+            </p>
+          </div>
+        </div>
+        {isDying && (
+          <span className="font-mono text-xs text-thinkpad-red border border-thinkpad-red/30 px-2 py-0.5 shrink-0 flex items-center gap-1.5 animate-pulse">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-thinkpad-red" />
+            CRITICAL
+          </span>
+        )}
+      </div>
+
+      {/* Trzy metryki */}
+      <div className="grid grid-cols-3 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
+
+        {/* Martwe sektory */}
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
+          title="Uncorrectable errors — sektory, których kontroler dysku nie jest w stanie naprawić. Każdy to nieodwracalna utrata danych. Licznik tylko rośnie.">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Skull size={10} /> Martwe sektory
+          </span>
+          <span className={`font-mono text-2xl font-bold tabular-nums ${
+            metrics.uncorrectable_errors > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
+          }`}>
+            {metrics.uncorrectable_errors}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">uncorrectable errors</span>
+        </div>
+
+        {/* Przebieg */}
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
+          title="Wear leveling count — łączna liczba cykli zapisu (P/E). Im wyższa, tym bliżej kresu żywotności nośnika flash.">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Gauge size={10} /> Przebieg
+          </span>
+          <span className="font-mono text-2xl font-bold tabular-nums text-[#b8864e]">
+            {metrics.ssd_wear_cycles.toLocaleString('pl-PL')}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">wear cycles (P/E)</span>
+        </div>
+
+        {/* Tętno */}
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
+          title="Średnie opóźnienie zapisu — im wyższe, tym bardziej dysk się 'dusi'. Zdrowy SSD: &lt;1ms. Ten dysk... robi co może.">
+          <span className={`font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 ${
+            isDying ? 'animate-pulse' : ''
+          }`}>
+            <Activity size={10} /> Tętno
+          </span>
+          <span className={`font-mono text-2xl font-bold tabular-nums ${latColor}`}>
+            {latLabel}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">ms avg write lat</span>
+        </div>
+
+      </div>
+
+      {/* Footer */}
+      <div className="px-5 py-3 border-t border-neutral-800/60 flex justify-between items-center">
+        <span className="font-mono text-xs text-neutral-700 italic">
+          // chaos engineering · deliberate failure source · k8s self-healing on real hardware
+        </span>
+        <a
+          href="/blog/homelab-20-architektura-totalna-od-druku-3d-po-kubernetes"
+          className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+        >
+          <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
+          origin story ↗
+        </a>
+      </div>
+
+    </div>
+  );
+};
+
 // --- Main ---
 
 const Playground: React.FC = () => {
@@ -423,11 +555,22 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Placeholder */}
-        <div className="border border-dashed border-neutral-800 p-6 text-center">
-          <p className="font-mono text-xs text-neutral-700">
-            // więcej widgetów wkrótce — network, storage, ArgoCD apps...
-          </p>
+        {/* Widget 3 — Chaos Monkey Disk Audit */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <HardDrive size={15} className="text-thinkpad-red" />,
+            'Chaos Monkey Audit',
+            ':: /dev/haos_monkey',
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              data.chaos_monkey_audit
+                ? <ChaosMonkeyWidget audit={data.chaos_monkey_audit} />
+                : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
+                    <AlertTriangle size={13} /> Chaos Monkey offline — node niedostępny
+                  </div>
+            ))}
+          </div>
         </div>
 
       </div>
