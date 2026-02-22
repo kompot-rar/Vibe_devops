@@ -34,8 +34,8 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
 };
 
 const tempCfg = {
-  ok:   { label: 'OK',   color: 'text-emerald-400', barColor: 'bg-emerald-400', accentBorder: '#34d399' },
-  warm: { label: 'WARM', color: 'text-yellow-400',  barColor: 'bg-yellow-400',  accentBorder: '#facc15' },
+  ok:   { label: 'OK',   color: 'text-neutral-400',  barColor: 'bg-neutral-500',  accentBorder: '#404040' },
+  warm: { label: 'WARM', color: 'text-amber-600',    barColor: 'bg-amber-700',    accentBorder: '#92400e' },
   hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#ff002b' },
 };
 
@@ -63,7 +63,7 @@ const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
   colorClass,
   max = 100,
 }) => (
-  <div className="h-2 bg-neutral-800 rounded-full overflow-hidden">
+  <div className="h-1 bg-neutral-800 rounded-full overflow-hidden">
     <div
       className={`h-full ${colorClass} rounded-full transition-all duration-700`}
       style={{ width: `${Math.min(100, (value / max) * 100)}%` }}
@@ -144,7 +144,7 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
           value={cpu.toFixed(1)}
           unit="%"
           barValue={cpu}
-          barColor="bg-thinkpad-red"
+          barColor="bg-neutral-500"
         />
         <MetricRow
           icon={<MemoryStick size={11} />}
@@ -152,7 +152,7 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
           value={ram.toFixed(1)}
           unit="%"
           barValue={ram}
-          barColor="bg-neon-blue"
+          barColor="bg-neutral-500"
         />
       </div>
     </div>
