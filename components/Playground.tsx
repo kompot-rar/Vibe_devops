@@ -365,8 +365,8 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
 
   const poDays = Math.floor(metrics.power_on_hours / 24);
   const poSub  = poDays >= 365
-    ? `≈ ${(poDays / 365).toFixed(1)} lat · ${metrics.power_on_hours.toLocaleString('pl-PL')} h`
-    : `${metrics.power_on_hours.toLocaleString('pl-PL')} h · power_on_hours`;
+    ? `≈ ${poDays.toLocaleString('pl-PL')} dni · ${(poDays / 365).toFixed(1)} lat`
+    : `≈ ${poDays.toLocaleString('pl-PL')} dni · power_on_hours`;
 
   return (
     <div className={`border ${s.border} ${s.bg}`}>
@@ -475,9 +475,9 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           </span>
           <div className="flex items-baseline gap-1.5">
             <span className="font-mono text-2xl font-bold tabular-nums text-white">
-              {poDays}
+              {metrics.power_on_hours.toLocaleString('pl-PL')}
             </span>
-            <span className="font-mono text-sm text-thinkpad-muted">dni</span>
+            <span className="font-mono text-sm text-thinkpad-muted">h</span>
           </div>
           <span className="font-mono text-xs text-neutral-600 leading-relaxed">{poSub}</span>
         </div>
