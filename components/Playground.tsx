@@ -408,9 +408,11 @@ const Playground: React.FC = () => {
             {bodyState(data && (
               <>
                 <div className="flex flex-col gap-3">
-                  {data.nodes.map((node, i) => (
-                    <NodeCard key={node.name} node={node} index={i} />
-                  ))}
+                  {[...data.nodes]
+                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+                    .map((node, i) => (
+                      <NodeCard key={node.name} node={node} index={i} />
+                    ))}
                 </div>
                 {lastUpdated && (
                   <div className="mt-5 text-right font-mono text-xs text-neutral-700">
