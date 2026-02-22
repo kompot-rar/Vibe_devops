@@ -1,12 +1,31 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Thermometer, RefreshCw, AlertTriangle, Wifi, WifiOff, Server } from 'lucide-react';
+import {
+  Thermometer, RefreshCw, AlertTriangle,
+  Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box,
+} from 'lucide-react';
 
-interface NodeStatus {
-  node: string;
-  temp: string;
+// --- Types ---
+
+interface ClusterInfo {
+  totalPods: string;
+  status: string;
+  lastUpdate: string;
 }
 
-const getNodeIp = (node: string) => node.split(':')[0];
+interface NodeInfo {
+  name: string;
+  temp: string;
+  cpu: string;
+  ram: string;
+  uptime: string;
+}
+
+interface ApiResponse {
+  cluster: ClusterInfo;
+  nodes: NodeInfo[];
+}
+
+// --- Helpers ---
 
 const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
   if (temp < 55) return 'ok';
@@ -14,69 +33,139 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
   return 'hot';
 };
 
-const tempLevelConfig = {
-  ok:   { label: 'OK',   color: 'text-emerald-400', barColor: 'bg-emerald-400', borderColor: 'border-emerald-400/20' },
-  warm: { label: 'WARM', color: 'text-yellow-400',  barColor: 'bg-yellow-400',  borderColor: 'border-yellow-400/20' },
-  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', borderColor: 'border-thinkpad-red/30' },
+const tempCfg = {
+  ok:   { label: 'OK',   color: 'text-emerald-400', barColor: 'bg-emerald-400', border: 'border-emerald-400/20' },
+  warm: { label: 'WARM', color: 'text-yellow-400',  barColor: 'bg-yellow-400',  border: 'border-yellow-400/20' },
+  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', border: 'border-thinkpad-red/30' },
 };
 
-const NodeTempCard: React.FC<{ node: NodeStatus; index: number }> = ({ node, index }) => {
+const formatUptime = (days: string) => {
+  const d = parseFloat(days);
+  const fullDays = Math.floor(d);
+  const hours = Math.round((d - fullDays) * 24);
+  if (fullDays === 0) return `${hours}h`;
+  if (hours === 0) return `${fullDays}d`;
+  return `${fullDays}d ${hours}h`;
+};
+
+const formatTimestamp = (iso: string) => {
+  try {
+    return new Date(iso).toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  } catch {
+    return iso;
+  }
+};
+
+// --- Sub-components ---
+
+const MetricRow: React.FC<{
+  label: string;
+  value: string;
+  unit: string;
+  barWidth: number;
+  barColor: string;
+}> = ({ label, value, unit, barWidth, barColor }) => (
+  <div>
+    <div className="flex justify-between items-baseline mb-1">
+      <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">{label}</span>
+      <span className="font-mono text-sm text-white">
+        {value}<span className="text-xs text-thinkpad-muted">{unit}</span>
+      </span>
+    </div>
+    <div className="h-px bg-neutral-800">
+      <div
+        className={`h-full ${barColor} transition-all duration-700`}
+        style={{ width: `${Math.min(100, barWidth)}%` }}
+      />
+    </div>
+  </div>
+);
+
+const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) => {
   const temp = parseFloat(node.temp);
-  const ip = getNodeIp(node.node);
+  const cpu  = parseFloat(node.cpu);
+  const ram  = parseFloat(node.ram);
   const level = getTempLevel(temp);
-  const cfg = tempLevelConfig[level];
-  const barWidth = Math.min(100, temp);
+  const cfg   = tempCfg[level];
 
   return (
-    <div className={`bg-thinkpad-base border ${cfg.borderColor} p-5 rounded-none transition-all duration-300 hover:border-opacity-60`}>
-      <div className="flex items-center justify-between mb-3">
+    <div className={`bg-thinkpad-base border ${cfg.border} p-5 rounded-none`}>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Server size={13} className="text-thinkpad-muted" />
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">
             node-{String(index + 1).padStart(2, '0')}
           </span>
         </div>
-        <span className={`font-mono text-xs ${cfg.color} tracking-widest`}>
-          [{cfg.label}]
-        </span>
+        <span className={`font-mono text-xs ${cfg.color} tracking-widest`}>[{cfg.label}]</span>
       </div>
 
-      <div className="font-mono text-sm text-neutral-500 mb-4 tracking-tight">
-        {ip}
-      </div>
+      <div className="font-mono text-sm text-neutral-500 mb-5 tracking-tight">{node.name}</div>
 
-      <div className={`font-mono text-4xl font-bold ${cfg.color} mb-4 leading-none`}>
-        {temp.toFixed(1)}<span className="text-xl font-normal">°C</span>
-      </div>
+      {/* Metrics */}
+      <div className="space-y-4">
+        {/* Temp */}
+        <div>
+          <div className="flex justify-between items-baseline mb-1">
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1">
+              <Thermometer size={11} /> temp
+            </span>
+            <span className={`font-mono text-lg font-bold ${cfg.color} leading-none`}>
+              {temp.toFixed(1)}<span className="text-xs font-normal">°C</span>
+            </span>
+          </div>
+          <div className="h-px bg-neutral-800">
+            <div
+              className={`h-full ${cfg.barColor} transition-all duration-700`}
+              style={{ width: `${Math.min(100, temp)}%` }}
+            />
+          </div>
+        </div>
 
-      <div className="h-px bg-neutral-800 overflow-hidden">
-        <div
-          className={`h-full ${cfg.barColor} transition-all duration-700`}
-          style={{ width: `${barWidth}%` }}
+        <MetricRow
+          label="cpu"
+          value={cpu.toFixed(1)}
+          unit="%"
+          barWidth={cpu}
+          barColor="bg-neon-blue"
         />
-      </div>
-      <div className="flex justify-between mt-1">
-        <span className="font-mono text-xs text-neutral-700">0°</span>
-        <span className="font-mono text-xs text-neutral-700">100°</span>
+        <MetricRow
+          label="ram"
+          value={ram.toFixed(1)}
+          unit="%"
+          barWidth={ram}
+          barColor="bg-violet-500"
+        />
+
+        {/* Uptime */}
+        <div className="flex items-center justify-between pt-1 border-t border-neutral-800">
+          <span className="font-mono text-xs text-thinkpad-muted flex items-center gap-1">
+            <Clock size={11} /> uptime
+          </span>
+          <span className="font-mono text-xs text-neutral-400">{formatUptime(node.uptime)}</span>
+        </div>
       </div>
     </div>
   );
 };
 
+// --- Main component ---
+
 const Playground: React.FC = () => {
-  const [nodes, setNodes] = useState<NodeStatus[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [data, setData]               = useState<ApiResponse | null>(null);
+  const [loading, setLoading]         = useState(true);
+  const [error, setError]             = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing]   = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
       setRefreshing(true);
       const res = await fetch('/api/status');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data: NodeStatus[] = await res.json();
-      setNodes(data);
+      const json: ApiResponse = await res.json();
+      setData(json);
       setLastUpdated(new Date());
       setError(null);
     } catch (err) {
@@ -93,9 +182,44 @@ const Playground: React.FC = () => {
     return () => clearInterval(interval);
   }, [fetchData]);
 
-  const avgTemp = nodes.length > 0
-    ? (nodes.reduce((sum, n) => sum + parseFloat(n.temp), 0) / nodes.length).toFixed(1)
-    : null;
+  const widgetHeader = (icon: React.ReactNode, title: string, subtitle?: string) => (
+    <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
+      <div className="flex items-center gap-3">
+        {icon}
+        <span className="font-mono text-sm text-white uppercase tracking-widest">{title}</span>
+        {subtitle && <span className="font-mono text-xs text-thinkpad-muted">{subtitle}</span>}
+      </div>
+      <div className="flex items-center gap-4">
+        {!loading && (
+          error
+            ? <WifiOff size={13} className="text-thinkpad-red" />
+            : <Wifi    size={13} className="text-emerald-400" />
+        )}
+        <button
+          onClick={fetchData}
+          disabled={refreshing}
+          className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
+          aria-label="Odśwież dane"
+        >
+          <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
+        </button>
+      </div>
+    </div>
+  );
+
+  const bodyContent = (children: React.ReactNode) => {
+    if (loading) return (
+      <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
+        <RefreshCw size={15} className="animate-spin" /> Łączenie z klastrem...
+      </div>
+    );
+    if (error) return (
+      <div className="flex items-center gap-3 py-8 text-thinkpad-red font-mono text-sm justify-center">
+        <AlertTriangle size={15} /> Błąd połączenia: {error}
+      </div>
+    );
+    return children;
+  };
 
   return (
     <div className="animate-fade-in">
@@ -116,88 +240,81 @@ const Playground: React.FC = () => {
         </p>
       </div>
 
-      {/* Widgets grid */}
       <div className="max-w-4xl mx-auto space-y-6">
 
-        {/* Cluster Thermal widget */}
+        {/* Widget 1 — Cluster Overview */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-          {/* Widget header */}
-          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
-            <div className="flex items-center gap-3">
-              <Thermometer size={15} className="text-thinkpad-red" />
-              <span className="font-mono text-sm text-white uppercase tracking-widest">
-                Cluster Thermal
-              </span>
-              <span className="font-mono text-xs text-thinkpad-muted">:: k3s / 3 nodes</span>
-            </div>
-            <div className="flex items-center gap-4">
-              {!loading && (
-                error
-                  ? <WifiOff size={13} className="text-thinkpad-red" />
-                  : <Wifi size={13} className="text-emerald-400" />
-              )}
-              <button
-                onClick={fetchData}
-                disabled={refreshing}
-                className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
-                aria-label="Odśwież dane"
-              >
-                <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
-              </button>
-            </div>
-          </div>
-
-          {/* Widget body */}
-          <div className="p-6">
-            {loading && (
-              <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
-                <RefreshCw size={15} className="animate-spin" />
-                Łączenie z klastrem...
-              </div>
-            )}
-
-            {error && !loading && (
-              <div className="flex items-center gap-3 py-8 text-thinkpad-red font-mono text-sm justify-center">
-                <AlertTriangle size={15} />
-                Błąd połączenia: {error}
-              </div>
-            )}
-
-            {!loading && !error && (
-              <>
-                {/* Summary bar */}
-                {avgTemp && (
-                  <div className="flex items-center gap-3 font-mono text-xs text-thinkpad-muted mb-6">
-                    <span className="text-neutral-600">AVG_TEMP</span>
-                    <span className="text-white">{avgTemp}°C</span>
-                    <span className="text-neutral-700">·</span>
-                    <span className="text-neutral-600">NODES</span>
-                    <span className="text-white">{nodes.length}</span>
-                  </div>
-                )}
-
-                {/* Node cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  {nodes.map((node, i) => (
-                    <NodeTempCard key={node.node} node={node} index={i} />
-                  ))}
+          {widgetHeader(
+            <Box size={15} className="text-thinkpad-red" />,
+            'Cluster Overview',
+            ':: k3s',
+          )}
+          <div className="px-6 py-5">
+            {bodyContent(data && (
+              <div className="flex flex-wrap items-center gap-6 font-mono text-sm">
+                {/* Status */}
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`inline-block w-2 h-2 rounded-full ${
+                      data.cluster.status === 'Healthy' ? 'bg-emerald-400' : 'bg-thinkpad-red'
+                    }`}
+                  />
+                  <span className={data.cluster.status === 'Healthy' ? 'text-emerald-400' : 'text-thinkpad-red'}>
+                    {data.cluster.status}
+                  </span>
                 </div>
 
-                {/* Footer */}
+                <div className="text-neutral-700">|</div>
+
+                {/* Pods */}
+                <div className="flex items-center gap-2 text-thinkpad-muted">
+                  <Box size={13} />
+                  <span>Pods:</span>
+                  <span className="text-white">{data.cluster.totalPods}</span>
+                </div>
+
+                <div className="text-neutral-700">|</div>
+
+                {/* Last update from cluster */}
+                <div className="flex items-center gap-2 text-thinkpad-muted">
+                  <Clock size={13} />
+                  <span>Last update:</span>
+                  <span className="text-white">{formatTimestamp(data.cluster.lastUpdate)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Widget 2 — Node Metrics */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Cpu size={15} className="text-thinkpad-red" />,
+            'Node Metrics',
+            `:: ${data?.nodes.length ?? '—'} nodes`,
+          )}
+          <div className="p-6">
+            {bodyContent(data && (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {data.nodes.map((node, i) => (
+                    <NodeCard key={node.name} node={node} index={i} />
+                  ))}
+                </div>
                 {lastUpdated && (
                   <div className="mt-6 text-right font-mono text-xs text-neutral-700">
                     updated: {lastUpdated.toLocaleTimeString('pl-PL')}&nbsp;·&nbsp;auto-refresh: 30s
                   </div>
                 )}
               </>
-            )}
+            ))}
           </div>
         </div>
 
-        {/* Placeholder for future widgets */}
+        {/* Placeholder */}
         <div className="border border-dashed border-neutral-800 p-6 text-center">
           <p className="font-mono text-xs text-neutral-700">
-            // więcej widgetów wkrótce — CPU, RAM, pods, ...
+            // więcej widgetów wkrótce — network, storage, ArgoCD apps...
           </p>
         </div>
 
