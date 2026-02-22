@@ -33,10 +33,14 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
   return 'hot';
 };
 
+// Temp level config — muted, technical palette inspired by Grafana dark / btop color logic.
+// ok:   desaturated slate-teal. Not neutral-gray-boring, but cool and calm.
+// warm: desaturated amber-ochre. "Thermal" without neon screaming.
+// hot:  thinkpad-red — the one moment full brand color is semantically justified.
 const tempCfg = {
-  ok:   { label: 'OK',   color: 'text-neutral-400',  barColor: 'bg-neutral-500',  accentBorder: '#404040' },
-  warm: { label: 'WARM', color: 'text-amber-600',    barColor: 'bg-amber-700',    accentBorder: '#92400e' },
-  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#ff002b' },
+  ok:   { label: 'OK',   color: 'text-[#7a9fad]',  barColor: 'bg-[#3a6678]',  accentBorder: '#2a4a58' },
+  warm: { label: 'WARM', color: 'text-[#b8864e]',  barColor: 'bg-[#7a5530]',  accentBorder: '#5a3c1e' },
+  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014' },
 };
 
 const formatUptime = (days: string) => {
@@ -58,14 +62,16 @@ const formatTimestamp = (iso: string) => {
 
 // --- Sub-components ---
 
+// Bar track uses a slightly warm dark rather than flat neutral-800,
+// giving the filled portion contrast without a harsh jump.
 const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
   value,
   colorClass,
   max = 100,
 }) => (
-  <div className="h-1 bg-neutral-800 rounded-full overflow-hidden">
+  <div className="h-[3px] bg-[#1e2028] rounded-sm overflow-hidden">
     <div
-      className={`h-full ${colorClass} rounded-full transition-all duration-700`}
+      className={`h-full ${colorClass} rounded-sm transition-all duration-700`}
       style={{ width: `${Math.min(100, (value / max) * 100)}%` }}
     />
   </div>
@@ -102,8 +108,13 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
 
   return (
     <div
-      className="bg-thinkpad-base border-l-2 border border-neutral-800/60 px-5 py-4 transition-colors duration-300"
-      style={{ borderLeftColor: cfg.accentBorder }}
+      className="bg-thinkpad-base border-l-2 border border-neutral-800/50 px-5 py-4 transition-colors duration-300"
+      style={{
+        borderLeftColor: cfg.accentBorder,
+        // Subtle inset top highlight at 6% opacity — gives the card a "panel" depth
+        // without adding extra DOM elements. Color matches the left accent border.
+        backgroundImage: `linear-gradient(to bottom, ${cfg.accentBorder}0f 0px, transparent 40px)`,
+      }}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
@@ -138,21 +149,25 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
           barColor={cfg.barColor}
           valueColor={cfg.color}
         />
+        {/* CPU — steel-blue: neon-blue (#0ea5e9) pulled down to ~25% sat/brightness */}
         <MetricRow
           icon={<Cpu size={11} />}
           label="cpu"
           value={cpu.toFixed(1)}
           unit="%"
           barValue={cpu}
-          barColor="bg-neutral-500"
+          barColor="bg-[#2e5f80]"
+          valueColor="text-[#6a9fbf]"
         />
+        {/* RAM — muted teal-green: distinct from blue, reads "memory" via LCD-green lineage */}
         <MetricRow
           icon={<MemoryStick size={11} />}
           label="ram"
           value={ram.toFixed(1)}
           unit="%"
           barValue={ram}
-          barColor="bg-neutral-500"
+          barColor="bg-[#2a6654]"
+          valueColor="text-[#5a9e85]"
         />
       </div>
     </div>
