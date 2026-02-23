@@ -476,7 +476,7 @@ const PipelineVisualizer: React.FC = () => {
                   <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
                 </div>
 
-                <div className="flex flex-col gap-0.5 shrink-0 sm:items-end">
+                <div className="flex flex-col gap-0.5 shrink-0 sm:ml-auto sm:items-end sm:text-right">
                   <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">STATUS</span>
                   <span className={`font-mono text-xs font-bold ${
                     failed                       ? 'text-thinkpad-red' :
