@@ -8,6 +8,8 @@ imageUrl: '/observability-banner.png'
 excerpt: 'Jak zamienić agonię sprzętu w interaktywny projekt Observability? Dowiedz się, jak monitoruję umierający dysk SSD w moim klastrze.'
 ---
 
+# [PLAYGROUND](https://devops.mrozy.org/playground)
+
 # Tętno Homelaba: Gdy hardware zdycha
 
 Większość ludzi panikuje, gdy ich serwer zaczyna sypać błędami I/O. Ja poczułem ekscytację. Gdy mój trzeci node (Lenovo Tiny) zaczął "krzyczeć" błędami w logach, wiedziałem jedno: **Mamy idealnego ochotnika do Chaos Monkey.**
