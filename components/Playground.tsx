@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Thermometer, RefreshCw, AlertTriangle,
-  Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity, GitBranch,
-  HardDrive, Skull, Gauge,
+  Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity,
+  HardDrive, Skull, Gauge, Download, Upload,
 } from 'lucide-react';
 import PipelineVisualizer from './PipelineVisualizer';
 import ArgoCDApps from './ArgoCDApps';
 
 // --- Types ---
+
+interface ClusterStats {
+  cpu_pressure: string;
+  memory_pressure: string;
+  network_rx_mbps: string;
+  network_tx_mbps: string;
+}
 
 interface ClusterInfo {
   totalPods: string;
@@ -16,6 +23,7 @@ interface ClusterInfo {
   restarts24h: number;
   gitops: 'Synced' | 'Out of Sync' | string;
   lastUpdate: string;
+  stats?: ClusterStats;
 }
 
 interface NodeInfo {
@@ -174,31 +182,14 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
             <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${s.dotColor} opacity-40`} />
             <span className={`relative inline-flex rounded-full h-3 w-3 ${s.dotColor}`} />
           </span>
-          <div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color}`}>
-                {cluster.status}
-              </span>
-              {/* ArgoCD GitOps badge */}
-              <span
-                className={`font-mono text-xs border px-2 py-0.5 flex items-center gap-1.5 cursor-default ${
-                  cluster.gitops === 'Synced'
-                    ? 'text-[#5a9e85] border-[#2a6654]/60'
-                    : 'text-[#b8864e] border-[#7a5530]/60'
-                }`}
-                title="ArgoCD continuously reconciles the live Kubernetes cluster against the declarative state in the GitHub repository. Changes go through Git — never applied manually."
-              >
-                <GitBranch size={11} />
-                <span className="text-neutral-500">ArgoCD</span>
-                <span className="text-neutral-700">·</span>
-                <span className={cluster.gitops !== 'Synced' ? 'animate-pulse' : ''}>
-                  {cluster.gitops === 'Synced' ? 'Synced' : 'Out of Sync'}
-                </span>
-              </span>
-            </div>
-            <p className="font-mono text-xs text-thinkpad-muted mt-1 leading-relaxed">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color}`}>
+              {cluster.status}
+            </span>
+            <span className="font-mono text-neutral-700">·</span>
+            <span className="font-mono text-xs text-thinkpad-muted leading-relaxed">
               {cluster.message}
-            </p>
+            </span>
           </div>
         </div>
         <span className="font-mono text-xs text-thinkpad-muted border border-neutral-800 px-2 py-0.5 shrink-0 flex items-center gap-1.5">
@@ -259,6 +250,36 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
         </div>
 
       </div>
+
+      {/* Cluster Stats */}
+      {cluster.stats && (
+        <div className="border-t border-neutral-800/60 px-5 py-4 space-y-3">
+          <MetricRow
+            icon={<Cpu size={11} />} label="cpu req"
+            value={parseFloat(cluster.stats.cpu_pressure).toFixed(1)} unit="%"
+            barValue={parseFloat(cluster.stats.cpu_pressure)}
+            barColor="bg-[#2e5f80]" valueColor="text-[#6a9fbf]"
+          />
+          <MetricRow
+            icon={<MemoryStick size={11} />} label="mem req"
+            value={parseFloat(cluster.stats.memory_pressure).toFixed(1)} unit="%"
+            barValue={parseFloat(cluster.stats.memory_pressure)}
+            barColor="bg-[#2a6654]" valueColor="text-[#5a9e85]"
+          />
+          <MetricRow
+            icon={<Download size={11} />} label="net rx"
+            value={parseFloat(cluster.stats.network_rx_mbps).toFixed(2)} unit=" Mbps"
+            barValue={parseFloat(cluster.stats.network_rx_mbps)} barMax={100}
+            barColor="bg-[#2a4a6a]" valueColor="text-[#7a9fbf]"
+          />
+          <MetricRow
+            icon={<Upload size={11} />} label="net tx"
+            value={parseFloat(cluster.stats.network_tx_mbps).toFixed(2)} unit=" Mbps"
+            barValue={parseFloat(cluster.stats.network_tx_mbps)} barMax={100}
+            barColor="bg-[#2a3f5a]" valueColor="text-[#6a8fbf]"
+          />
+        </div>
+      )}
 
       {/* View Source */}
       <div className="px-5 py-3 border-t border-neutral-800/60 flex justify-end">
