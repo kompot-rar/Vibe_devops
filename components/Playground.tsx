@@ -3,6 +3,7 @@ import {
   Thermometer, RefreshCw, AlertTriangle,
   Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity,
   HardDrive, Skull, Gauge, Download, Upload,
+  Shield, ShieldAlert, Zap, Users, Globe,
 } from 'lucide-react';
 import PipelineVisualizer from './PipelineVisualizer';
 import ArgoCDApps from './ArgoCDApps';
@@ -62,6 +63,24 @@ interface ArgoCDApp {
   last_deploy: string;
   repo: string;
   path?: string;
+}
+
+interface CloudflareData {
+  security: {
+    threats_blocked: number;
+  };
+  performance: {
+    cache_hit_ratio_pct: string;
+    saved_transfer_gb: string;
+  };
+  traffic: {
+    unique_visitors_7d: number;
+    top_countries: string[];
+  };
+  reliability: {
+    edge_error_rate_pct: string;
+    synthetic_uptime_pct: string;
+  };
 }
 
 interface ApiResponse {
@@ -608,6 +627,146 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
   );
 };
 
+// --- Cloudflare Edge widget ---
+
+const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
+  const cacheHit  = parseFloat(data.performance.cache_hit_ratio_pct);
+  const savedGb   = parseFloat(data.performance.saved_transfer_gb);
+  const uptime    = parseFloat(data.reliability.synthetic_uptime_pct);
+  const errorRate = parseFloat(data.reliability.edge_error_rate_pct);
+  const visitors  = data.traffic.unique_visitors_7d;
+  const threats   = data.security.threats_blocked;
+
+  const uptimeColor = uptime >= 99.9 ? 'text-[#5a9e85]' : uptime >= 99 ? 'text-[#b8864e]' : 'text-thinkpad-red';
+  const errorColor  = errorRate < 0.5 ? 'text-[#5a9e85]' : errorRate < 2 ? 'text-[#b8864e]' : 'text-thinkpad-red';
+
+  return (
+    <div className="border border-[#f6821f]/25 bg-[#f6821f]/[0.015]">
+
+      {/* Hero — threats blocked */}
+      <div className="px-5 py-5 border-b border-neutral-800/60">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex-1 min-w-0">
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 mb-3">
+              <ShieldAlert size={10} />
+              Threats blocked
+              <span className="text-neutral-700 ml-1">// WAF · Bot Fight Mode · DDoS mitigation</span>
+            </span>
+            <div className="flex items-baseline gap-3">
+              <span className="font-mono text-5xl font-bold tabular-nums text-[#f6821f]">
+                {threats.toLocaleString('pl-PL')}
+              </span>
+              <span className="font-mono text-sm text-thinkpad-muted">attacks / 7d</span>
+            </div>
+            <div className="mt-3">
+              <Bar value={threats} max={500} colorClass="bg-[#f6821f]/60" />
+            </div>
+          </div>
+          <div className="flex items-center gap-1.5 border border-[#f6821f]/25 px-2.5 py-1 shrink-0 self-start mt-1">
+            <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f6821f] animate-pulse" />
+            <span className="font-mono text-xs text-[#f6821f]/60 uppercase tracking-wider">edge active</span>
+          </div>
+        </div>
+      </div>
+
+      {/* Performance row */}
+      <div className="grid grid-cols-2 gap-px border-b border-neutral-800/60 bg-neutral-800/30">
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+          title="Procent żądań obsłużony z cache Cloudflare — bez dotykania serwera domowego">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Zap size={10} /> Cache hit ratio
+          </span>
+          <div className="flex items-baseline gap-1 leading-none">
+            <span className="font-mono text-2xl font-bold tabular-nums text-[#f6821f]">
+              {cacheHit.toFixed(1)}
+            </span>
+            <span className="font-mono text-sm text-thinkpad-muted">%</span>
+          </div>
+          <Bar value={cacheHit} colorClass="bg-[#f6821f]/45" />
+        </div>
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+          title="Transfer zaoszczędzony przez CDN — GB, które nie obciążyły serwera domowego">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Download size={10} /> Saved transfer
+          </span>
+          <div className="flex items-baseline gap-1.5 leading-none">
+            <span className="font-mono text-2xl font-bold tabular-nums text-[#f6821f]">
+              {savedGb.toFixed(2)}
+            </span>
+            <span className="font-mono text-sm text-thinkpad-muted">GB</span>
+          </div>
+          <span className="font-mono text-xs text-neutral-600">spared from origin server</span>
+        </div>
+
+      </div>
+
+      {/* Traffic + Reliability row */}
+      <div className="grid grid-cols-2 gap-px border-b border-neutral-800/60 bg-neutral-800/30">
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+          title="Unikalni odwiedzający z ostatnich 7 dni — distinct IP + fingerprint">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Users size={10} /> Unique visitors
+          </span>
+          <div className="flex items-baseline gap-1 leading-none">
+            <span className="font-mono text-2xl font-bold tabular-nums text-white">
+              {visitors.toLocaleString('pl-PL')}
+            </span>
+            <span className="font-mono text-xs text-thinkpad-muted ml-0.5">/7d</span>
+          </div>
+          <div className="flex gap-1.5 mt-1 flex-wrap">
+            {data.traffic.top_countries.map(cc => (
+              <span
+                key={cc}
+                className="font-mono text-xs border border-[#f6821f]/20 px-1.5 py-0.5 text-[#f6821f]/60 bg-[#f6821f]/[0.04]"
+              >
+                {cc}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+          title="Uptime mierzony z perspektywy sieci Cloudflare — edge_error_rate jako dopełnienie do 100%">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+            <Globe size={10} /> Edge uptime
+          </span>
+          <div className="flex items-baseline gap-1 leading-none">
+            <span className={`font-mono text-2xl font-bold tabular-nums ${uptimeColor}`}>
+              {uptime.toFixed(2)}
+            </span>
+            <span className="font-mono text-sm text-thinkpad-muted">%</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className={`font-mono text-xs tabular-nums ${errorColor}`}>
+              err: {errorRate}%
+            </span>
+            <span className="font-mono text-xs text-neutral-700">edge_error_rate</span>
+          </div>
+        </div>
+
+      </div>
+
+      {/* Footer */}
+      <div className="px-5 py-3 flex justify-end">
+        <a
+          href="https://developers.cloudflare.com/api/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+        >
+          <span className="text-neutral-700 group-hover:text-[#f6821f] transition-colors duration-200">{'</>'}</span>
+          Cloudflare Analytics API · 7-day window
+          <span className="text-neutral-700">↗</span>
+        </a>
+      </div>
+
+    </div>
+  );
+};
+
 // --- Main ---
 
 const Playground: React.FC = () => {
@@ -616,6 +775,11 @@ const Playground: React.FC = () => {
   const [error, setError]             = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing]   = useState(false);
+
+  const [cfData, setCfData]       = useState<CloudflareData | null>(null);
+  const [cfLoading, setCfLoading] = useState(true);
+  const [cfError, setCfError]     = useState<string | null>(null);
+  const [cfRefreshing, setCfRefreshing] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -634,11 +798,33 @@ const Playground: React.FC = () => {
     }
   }, []);
 
+  const fetchCfData = useCallback(async () => {
+    try {
+      setCfRefreshing(true);
+      const res = await fetch('/api/cloudflare');
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const json: CloudflareData = await res.json();
+      setCfData(json);
+      setCfError(null);
+    } catch (err) {
+      setCfError(err instanceof Error ? err.message : 'Connection failed');
+    } finally {
+      setCfLoading(false);
+      setCfRefreshing(false);
+    }
+  }, []);
+
   useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, [fetchData]);
+
+  useEffect(() => {
+    fetchCfData();
+    const interval = setInterval(fetchCfData, 300000); // odświeżaj co 5 min — CF Analytics API
+    return () => clearInterval(interval);
+  }, [fetchCfData]);
 
   const widgetHeader = (icon: React.ReactNode, title: string, subtitle?: string) => (
     <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
@@ -771,11 +957,46 @@ const Playground: React.FC = () => {
           onRefresh={fetchData}
         />
 
-        {/* Placeholder */}
-        <div className="border border-dashed border-neutral-800 p-6 text-center">
-          <p className="font-mono text-xs text-neutral-700">
-            // więcej widgetów wkrótce — network, storage, ArgoCD apps...
-          </p>
+        {/* Widget 6 — Cloudflare Edge */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
+            <div className="flex items-center gap-3">
+              <Shield size={15} className="text-[#f6821f]" />
+              <span className="font-mono text-sm text-white uppercase tracking-widest">Cloudflare Edge</span>
+              <span className="font-mono text-xs text-thinkpad-muted">:: WAF + CDN + Analytics</span>
+            </div>
+            <div className="flex items-center gap-4">
+              {!cfLoading && (
+                cfError
+                  ? <WifiOff size={13} className="text-thinkpad-red" />
+                  : <Wifi    size={13} className="text-[#5a9e85]" />
+              )}
+              <button
+                onClick={fetchCfData}
+                disabled={cfRefreshing}
+                className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
+                aria-label="Odśwież dane Cloudflare"
+              >
+                <RefreshCw size={13} className={cfRefreshing ? 'animate-spin' : ''} />
+              </button>
+            </div>
+          </div>
+          <div className="p-6">
+            {cfLoading ? (
+              <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
+                <RefreshCw size={15} className="animate-spin" /> Łączenie z Cloudflare Analytics...
+              </div>
+            ) : cfError ? (
+              <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
+                <div className="flex items-center gap-2 text-thinkpad-red">
+                  <AlertTriangle size={15} /> Cloudflare API offline
+                </div>
+                <p className="text-xs text-thinkpad-muted">{cfError}</p>
+              </div>
+            ) : cfData ? (
+              <CloudflareWidget data={cfData} />
+            ) : null}
+          </div>
         </div>
 
       </div>
