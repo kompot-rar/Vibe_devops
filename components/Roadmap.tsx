@@ -172,7 +172,7 @@ const Roadmap: React.FC = () => {
 
       <div className="relative">
         {/* Central Line */}
-        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-thinkpad-red via-neutral-800 to-transparent md:-translate-x-1/2"></div>
+        <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-thinkpad-red via-neutral-800/50 to-transparent -translate-x-1/2"></div>
 
         <div className="space-y-16">
           {ROADMAP_DATA.map((item, index) => {
@@ -187,7 +187,7 @@ const Roadmap: React.FC = () => {
                 
                 {/* Timeline Dot */}
                 <div className={`
-                  absolute left-4 md:left-1/2 w-3 h-3 -translate-x-[5px] md:-translate-x-[5px] rounded-full z-10 transition-all duration-500
+                  absolute left-4 md:left-1/2 w-3 h-3 -translate-x-1/2 rounded-full z-10 transition-all duration-500
                   ${isCompleted ? 'bg-thinkpad-red shadow-[0_0_10px_rgba(224,6,19,0.5)]' : isInProgress ? 'bg-white animate-pulse' : 'bg-neutral-800'}
                   ${isLast || isSecondToLast ? 'bg-neutral-800/50' : ''}
                 `}></div>
