@@ -4,6 +4,7 @@ import {
   Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity, GitBranch,
   HardDrive, Skull, Gauge,
 } from 'lucide-react';
+import PipelineVisualizer from './PipelineVisualizer';
 
 // --- Types ---
 
@@ -698,12 +699,8 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Placeholder */}
-        <div className="border border-dashed border-neutral-800 p-6 text-center">
-          <p className="font-mono text-xs text-neutral-700">
-            // więcej widgetów wkrótce — network, storage, ArgoCD apps...
-          </p>
-        </div>
+        {/* Widget 4 — CI/CD Pipeline (The Forge) */}
+        <PipelineVisualizer />
 
       </div>
     </div>
