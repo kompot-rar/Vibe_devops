@@ -88,6 +88,7 @@ interface ApiResponse {
   nodes: NodeInfo[];
   chaos_monkey_audit?: ChaosMonkeyAudit;
   argocd_apps?: ArgoCDApp[];
+  cloudflare?: CloudflareData | null;
 }
 
 // --- Paleta ---
@@ -776,11 +777,6 @@ const Playground: React.FC = () => {
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
   const [refreshing, setRefreshing]   = useState(false);
 
-  const [cfData, setCfData]       = useState<CloudflareData | null>(null);
-  const [cfLoading, setCfLoading] = useState(true);
-  const [cfError, setCfError]     = useState<string | null>(null);
-  const [cfRefreshing, setCfRefreshing] = useState(false);
-
   const fetchData = useCallback(async () => {
     try {
       setRefreshing(true);
@@ -798,33 +794,11 @@ const Playground: React.FC = () => {
     }
   }, []);
 
-  const fetchCfData = useCallback(async () => {
-    try {
-      setCfRefreshing(true);
-      const res = await fetch('/api/cloudflare');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json: CloudflareData = await res.json();
-      setCfData(json);
-      setCfError(null);
-    } catch (err) {
-      setCfError(err instanceof Error ? err.message : 'Connection failed');
-    } finally {
-      setCfLoading(false);
-      setCfRefreshing(false);
-    }
-  }, []);
-
   useEffect(() => {
     fetchData();
     const interval = setInterval(fetchData, 30000);
     return () => clearInterval(interval);
   }, [fetchData]);
-
-  useEffect(() => {
-    fetchCfData();
-    const interval = setInterval(fetchCfData, 300000); // odświeżaj co 5 min — CF Analytics API
-    return () => clearInterval(interval);
-  }, [fetchCfData]);
 
   const widgetHeader = (icon: React.ReactNode, title: string, subtitle?: string) => (
     <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
@@ -959,43 +933,19 @@ const Playground: React.FC = () => {
 
         {/* Widget 6 — Cloudflare Edge */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
-            <div className="flex items-center gap-3">
-              <Shield size={15} className="text-[#f6821f]" />
-              <span className="font-mono text-sm text-white uppercase tracking-widest">Cloudflare Edge</span>
-              <span className="font-mono text-xs text-thinkpad-muted">:: WAF + CDN + Analytics</span>
-            </div>
-            <div className="flex items-center gap-4">
-              {!cfLoading && (
-                cfError
-                  ? <WifiOff size={13} className="text-thinkpad-red" />
-                  : <Wifi    size={13} className="text-[#5a9e85]" />
-              )}
-              <button
-                onClick={fetchCfData}
-                disabled={cfRefreshing}
-                className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
-                aria-label="Odśwież dane Cloudflare"
-              >
-                <RefreshCw size={13} className={cfRefreshing ? 'animate-spin' : ''} />
-              </button>
-            </div>
-          </div>
+          {widgetHeader(
+            <Shield size={15} className="text-[#f6821f]" />,
+            'Cloudflare Edge',
+            ':: WAF + CDN + Analytics',
+          )}
           <div className="p-6">
-            {cfLoading ? (
-              <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
-                <RefreshCw size={15} className="animate-spin" /> Łączenie z Cloudflare Analytics...
-              </div>
-            ) : cfError ? (
-              <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
-                <div className="flex items-center gap-2 text-thinkpad-red">
-                  <AlertTriangle size={15} /> Cloudflare API offline
-                </div>
-                <p className="text-xs text-thinkpad-muted">{cfError}</p>
-              </div>
-            ) : cfData ? (
-              <CloudflareWidget data={cfData} />
-            ) : null}
+            {bodyState(data && (
+              data.cloudflare
+                ? <CloudflareWidget data={data.cloudflare} />
+                : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
+                    <AlertTriangle size={13} /> Cloudflare API token not configured
+                  </div>
+            ))}
           </div>
         </div>
 
