@@ -75,7 +75,12 @@ interface CloudflareData {
   };
   traffic: {
     unique_visitors_7d: number;
-    top_countries: string[];
+    bot_management: {
+      human: number;
+      bot_good: number;
+      bot_bad: number;
+      other: number;
+    };
   };
   reliability: {
     edge_error_rate_pct: string;
@@ -638,6 +643,9 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
   const visitors  = data.traffic.unique_visitors_7d;
   const threats   = data.security.threats_blocked;
 
+  const bm       = data.traffic.bot_management;
+  const botTotal = bm.human + bm.bot_good + bm.bot_bad + bm.other || 1;
+
   const uptimeColor = uptime >= 99.9 ? 'text-[#5a9e85]' : uptime >= 99 ? 'text-[#b8864e]' : 'text-thinkpad-red';
   const errorColor  = errorRate < 0.5 ? 'text-[#5a9e85]' : errorRate < 2 ? 'text-[#b8864e]' : 'text-thinkpad-red';
 
@@ -703,7 +711,75 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
 
       </div>
 
-      {/* Traffic + Reliability row */}
+      {/* Bot classification — full width */}
+      <div className="border-b border-neutral-800/60">
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-3"
+          title="Klasyfikacja ruchu przez Cloudflare Bot Management — każde żądanie dostaje score 1-99">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+              <Users size={10} /> Traffic classification
+              <span className="text-neutral-700 ml-1">// bot management · 7d</span>
+            </span>
+            <span className="font-mono text-xs text-thinkpad-muted tabular-nums">
+              {(botTotal).toLocaleString('pl-PL')} req total
+            </span>
+          </div>
+
+          {/* Segmented bar */}
+          <div className="h-[6px] w-full flex rounded-sm overflow-hidden gap-px bg-[#1e2028]">
+            <div className="bg-[#5a9e85] transition-all duration-700" style={{ width: `${(bm.human / botTotal) * 100}%` }} />
+            <div className="bg-[#6a9fbf] transition-all duration-700" style={{ width: `${(bm.bot_good / botTotal) * 100}%` }} />
+            <div className="bg-thinkpad-red transition-all duration-700"  style={{ width: `${(bm.bot_bad / botTotal) * 100}%` }} />
+            <div className="bg-[#3a4050] transition-all duration-700"    style={{ width: `${(bm.other / botTotal) * 100}%` }} />
+          </div>
+
+          {/* Legend row */}
+          <div className="grid grid-cols-4 gap-2">
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-sm bg-[#5a9e85] shrink-0" />
+                <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Human</span>
+              </div>
+              <span className="font-mono text-base font-bold tabular-nums text-[#5a9e85]">
+                {bm.human.toLocaleString('pl-PL')}
+              </span>
+              <span className="font-mono text-xs text-neutral-700">{((bm.human / botTotal) * 100).toFixed(1)}%</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-sm bg-[#6a9fbf] shrink-0" />
+                <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Crawlers</span>
+              </div>
+              <span className="font-mono text-base font-bold tabular-nums text-[#6a9fbf]">
+                {bm.bot_good.toLocaleString('pl-PL')}
+              </span>
+              <span className="font-mono text-xs text-neutral-700">{((bm.bot_good / botTotal) * 100).toFixed(1)}%</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-sm bg-thinkpad-red shrink-0" />
+                <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Threats</span>
+              </div>
+              <span className="font-mono text-base font-bold tabular-nums text-thinkpad-red">
+                {bm.bot_bad.toLocaleString('pl-PL')}
+              </span>
+              <span className="font-mono text-xs text-neutral-700">{((bm.bot_bad / botTotal) * 100).toFixed(1)}%</span>
+            </div>
+            <div className="flex flex-col gap-0.5">
+              <div className="flex items-center gap-1">
+                <span className="inline-block w-2 h-2 rounded-sm bg-[#3a4050] shrink-0" />
+                <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Other</span>
+              </div>
+              <span className="font-mono text-base font-bold tabular-nums text-neutral-500">
+                {bm.other.toLocaleString('pl-PL')}
+              </span>
+              <span className="font-mono text-xs text-neutral-700">{((bm.other / botTotal) * 100).toFixed(1)}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Unique visitors + Edge uptime */}
       <div className="grid grid-cols-2 gap-px border-b border-neutral-800/60 bg-neutral-800/30">
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
@@ -717,16 +793,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
             </span>
             <span className="font-mono text-xs text-thinkpad-muted ml-0.5">/7d</span>
           </div>
-          <div className="flex gap-1.5 mt-1 flex-wrap">
-            {data.traffic.top_countries.map(cc => (
-              <span
-                key={cc}
-                className="font-mono text-xs border border-[#f6821f]/20 px-1.5 py-0.5 text-[#f6821f]/60 bg-[#f6821f]/[0.04]"
-              >
-                {cc}
-              </span>
-            ))}
-          </div>
+          <span className="font-mono text-xs text-neutral-700">human traffic only</span>
         </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
