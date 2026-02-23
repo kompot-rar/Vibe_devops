@@ -82,6 +82,8 @@ const leadTime = (start: string, end: string): string => {
 // Parse GitHub Actions log: extract lines belonging to given step names via ##[group] markers.
 // Falls back to last 80 lines of the whole log if no groups match.
 function extractStepLogs(allLines: string[], stepNames: string[]): string[] {
+  if (stepNames.length === 0) return [];
+
   const result: string[] = [];
   let inSection = false;
 
@@ -93,7 +95,7 @@ function extractStepLogs(allLines: string[], stepNames: string[]): string[] {
         groupName.toLowerCase().includes(n.toLowerCase()) ||
         n.toLowerCase().includes(groupName.toLowerCase())
       );
-      if (inSection) result.push(`\x00group\x00${groupName}`); // marker for rendering
+      if (inSection) result.push(`\x00group\x00${groupName}`);
     } else if (line.startsWith('##[endgroup]')) {
       inSection = false;
     } else if (inSection) {
@@ -106,7 +108,8 @@ function extractStepLogs(allLines: string[], stepNames: string[]): string[] {
     }
   }
 
-  return result.length > 0 ? result : allLines.slice(-80).filter(l => !l.startsWith('##[debug]'));
+  // Jeśli słowa kluczowe są, ale żadna ##[group] nie pasuje — pokaż cały log jako fallback
+  return result.length > 0 ? result : allLines.filter(l => !l.startsWith('##[debug]'));
 }
 
 function resolveStages(jobs: WorkflowJob[], run: WorkflowRun): Stage[] {
@@ -453,6 +456,19 @@ const PipelineVisualizer: React.FC = () => {
                   <span className="font-mono text-xs text-neutral-300">KUŹNIA-LXC</span>
                 </div>
 
+                <div className="flex flex-col gap-0.5 min-w-0">
+                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
+                  <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
+                    <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
+                    {' '}{firstLine(run.head_commit.message)}
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LEAD_TIME</span>
+                  <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
+                </div>
+
                 <div className="flex flex-col gap-0.5">
                   <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">STATUS</span>
                   <span className={`font-mono text-xs font-bold ${
@@ -462,19 +478,6 @@ const PipelineVisualizer: React.FC = () => {
                     'text-thinkpad-muted'
                   }`}>
                     {runStatusLabel(run)}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-0.5">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LEAD_TIME</span>
-                  <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 min-w-0">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
-                  <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
-                    <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
-                    {' '}{firstLine(run.head_commit.message)}
                   </span>
                 </div>
 

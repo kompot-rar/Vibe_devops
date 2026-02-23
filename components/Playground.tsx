@@ -702,6 +702,13 @@ const Playground: React.FC = () => {
         {/* Widget 4 — CI/CD Pipeline (The Forge) */}
         <PipelineVisualizer />
 
+        {/* Placeholder */}
+        <div className="border border-dashed border-neutral-800 p-6 text-center">
+          <p className="font-mono text-xs text-neutral-700">
+            // więcej widgetów wkrótce — network, storage, ArgoCD apps...
+          </p>
+        </div>
+
       </div>
     </div>
   );
