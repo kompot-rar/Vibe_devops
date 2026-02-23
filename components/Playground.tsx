@@ -940,7 +940,7 @@ const Playground: React.FC = () => {
           )}
           <div className="p-6">
             {bodyState(data && (
-              data.cloudflare
+              data.cloudflare?.security
                 ? <CloudflareWidget data={data.cloudflare} />
                 : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
                     <AlertTriangle size={13} /> Cloudflare API token not configured
