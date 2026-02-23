@@ -79,57 +79,69 @@ const leadTime = (start: string, end: string): string => {
   return h > 0 ? `T+${pad(h)}:${pad(m)}:${pad(sec)}` : `T+${pad(m)}:${pad(sec)}`;
 };
 
-// Parse GitHub Actions log: depth-aware section extraction.
-// GitHub Actions wraps each step in a top-level ##[group]Step Name...##[endgroup].
-// Within a step, actions nest additional ##[group] markers.
-// We collect only top-level groups as sections so sections[step.number - 1] is accurate.
-// Inner groups are preserved as sub-headers inside the section content.
-function extractStepLogs(allLines: string[], stepNumbers: number[]): string[] {
-  if (stepNumbers.length === 0) return [];
+// Parse GitHub Actions log: keyword-based section matching.
+// The log is a flat sequence of ##[group]...##[endgroup] blocks — actions/checkout alone
+// creates 5+ separate flat sections (Cleaning, Removing refs, Setting up auth, etc.)
+// so index-based lookup (sections[num-1]) is unreliable. Instead we find each step's
+// section by scanning forward through the log and matching section names to step-name keywords.
+function extractStepLogs(allLines: string[], steps: StepWithJob[]): string[] {
+  if (steps.length === 0) return [];
 
+  // Parse flat sections
   const sections: { name: string; lines: string[] }[] = [];
-  let depth = 0;
   let current: { name: string; lines: string[] } | null = null;
-
   for (const line of allLines) {
     if (line.startsWith('##[group]')) {
-      depth++;
-      if (depth === 1) {
-        current = { name: line.slice(9).trim(), lines: [] };
-      } else if (current) {
-        // Nested group: push as a sub-header marker into parent section
-        current.lines.push(`\x00group\x00${line.slice(9).trim()}`);
-      }
+      if (current) sections.push(current);
+      current = { name: line.slice(9).trim(), lines: [] };
     } else if (line.startsWith('##[endgroup]')) {
-      if (depth === 1 && current) {
-        sections.push(current);
-        current = null;
-      }
-      depth = Math.max(0, depth - 1);
+      if (current) { sections.push(current); current = null; }
     } else if (current) {
       current.lines.push(line);
     }
   }
   if (current) sections.push(current);
 
+  const cleanLine = (l: string) =>
+    l.replace(/^##\[command\]/, '$ ')
+     .replace(/^##\[warning\]/, '⚠ ')
+     .replace(/^##\[error\]/, '✗ ')
+     .replace(/^##\[debug\].*/, '');
+
+  // Extract meaningful keywords from a step name: words ≥5 chars (filters out
+  // "post", "code", "with", "from", "set", "run", "the" etc. automatically)
+  const toKeywords = (name: string): string[] =>
+    name.toLowerCase()
+      .replace(/[&()\[\]/]/g, ' ')
+      .split(/\s+/)
+      .filter(w => w.length >= 5);
+
   const result: string[] = [];
-  for (const num of stepNumbers) {
-    const section = sections[num - 1];
-    if (!section) continue;
-    result.push(`\x00group\x00${section.name}`);
-    section.lines
-      .map(l =>
-        l.startsWith('\x00group\x00') ? l :
-        l
-          .replace(/^##\[command\]/, '$ ')
-          .replace(/^##\[warning\]/, '⚠ ')
-          .replace(/^##\[error\]/, '✗ ')
-          .replace(/^##\[debug\].*/, '')
-      )
-      .filter(l => l.trim())
-      .forEach(l => result.push(l));
+  const usedIdx = new Set<number>();
+  let searchFrom = 0;
+
+  // Process in step-number order so searchFrom advances monotonically through the log
+  for (const step of [...steps].sort((a, b) => a.number - b.number)) {
+    const kws = toKeywords(step.name);
+    if (kws.length === 0) continue;
+
+    for (let i = searchFrom; i < sections.length; i++) {
+      if (usedIdx.has(i)) continue;
+      const sn = sections[i].name.toLowerCase();
+      if (kws.some(kw => sn.includes(kw))) {
+        usedIdx.add(i);
+        searchFrom = i + 1;
+        result.push(`\x00group\x00${sections[i].name}`);
+        sections[i].lines.map(cleanLine).filter(l => l.trim()).forEach(l => result.push(l));
+        break; // one primary section per step
+      }
+    }
   }
 
+  // Fallback: last 60 lines of the raw log
+  if (result.length === 0) {
+    return allLines.slice(-60).map(cleanLine).filter(l => l.trim());
+  }
   return result;
 }
 
@@ -416,7 +428,7 @@ const PipelineVisualizer: React.FC = () => {
     if (!activeStageData) return [];
     const { jobId, matchedSteps } = activeStageData;
     if (!jobId || !logCache[jobId]) return [];
-    return extractStepLogs(logCache[jobId], matchedSteps.map(s => s.number));
+    return extractStepLogs(logCache[jobId], matchedSteps);
   }, [activeStage, activeStageData, logCache]);
 
   const isLogsLoading = logsLoading &&
