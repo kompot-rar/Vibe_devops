@@ -874,7 +874,25 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 2 — Node Metrics */}
+        {/* Widget 2 — Cloudflare Edge */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Shield size={15} className="text-[#f6821f]" />,
+            'Cloudflare Edge',
+            ':: WAF + CDN + Analytics',
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              data.cloudflare?.security
+                ? <CloudflareWidget data={data.cloudflare} />
+                : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
+                    <AlertTriangle size={13} /> Cloudflare API token not configured
+                  </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Widget 3 — Node Metrics */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <Cpu size={15} className="text-thinkpad-red" />,
@@ -901,7 +919,7 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 3 — Chaos Monkey Disk Audit */}
+        {/* Widget 4 — Chaos Monkey Disk Audit */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <HardDrive size={15} className="text-thinkpad-red" />,
@@ -919,10 +937,10 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 4 — CI/CD Pipeline (The Forge) */}
+        {/* Widget 5 — CI/CD Pipeline (The Forge) */}
         <PipelineVisualizer />
 
-        {/* Widget 5 — ArgoCD Apps */}
+        {/* Widget 6 — ArgoCD Apps */}
         <ArgoCDApps
           apps={data?.argocd_apps ?? null}
           loading={loading}
@@ -930,24 +948,6 @@ const Playground: React.FC = () => {
           refreshing={refreshing}
           onRefresh={fetchData}
         />
-
-        {/* Widget 6 — Cloudflare Edge */}
-        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-          {widgetHeader(
-            <Shield size={15} className="text-[#f6821f]" />,
-            'Cloudflare Edge',
-            ':: WAF + CDN + Analytics',
-          )}
-          <div className="p-6">
-            {bodyState(data && (
-              data.cloudflare?.security
-                ? <CloudflareWidget data={data.cloudflare} />
-                : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
-                    <AlertTriangle size={13} /> Cloudflare API token not configured
-                  </div>
-            ))}
-          </div>
-        </div>
 
       </div>
     </div>
