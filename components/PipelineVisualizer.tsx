@@ -82,9 +82,21 @@ const leadTime = (start: string, end: string): string => {
 // Parse GitHub Actions log: keyword-based section matching.
 // The log is a flat sequence of ##[group]...##[endgroup] blocks — actions/checkout alone
 // creates 5+ separate flat sections (Cleaning, Removing refs, Setting up auth, etc.)
-// so index-based lookup (sections[num-1]) is unreliable. Instead we find each step's
-// section by scanning forward through the log and matching section names to step-name keywords.
-function extractStepLogs(allLines: string[], steps: StepWithJob[]): string[] {
+// so index-based lookup (sections[num-1]) is unreliable.
+//
+// Strategy:
+//   1. Forward scan — match section names to step-name keywords (advances searchFrom so
+//      earlier steps don't steal sections that belong to later steps).
+//   2. Backwards fallback — when step-name keywords yield nothing (e.g. "Trigger Rollout"
+//      whose section is "Run kubectl set image..."), search from the END using both
+//      step-name keywords AND stageKeywords (e.g. 'kubectl' from CLUSTER STAGE_DEFS).
+//      Backwards search finds the LAST matching section, which is the correct one when
+//      a keyword like 'kubectl' also appears in earlier setup sections.
+function extractStepLogs(
+  allLines: string[],
+  steps: StepWithJob[],
+  stageKeywords?: string[],
+): string[] {
   if (steps.length === 0) return [];
 
   // Parse flat sections
@@ -108,37 +120,62 @@ function extractStepLogs(allLines: string[], steps: StepWithJob[]): string[] {
      .replace(/^##\[error\]/, '✗ ')
      .replace(/^##\[debug\].*/, '');
 
-  // Extract meaningful keywords from a step name: words ≥5 chars (filters out
-  // "post", "code", "with", "from", "set", "run", "the" etc. automatically)
+  // Platform-generic words that appear in GHA section names but carry no stage signal.
+  // "github" is the key offender: "GITHUB_TOKEN Permissions" matches "Login to GitHub Container Registry".
+  const GHA_STOP = new Set(['github', 'actions', 'token', 'runner', 'workflow', 'permissions']);
+
   const toKeywords = (name: string): string[] =>
     name.toLowerCase()
       .replace(/[&()\[\]/]/g, ' ')
       .split(/\s+/)
-      .filter(w => w.length >= 5);
+      .filter(w => w.length >= 5 && !GHA_STOP.has(w));
+
+  const pushSection = (idx: number, out: string[]) => {
+    out.push(`\x00group\x00${sections[idx].name}`);
+    sections[idx].lines.map(cleanLine).filter(l => l.trim()).forEach(l => out.push(l));
+  };
 
   const result: string[] = [];
   const usedIdx = new Set<number>();
   let searchFrom = 0;
 
-  // Process in step-number order so searchFrom advances monotonically through the log
   for (const step of [...steps].sort((a, b) => a.number - b.number)) {
     const kws = toKeywords(step.name);
     if (kws.length === 0) continue;
 
+    // Forward search: prevents earlier steps from being stolen by later stages
     for (let i = searchFrom; i < sections.length; i++) {
       if (usedIdx.has(i)) continue;
-      const sn = sections[i].name.toLowerCase();
-      if (kws.some(kw => sn.includes(kw))) {
+      if (kws.some(kw => sections[i].name.toLowerCase().includes(kw))) {
         usedIdx.add(i);
         searchFrom = i + 1;
-        result.push(`\x00group\x00${sections[i].name}`);
-        sections[i].lines.map(cleanLine).filter(l => l.trim()).forEach(l => result.push(l));
-        break; // one primary section per step
+        pushSection(i, result);
+        break;
       }
     }
   }
 
-  // Fallback: last 60 lines of the raw log
+  // Backwards fallback: used when step-name keywords don't appear in any section name
+  // (e.g. "Trigger Rollout" → section is "Run kubectl set image..." which has no
+  // overlap with "trigger"/"rollout"/"devops"/"magic" but IS caught by stage keyword "kubectl").
+  // Searching backwards ensures we find the LAST "kubectl" occurrence (the rollout trigger),
+  // not the earlier "setup-kubectl" section.
+  if (result.length === 0 && stageKeywords && stageKeywords.length > 0) {
+    const fallbackKws = [
+      ...new Set([
+        ...steps.flatMap(s => toKeywords(s.name)),
+        ...stageKeywords.filter(k => k.length >= 4 && !GHA_STOP.has(k)),
+      ]),
+    ];
+    for (let i = sections.length - 1; i >= 0; i--) {
+      if (fallbackKws.some(kw => sections[i].name.toLowerCase().includes(kw))) {
+        pushSection(i, result);
+        break;
+      }
+    }
+  }
+
+  // Ultimate fallback
   if (result.length === 0) {
     return allLines.slice(-60).map(cleanLine).filter(l => l.trim());
   }
@@ -428,7 +465,8 @@ const PipelineVisualizer: React.FC = () => {
     if (!activeStageData) return [];
     const { jobId, matchedSteps } = activeStageData;
     if (!jobId || !logCache[jobId]) return [];
-    return extractStepLogs(logCache[jobId], matchedSteps);
+    const stageDef = STAGE_DEFS.find(d => d.id === activeStageData.id);
+    return extractStepLogs(logCache[jobId], matchedSteps, stageDef?.keywords);
   }, [activeStage, activeStageData, logCache]);
 
   const isLogsLoading = logsLoading &&
