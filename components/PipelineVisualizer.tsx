@@ -242,7 +242,7 @@ const logLineClass = (line: string): string => {
 };
 
 const logLineText = (line: string): string =>
-  line.startsWith('\x00group\x00') ? `▶ ${line.slice(8)}` : line;
+  line.startsWith('\x00group\x00') ? `▶ ${line.slice(7)}` : line;
 
 // ---- Terminal ----
 
@@ -456,36 +456,40 @@ const PipelineVisualizer: React.FC = () => {
             <div className={`border px-5 py-3 transition-colors duration-300 ${
               failed ? 'border-thinkpad-red/40 bg-thinkpad-red/5' : 'border-neutral-800'
             }`}>
-              <div className="grid grid-cols-2 sm:flex sm:items-start gap-x-4 gap-y-3">
+              <div className="flex items-start justify-between gap-4 flex-wrap">
 
-                <div className="flex flex-col gap-0.5 shrink-0">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">HOST</span>
-                  <span className="font-mono text-xs text-neutral-300">KUŹNIA-LXC</span>
+                {/* Lewa strona: HOST + LAST_COMMIT */}
+                <div className="flex items-start gap-6 min-w-0">
+                  <div className="flex flex-col gap-0.5 shrink-0">
+                    <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">HOST</span>
+                    <span className="font-mono text-xs text-neutral-300">KUŹNIA-LXC</span>
+                  </div>
+                  <div className="flex flex-col gap-0.5 min-w-0 max-w-64">
+                    <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
+                    <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
+                      <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
+                      {' '}{firstLine(run.head_commit.message)}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-0.5 min-w-0 sm:flex-1 sm:max-w-64">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
-                  <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
-                    <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
-                    {' '}{firstLine(run.head_commit.message)}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 shrink-0">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LEAD_TIME</span>
-                  <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 shrink-0 sm:ml-auto sm:items-end sm:text-right">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">STATUS</span>
-                  <span className={`font-mono text-xs font-bold ${
-                    failed                       ? 'text-thinkpad-red' :
-                    run.status === 'in_progress' ? 'text-[#6a9fbf] animate-pulse' :
-                    run.conclusion === 'success' ? 'text-[#5a9e85]' :
-                    'text-thinkpad-muted'
-                  }`}>
-                    {runStatusLabel(run)}
-                  </span>
+                {/* Prawa strona: LEAD_TIME + STATUS */}
+                <div className="flex items-start gap-6">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LEAD_TIME</span>
+                    <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
+                  </div>
+                  <div className="flex flex-col gap-0.5 items-end text-right">
+                    <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">STATUS</span>
+                    <span className={`font-mono text-xs font-bold ${
+                      failed                       ? 'text-thinkpad-red' :
+                      run.status === 'in_progress' ? 'text-[#6a9fbf] animate-pulse' :
+                      run.conclusion === 'success' ? 'text-[#5a9e85]' :
+                      'text-thinkpad-muted'
+                    }`}>
+                      {runStatusLabel(run)}
+                    </span>
+                  </div>
                 </div>
 
               </div>
