@@ -46,10 +46,21 @@ interface ChaosMonkeyAudit {
   metrics: ChaosMonkeyMetrics;
 }
 
+interface ArgoCDApp {
+  name: string;
+  status: string;
+  sync: string;
+  revision: string;
+  last_deploy: string;
+  repo: string;
+  path?: string;
+}
+
 interface ApiResponse {
   cluster: ClusterInfo;
   nodes: NodeInfo[];
   chaos_monkey_audit?: ChaosMonkeyAudit;
+  argocd_apps?: ArgoCDApp[];
 }
 
 // --- Paleta ---
@@ -704,7 +715,7 @@ const Playground: React.FC = () => {
         <PipelineVisualizer />
 
         {/* Widget 5 — ArgoCD Apps */}
-        <ArgoCDApps />
+        {data?.argocd_apps && <ArgoCDApps apps={data.argocd_apps} />}
 
         {/* Placeholder */}
         <div className="border border-dashed border-neutral-800 p-6 text-center">
