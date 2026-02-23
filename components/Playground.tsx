@@ -5,6 +5,7 @@ import {
   HardDrive, Skull, Gauge,
 } from 'lucide-react';
 import PipelineVisualizer from './PipelineVisualizer';
+import ArgoCDApps from './ArgoCDApps';
 
 // --- Types ---
 
@@ -701,6 +702,9 @@ const Playground: React.FC = () => {
 
         {/* Widget 4 — CI/CD Pipeline (The Forge) */}
         <PipelineVisualizer />
+
+        {/* Widget 5 — ArgoCD Apps */}
+        <ArgoCDApps />
 
         {/* Placeholder */}
         <div className="border border-dashed border-neutral-800 p-6 text-center">
