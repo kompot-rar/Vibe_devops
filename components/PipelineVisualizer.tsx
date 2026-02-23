@@ -81,35 +81,42 @@ const leadTime = (start: string, end: string): string => {
 
 // Parse GitHub Actions log: extract lines belonging to given step names via ##[group] markers.
 // Falls back to last 80 lines of the whole log if no groups match.
-function extractStepLogs(allLines: string[], stepNames: string[]): string[] {
-  if (stepNames.length === 0) return [];
+// Podziel log na sekcje po ##[group]/##[endgroup], zwróć te których index = step.number - 1
+function extractStepLogs(allLines: string[], stepNumbers: number[]): string[] { // stepNumbers = step.number (1-indexed)
+  if (stepNumbers.length === 0) return [];
 
-  const result: string[] = [];
-  let inSection = false;
+  // Zbierz wszystkie sekcje z loga w kolejności
+  const sections: { name: string; lines: string[] }[] = [];
+  let current: { name: string; lines: string[] } | null = null;
 
   for (const line of allLines) {
     if (line.startsWith('##[group]')) {
-      const groupName = line.slice(9).trim();
-      inSection = stepNames.some(n =>
-        groupName.toLowerCase() === n.toLowerCase() ||
-        groupName.toLowerCase().includes(n.toLowerCase()) ||
-        n.toLowerCase().includes(groupName.toLowerCase())
-      );
-      if (inSection) result.push(`\x00group\x00${groupName}`);
+      current = { name: line.slice(9).trim(), lines: [] };
     } else if (line.startsWith('##[endgroup]')) {
-      inSection = false;
-    } else if (inSection) {
-      const clean = line
+      if (current) { sections.push(current); current = null; }
+    } else if (current) {
+      current.lines.push(line);
+    }
+  }
+  if (current) sections.push(current);
+
+  // step.number jest 1-indexed i odpowiada pozycji sekcji w logu
+  const result: string[] = [];
+  for (const num of stepNumbers) {
+    const section = sections[num - 1];
+    if (!section) continue;
+    result.push(`\x00group\x00${section.name}`);
+    section.lines
+      .map(l => l
         .replace(/^##\[command\]/, '$ ')
         .replace(/^##\[warning\]/, '⚠ ')
         .replace(/^##\[error\]/, '✗ ')
-        .replace(/^##\[debug\].*/, '');
-      if (clean.trim()) result.push(clean);
-    }
+        .replace(/^##\[debug\].*/, ''))
+      .filter(l => l.trim())
+      .forEach(l => result.push(l));
   }
 
-  // Jeśli słowa kluczowe są, ale żadna ##[group] nie pasuje — pokaż cały log jako fallback
-  return result.length > 0 ? result : allLines.filter(l => !l.startsWith('##[debug]'));
+  return result;
 }
 
 function resolveStages(jobs: WorkflowJob[], run: WorkflowRun): Stage[] {
@@ -395,7 +402,7 @@ const PipelineVisualizer: React.FC = () => {
     if (!activeStageData) return [];
     const { jobId, matchedSteps } = activeStageData;
     if (!jobId || !logCache[jobId]) return [];
-    return extractStepLogs(logCache[jobId], matchedSteps.map(s => s.name));
+    return extractStepLogs(logCache[jobId], matchedSteps.map(s => s.number));
   }, [activeStage, activeStageData, logCache]);
 
   const isLogsLoading = logsLoading &&
@@ -449,14 +456,14 @@ const PipelineVisualizer: React.FC = () => {
             <div className={`border px-5 py-3 transition-colors duration-300 ${
               failed ? 'border-thinkpad-red/40 bg-thinkpad-red/5' : 'border-neutral-800'
             }`}>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-3">
+              <div className="grid grid-cols-2 sm:flex sm:items-start gap-x-4 gap-y-3">
 
-                <div className="flex flex-col gap-0.5">
+                <div className="flex flex-col gap-0.5 shrink-0">
                   <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">HOST</span>
                   <span className="font-mono text-xs text-neutral-300">KUŹNIA-LXC</span>
                 </div>
 
-                <div className="flex flex-col gap-0.5 min-w-0">
+                <div className="flex flex-col gap-0.5 min-w-0 sm:flex-1">
                   <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
                   <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
                     <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
@@ -464,12 +471,12 @@ const PipelineVisualizer: React.FC = () => {
                   </span>
                 </div>
 
-                <div className="flex flex-col gap-0.5">
+                <div className="flex flex-col gap-0.5 shrink-0">
                   <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LEAD_TIME</span>
                   <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
                 </div>
 
-                <div className="flex flex-col gap-0.5">
+                <div className="flex flex-col gap-0.5 shrink-0 sm:items-end">
                   <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">STATUS</span>
                   <span className={`font-mono text-xs font-bold ${
                     failed                       ? 'text-thinkpad-red' :
