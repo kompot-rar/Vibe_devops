@@ -176,21 +176,19 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
   return (
     <div className={`border ${s.border} ${s.bg}`}>
       {/* Główny status + message */}
-      <div className="px-5 py-4 flex items-start justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <span className="relative flex h-3 w-3 shrink-0 mt-1">
+      <div className="px-5 py-4 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <span className="relative flex h-3 w-3 shrink-0">
             <span className={`animate-ping absolute inline-flex h-full w-full rounded-full ${s.dotColor} opacity-40`} />
             <span className={`relative inline-flex rounded-full h-3 w-3 ${s.dotColor}`} />
           </span>
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className={`font-mono text-sm font-bold uppercase tracking-widest ${s.color}`}>
-              {cluster.status}
-            </span>
-            <span className="font-mono text-neutral-700">·</span>
-            <span className="font-mono text-xs text-thinkpad-muted leading-relaxed">
-              {cluster.message}
-            </span>
-          </div>
+          <span className={`font-mono text-sm font-bold uppercase tracking-widest shrink-0 ${s.color}`}>
+            {cluster.status}
+          </span>
+          <span className="text-neutral-800 shrink-0">—</span>
+          <span className="font-mono text-xs text-thinkpad-muted truncate">
+            {cluster.message}
+          </span>
         </div>
         <span className="font-mono text-xs text-thinkpad-muted border border-neutral-800 px-2 py-0.5 shrink-0 flex items-center gap-1.5">
           <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#5a9e85] animate-pulse" />
@@ -253,31 +251,60 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
       {/* Cluster Stats */}
       {cluster.stats && (
-        <div className="border-t border-neutral-800/60 px-5 py-4 space-y-3">
-          <MetricRow
-            icon={<Cpu size={11} />} label="cpu req"
-            value={parseFloat(cluster.stats.cpu_pressure).toFixed(1)} unit="%"
-            barValue={parseFloat(cluster.stats.cpu_pressure)}
-            barColor="bg-[#2e5f80]" valueColor="text-[#6a9fbf]"
-          />
-          <MetricRow
-            icon={<MemoryStick size={11} />} label="mem req"
-            value={parseFloat(cluster.stats.memory_pressure).toFixed(1)} unit="%"
-            barValue={parseFloat(cluster.stats.memory_pressure)}
-            barColor="bg-[#2a6654]" valueColor="text-[#5a9e85]"
-          />
-          <MetricRow
-            icon={<Download size={11} />} label="net rx"
-            value={parseFloat(cluster.stats.network_rx_mbps).toFixed(2)} unit=" Mbps"
-            barValue={parseFloat(cluster.stats.network_rx_mbps)} barMax={100}
-            barColor="bg-[#2a4a6a]" valueColor="text-[#7a9fbf]"
-          />
-          <MetricRow
-            icon={<Upload size={11} />} label="net tx"
-            value={parseFloat(cluster.stats.network_tx_mbps).toFixed(2)} unit=" Mbps"
-            barValue={parseFloat(cluster.stats.network_tx_mbps)} barMax={100}
-            barColor="bg-[#2a3f5a]" valueColor="text-[#6a8fbf]"
-          />
+        <div className="grid grid-cols-4 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
+
+          <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+            title="CPU Requests vs total cluster capacity">
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+              <Cpu size={10} /> CPU req
+            </span>
+            <span className="font-mono text-2xl font-bold text-[#6a9fbf] tabular-nums leading-none">
+              {parseFloat(cluster.stats.cpu_pressure).toFixed(1)}
+              <span className="text-sm font-normal text-thinkpad-muted">%</span>
+            </span>
+            <Bar value={parseFloat(cluster.stats.cpu_pressure)} colorClass="bg-[#2e5f80]" />
+          </div>
+
+          <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+            title="Memory Requests vs total cluster capacity">
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+              <MemoryStick size={10} /> Mem req
+            </span>
+            <span className="font-mono text-2xl font-bold text-[#5a9e85] tabular-nums leading-none">
+              {parseFloat(cluster.stats.memory_pressure).toFixed(1)}
+              <span className="text-sm font-normal text-thinkpad-muted">%</span>
+            </span>
+            <Bar value={parseFloat(cluster.stats.memory_pressure)} colorClass="bg-[#2a6654]" />
+          </div>
+
+          <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+            title="Network ingress — cluster-wide download">
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+              <Download size={10} /> Net RX
+            </span>
+            <div className="flex items-baseline gap-1 leading-none">
+              <span className="font-mono text-2xl font-bold text-[#7a9fbf] tabular-nums">
+                {parseFloat(cluster.stats.network_rx_mbps).toFixed(1)}
+              </span>
+              <span className="font-mono text-xs text-thinkpad-muted">Mbps</span>
+            </div>
+            <Bar value={parseFloat(cluster.stats.network_rx_mbps)} colorClass="bg-[#2a4a6a]" max={100} />
+          </div>
+
+          <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
+            title="Network egress — cluster-wide upload">
+            <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+              <Upload size={10} /> Net TX
+            </span>
+            <div className="flex items-baseline gap-1 leading-none">
+              <span className="font-mono text-2xl font-bold text-[#6a8fbf] tabular-nums">
+                {parseFloat(cluster.stats.network_tx_mbps).toFixed(1)}
+              </span>
+              <span className="font-mono text-xs text-thinkpad-muted">Mbps</span>
+            </div>
+            <Bar value={parseFloat(cluster.stats.network_tx_mbps)} colorClass="bg-[#2a3f5a]" max={100} />
+          </div>
+
         </div>
       )}
 
