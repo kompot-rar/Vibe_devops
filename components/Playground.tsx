@@ -251,7 +251,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
       {/* Cluster Stats */}
       {cluster.stats && (
-        <div className="grid grid-cols-4 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
 
           <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
             title="CPU Requests vs total cluster capacity">
