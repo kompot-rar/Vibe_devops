@@ -463,7 +463,7 @@ const PipelineVisualizer: React.FC = () => {
                   <span className="font-mono text-xs text-neutral-300">KUŹNIA-LXC</span>
                 </div>
 
-                <div className="flex flex-col gap-0.5 min-w-0 sm:flex-1">
+                <div className="flex flex-col gap-0.5 min-w-0 sm:flex-1 sm:max-w-64">
                   <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
                   <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
                     <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
