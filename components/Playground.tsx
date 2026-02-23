@@ -763,7 +763,13 @@ const Playground: React.FC = () => {
         <PipelineVisualizer />
 
         {/* Widget 5 — ArgoCD Apps */}
-        {data?.argocd_apps && <ArgoCDApps apps={data.argocd_apps} />}
+        <ArgoCDApps
+          apps={data?.argocd_apps ?? null}
+          loading={loading}
+          error={error}
+          refreshing={refreshing}
+          onRefresh={fetchData}
+        />
 
         {/* Placeholder */}
         <div className="border border-dashed border-neutral-800 p-6 text-center">

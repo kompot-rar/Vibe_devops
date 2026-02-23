@@ -2,6 +2,7 @@ import React from 'react';
 import {
   GitBranch, AlertTriangle, Activity, Clock,
   CheckCircle2, XCircle, Loader2, PauseCircle, HelpCircle,
+  RefreshCw, Wifi, WifiOff,
 } from 'lucide-react';
 
 // ---- Types ----
@@ -152,10 +153,19 @@ const AppCard: React.FC<{ app: ArgoCDApp }> = ({ app }) => {
 
 // ---- Main component ----
 
-const ArgoCDApps: React.FC<{ apps: ArgoCDApp[] }> = ({ apps }) => {
-  const synced    = apps.filter(a => a.sync === 'Synced').length;
-  const outOfSync = apps.filter(a => a.sync === 'OutOfSync').length;
-  const degraded  = apps.filter(a => a.status === 'Degraded').length;
+interface ArgoCDAppsProps {
+  apps: ArgoCDApp[] | null;
+  loading: boolean;
+  error: string | null;
+  refreshing: boolean;
+  onRefresh: () => void;
+}
+
+const ArgoCDApps: React.FC<ArgoCDAppsProps> = ({ apps, loading, error, refreshing, onRefresh }) => {
+  const synced    = apps?.filter(a => a.sync === 'Synced').length    ?? 0;
+  const outOfSync = apps?.filter(a => a.sync === 'OutOfSync').length ?? 0;
+  const degraded  = apps?.filter(a => a.status === 'Degraded').length ?? 0;
+  const total     = apps?.length ?? 0;
 
   return (
     <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
@@ -165,42 +175,81 @@ const ArgoCDApps: React.FC<{ apps: ArgoCDApp[] }> = ({ apps }) => {
         <div className="flex items-center gap-3">
           <GitBranch size={15} className="text-thinkpad-red" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">ArgoCD Apps</span>
-          <span className="font-mono text-xs text-thinkpad-muted">:: {apps.length} aplikacji</span>
+          {apps !== null && (
+            <span className="font-mono text-xs text-thinkpad-muted">:: {total} aplikacji</span>
+          )}
+          {/* Summary */}
+          {apps !== null && total > 0 && (
+            <div className="flex items-center gap-3 font-mono text-xs">
+              <span className="text-neutral-800">·</span>
+              <span className="text-[#5a9e85] tabular-nums">
+                {synced}<span className="text-thinkpad-muted ml-1">synced</span>
+              </span>
+              {outOfSync > 0 && (
+                <>
+                  <span className="text-neutral-800">·</span>
+                  <span className="text-[#b8864e] tabular-nums">
+                    {outOfSync}<span className="text-thinkpad-muted ml-1">out of sync</span>
+                  </span>
+                </>
+              )}
+              {degraded > 0 && (
+                <>
+                  <span className="text-neutral-800">·</span>
+                  <span className="text-thinkpad-red tabular-nums">
+                    {degraded}<span className="text-thinkpad-muted ml-1">degraded</span>
+                  </span>
+                </>
+              )}
+            </div>
+          )}
         </div>
-        {/* Summary inline */}
-        <div className="flex items-center gap-3 font-mono text-xs">
-          <span className="text-[#5a9e85] tabular-nums">
-            {synced}<span className="text-thinkpad-muted ml-1">synced</span>
-          </span>
-          {outOfSync > 0 && (
-            <>
-              <span className="text-neutral-800">·</span>
-              <span className="text-[#b8864e] tabular-nums">
-                {outOfSync}<span className="text-thinkpad-muted ml-1">out of sync</span>
-              </span>
-            </>
+        <div className="flex items-center gap-4">
+          {!loading && (
+            error
+              ? <WifiOff size={13} className="text-thinkpad-red" />
+              : <Wifi    size={13} className="text-[#5a9e85]" />
           )}
-          {degraded > 0 && (
-            <>
-              <span className="text-neutral-800">·</span>
-              <span className="text-thinkpad-red tabular-nums">
-                {degraded}<span className="text-thinkpad-muted ml-1">degraded</span>
-              </span>
-            </>
-          )}
+          <button
+            onClick={onRefresh}
+            disabled={refreshing}
+            className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
+            aria-label="Odśwież listę aplikacji"
+          >
+            <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
+          </button>
         </div>
       </div>
 
-      {/* Cards */}
-      <div className="p-6">
-        <div className="flex flex-col gap-3">
-          {[...apps]
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .map(app => (
-              <AppCard key={app.name} app={app} />
-            ))}
+      {/* Loading */}
+      {loading && (
+        <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
+          <RefreshCw size={15} className="animate-spin" /> Łączenie z ArgoCD...
         </div>
-      </div>
+      )}
+
+      {/* Error */}
+      {!loading && error && (
+        <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
+          <div className="flex items-center gap-2 text-thinkpad-red">
+            <AlertTriangle size={15} /> Brak odpowiedzi od ArgoCD
+          </div>
+          <p className="text-xs text-thinkpad-muted">{error}</p>
+        </div>
+      )}
+
+      {/* Cards */}
+      {!loading && !error && apps !== null && (
+        <div className="p-6">
+          <div className="flex flex-col gap-3">
+            {[...apps]
+              .sort((a, b) => a.name.localeCompare(b.name))
+              .map(app => (
+                <AppCard key={app.name} app={app} />
+              ))}
+          </div>
+        </div>
+      )}
 
       {/* Footer */}
       <div className="px-5 py-3 border-t border-neutral-800/60 flex justify-end">
