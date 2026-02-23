@@ -79,39 +79,53 @@ const leadTime = (start: string, end: string): string => {
   return h > 0 ? `T+${pad(h)}:${pad(m)}:${pad(sec)}` : `T+${pad(m)}:${pad(sec)}`;
 };
 
-// Parse GitHub Actions log: extract lines belonging to given step names via ##[group] markers.
-// Falls back to last 80 lines of the whole log if no groups match.
-// Podziel log na sekcje po ##[group]/##[endgroup], zwróć te których index = step.number - 1
-function extractStepLogs(allLines: string[], stepNumbers: number[]): string[] { // stepNumbers = step.number (1-indexed)
+// Parse GitHub Actions log: depth-aware section extraction.
+// GitHub Actions wraps each step in a top-level ##[group]Step Name...##[endgroup].
+// Within a step, actions nest additional ##[group] markers.
+// We collect only top-level groups as sections so sections[step.number - 1] is accurate.
+// Inner groups are preserved as sub-headers inside the section content.
+function extractStepLogs(allLines: string[], stepNumbers: number[]): string[] {
   if (stepNumbers.length === 0) return [];
 
-  // Zbierz wszystkie sekcje z loga w kolejności
   const sections: { name: string; lines: string[] }[] = [];
+  let depth = 0;
   let current: { name: string; lines: string[] } | null = null;
 
   for (const line of allLines) {
     if (line.startsWith('##[group]')) {
-      current = { name: line.slice(9).trim(), lines: [] };
+      depth++;
+      if (depth === 1) {
+        current = { name: line.slice(9).trim(), lines: [] };
+      } else if (current) {
+        // Nested group: push as a sub-header marker into parent section
+        current.lines.push(`\x00group\x00${line.slice(9).trim()}`);
+      }
     } else if (line.startsWith('##[endgroup]')) {
-      if (current) { sections.push(current); current = null; }
+      if (depth === 1 && current) {
+        sections.push(current);
+        current = null;
+      }
+      depth = Math.max(0, depth - 1);
     } else if (current) {
       current.lines.push(line);
     }
   }
   if (current) sections.push(current);
 
-  // step.number jest 1-indexed i odpowiada pozycji sekcji w logu
   const result: string[] = [];
   for (const num of stepNumbers) {
     const section = sections[num - 1];
     if (!section) continue;
     result.push(`\x00group\x00${section.name}`);
     section.lines
-      .map(l => l
-        .replace(/^##\[command\]/, '$ ')
-        .replace(/^##\[warning\]/, '⚠ ')
-        .replace(/^##\[error\]/, '✗ ')
-        .replace(/^##\[debug\].*/, ''))
+      .map(l =>
+        l.startsWith('\x00group\x00') ? l :
+        l
+          .replace(/^##\[command\]/, '$ ')
+          .replace(/^##\[warning\]/, '⚠ ')
+          .replace(/^##\[error\]/, '✗ ')
+          .replace(/^##\[debug\].*/, '')
+      )
       .filter(l => l.trim())
       .forEach(l => result.push(l));
   }
