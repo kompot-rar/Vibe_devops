@@ -23,6 +23,12 @@ interface ClusterStats {
 
 interface Incident {
   object: string; // "Pod/blog-devops-dev-59787c997b-g9dml"
+  type: string;
+  reason: string;
+  message: string;
+  namespace: string;
+  count: number;
+  last_timestamp: string;
 }
 
 interface RestartReasonEvent {
@@ -259,7 +265,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
     if (!firstPodName) { setRestartReason(null); return; }
     fetch(`/api/status/restart-reason/${firstPodName}`)
       .then(r => r.json())
-      .then(setRestartReason)
+      .then(d => { if (d?.podName) setRestartReason(d); })
       .catch(() => {});
   }, [firstPodName]);
 
@@ -398,35 +404,36 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
         </div>
       )}
 
-      {/* Last Restart Event */}
-      {restartReason && (
-        <div className="border-t border-neutral-800/60 px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1 bg-thinkpad-base/40">
-          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 shrink-0">
-            <RefreshCw size={10} /> last restart
-          </span>
-          <span className="font-mono text-xs text-white shrink-0">
-            {podBaseName(restartReason.podName)}
-          </span>
-          {restartReason.terminated && (
-            <>
-              <span className={`font-mono text-xs font-bold shrink-0 ${exitCodeColor(restartReason.terminated.exitCode)}`}>
-                {restartReason.terminated.reason}
-              </span>
-              <span className="font-mono text-xs text-neutral-600 shrink-0">
-                exit {restartReason.terminated.exitCode}
-              </span>
-            </>
-          )}
-          {restartReason.events?.[0] && (
-            <span className="font-mono text-xs text-thinkpad-muted truncate">
-              · {restartReason.events[0].reason}: {restartReason.events[0].message}
-            </span>
-          )}
-          {restartReason.terminated?.finishedAt && (
-            <span className="font-mono text-xs text-neutral-600 shrink-0 ml-auto">
-              {timeAgo(restartReason.terminated.finishedAt)}
-            </span>
-          )}
+      {/* Incidents */}
+      {cluster.incidents && cluster.incidents.length > 0 && (
+        <div className="border-t border-neutral-800/60">
+          {cluster.incidents.map((inc, i) => {
+            const podName = inc.object.replace(/^Pod\//, '');
+            const isFirst = i === 0;
+            const detail = isFirst && restartReason;
+            return (
+              <div
+                key={`${inc.object}-${i}`}
+                className="px-5 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 border-b border-neutral-800/40 last:border-b-0 bg-thinkpad-base/30"
+              >
+                <span className="font-mono text-xs text-neutral-600 shrink-0">·</span>
+                <span className="font-mono text-xs text-white shrink-0">{podBaseName(podName)}</span>
+                <span className="font-mono text-xs text-thinkpad-muted shrink-0">{inc.namespace}</span>
+                {detail?.terminated ? (
+                  <>
+                    <span className={`font-mono text-xs font-bold shrink-0 ${exitCodeColor(detail.terminated.exitCode)}`}>
+                      {detail.terminated.reason}
+                    </span>
+                    <span className="font-mono text-xs text-neutral-600 shrink-0">exit {detail.terminated.exitCode}</span>
+                  </>
+                ) : (
+                  <span className="font-mono text-xs text-thinkpad-muted shrink-0">{inc.reason}</span>
+                )}
+                <span className="font-mono text-xs text-neutral-700 truncate">{inc.message}</span>
+                <span className="font-mono text-xs text-neutral-600 shrink-0 ml-auto">{timeAgo(inc.last_timestamp)}</span>
+              </div>
+            );
+          })}
         </div>
       )}
 
