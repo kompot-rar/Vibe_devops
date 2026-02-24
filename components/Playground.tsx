@@ -1022,7 +1022,7 @@ const NodeTopologyRow: React.FC<{
             <PodTopologyView
               key={pod.name}
               pod={pod}
-              isMyPod={myPodName === pod.name}
+              isMyPod={pod.name === myPodName}
               isLast={idx === node.pods.length - 1}
             />
           ))}
