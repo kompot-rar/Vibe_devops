@@ -869,32 +869,61 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
 const PodTopologyView: React.FC<{
   pod: TopologyPod;
   isMyPod: boolean;
-}> = ({ pod, isMyPod }) => {
-  const shortName = pod.name.split('-').slice(-2).join('-');
+  isLast: boolean;
+}> = ({ pod, isMyPod, isLast }) => {
+  const parts = pod.name.split('-');
+  // Nazwa deploymentu = wszystko poza ostatnimi 2 losowymi segmentami (hash poda)
+  const deployName = parts.length > 2 ? parts.slice(0, -2).join('-') : pod.name;
+  const hash       = parts.length > 1 ? parts[parts.length - 1].slice(0, 6) : '';
+
+  const isRunning  = pod.status === 'Running';
 
   return (
-    <div
-      className={`flex items-center gap-2 px-3 py-1.5 border font-mono text-xs cursor-help transition-all duration-500 ${
-        isMyPod
-          ? 'border-[#5a9e85]/60 bg-[#5a9e85]/10 text-[#5a9e85]'
-          : 'border-neutral-800 bg-thinkpad-base text-thinkpad-muted opacity-75 hover:opacity-100'
-      }`}
-      title={`Name: ${pod.name}\nNamespace: ${pod.namespace}\nStatus: ${pod.status}`}
-    >
-      {isMyPod ? (
-        <span className="relative flex h-1.5 w-1.5 shrink-0">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
-          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
+    <div className="flex items-center gap-0">
+      {/* Tree connector */}
+      <span className="font-mono text-xs text-neutral-700 w-5 shrink-0 select-none">
+        {isLast ? '└' : '├'}
+      </span>
+
+      {/* Pod chip */}
+      <div
+        className={`flex-1 flex items-center gap-3 px-3 py-1.5 border font-mono text-xs cursor-help transition-all duration-300 min-w-0 ${
+          isMyPod
+            ? 'border-[#5a9e85]/60 bg-[#5a9e85]/10'
+            : 'border-neutral-800 bg-thinkpad-base hover:border-neutral-700'
+        }`}
+        title={`${pod.name}\nns: ${pod.namespace}\n${pod.status}`}
+      >
+        {/* Status dot */}
+        {isMyPod ? (
+          <span className="relative flex h-1.5 w-1.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
+          </span>
+        ) : (
+          <span className={`inline-block w-1.5 h-1.5 rounded-full shrink-0 ${
+            isRunning ? 'bg-[#5a9e85]' : 'bg-[#b8864e]'
+          }`} />
+        )}
+
+        {/* Nazwa deploymentu */}
+        <span className={`truncate flex-1 min-w-0 ${isMyPod ? 'text-[#5a9e85]' : 'text-neutral-300'}`}>
+          {deployName}
         </span>
-      ) : (
-        <Box size={9} className="shrink-0" />
-      )}
-      <span className="truncate">{shortName}</span>
-      {isMyPod && (
-        <span className="ml-auto text-[9px] uppercase tracking-wider shrink-0 text-[#5a9e85]/70">
-          ← serwuje tę stronę
-        </span>
-      )}
+
+        {/* Hash suffix */}
+        {hash && <span className="text-neutral-700 shrink-0 text-[10px] tabular-nums">#{hash}</span>}
+
+        {/* Namespace */}
+        <span className="text-neutral-600 shrink-0 text-[10px] hidden sm:block">{pod.namespace}</span>
+
+        {/* Serving badge */}
+        {isMyPod && (
+          <span className="text-[9px] uppercase tracking-wider shrink-0 text-[#5a9e85]/70 border border-[#5a9e85]/30 px-1.5 py-0.5">
+            serving
+          </span>
+        )}
+      </div>
     </div>
   );
 };
@@ -907,51 +936,45 @@ const NodeTopologyRow: React.FC<{
   const isReady = node.status === 'True';
 
   return (
-    <div className="flex items-start gap-0">
-      {/* Node box */}
-      <div
-        className={`shrink-0 w-36 border px-3 py-2.5 transition-all duration-500 ${
-          isMyNode
-            ? 'border-[#5a9e85]/60 bg-[#5a9e85]/5'
-            : 'border-neutral-800 bg-thinkpad-base'
-        }`}
-      >
-        <div className="flex items-center gap-1.5 mb-0.5">
-          {isMyNode && (
-            <span className="relative flex h-1.5 w-1.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
-            </span>
-          )}
-          <Server size={10} className="text-thinkpad-muted shrink-0" />
-          <span className="font-mono text-xs text-white font-semibold truncate">{node.name}</span>
-        </div>
-        <span className={`font-mono text-[10px] uppercase tracking-wider ${
+    <div className={`border transition-all duration-500 ${
+      isMyNode ? 'border-[#5a9e85]/40' : 'border-neutral-800'
+    }`}>
+      {/* Node header */}
+      <div className={`px-4 py-2.5 flex items-center gap-3 ${
+        isMyNode ? 'bg-[#5a9e85]/5' : 'bg-thinkpad-base'
+      }`}>
+        {isMyNode ? (
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-60" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#5a9e85]" />
+          </span>
+        ) : (
+          <Server size={11} className="text-thinkpad-muted shrink-0" />
+        )}
+        <span className="font-mono text-xs text-white font-semibold">{node.name}</span>
+        <span className={`font-mono text-[10px] uppercase tracking-wider ml-auto ${
           isReady ? 'text-[#5a9e85]' : 'text-thinkpad-red'
         }`}>
           {isReady ? '● Ready' : '● Not Ready'}
         </span>
-      </div>
-
-      {/* Dashed connector — pt aligns to center of first pod chip */}
-      <div className="shrink-0 w-7 pt-[14px] px-1">
-        <div className="border-t border-dashed border-neutral-700" />
+        <span className="font-mono text-[10px] text-neutral-700 tabular-nums">
+          {node.pods.length}p
+        </span>
       </div>
 
       {/* Pods */}
-      <div className="flex flex-col gap-1.5 flex-1 min-w-0 pt-0.5">
-        {node.pods.length === 0 ? (
-          <span className="font-mono text-xs text-neutral-700 italic py-1.5">no pods</span>
-        ) : (
-          node.pods.map(pod => (
+      {node.pods.length > 0 && (
+        <div className="px-4 py-2 border-t border-neutral-800/50 space-y-1">
+          {node.pods.map((pod, idx) => (
             <PodTopologyView
               key={pod.name}
               pod={pod}
               isMyPod={myPodName === pod.name}
+              isLast={idx === node.pods.length - 1}
             />
-          ))
-        )}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
