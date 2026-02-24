@@ -407,7 +407,11 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
       {/* Incidents */}
       {cluster.incidents && cluster.incidents.length > 0 && (
         <div className="border-t border-neutral-800/60">
-          {cluster.incidents.map((inc, i) => {
+          <div className="px-5 py-2 flex items-center gap-1.5">
+            <RefreshCw size={9} className="text-neutral-600" />
+            <span className="font-mono text-xs text-neutral-600 uppercase tracking-wider">last events</span>
+          </div>
+          {cluster.incidents.slice(0, 2).map((inc, i) => {
             const podName = inc.object.replace(/^Pod\//, '');
             const isFirst = i === 0;
             const detail = isFirst && restartReason;
