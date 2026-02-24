@@ -1008,7 +1008,7 @@ const NodeTopologyRow: React.FC<{
         <span className={`font-mono text-[10px] uppercase tracking-wider ml-auto ${
           isReady ? 'text-[#5a9e85]' : 'text-thinkpad-red'
         }`}>
-          {isReady ? '● Ready' : '● Not Ready'}
+          {isReady ? (isMyNode ? '● READY & SERVING' : '● Ready') : '● Not Ready'}
         </span>
         <span className="font-mono text-[10px] text-neutral-700 tabular-nums">
           {node.pods.length}p
