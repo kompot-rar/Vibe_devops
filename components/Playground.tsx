@@ -1147,12 +1147,7 @@ const Playground: React.FC = () => {
   return (
     <div className="animate-fade-in">
       <div className="relative text-center mb-16 max-w-4xl mx-auto">
-        <div
-          className="absolute -inset-16 -z-10"
-          style={{
-            background: 'radial-gradient(ellipse at center, rgba(10,11,16,0.8) 30%, transparent 90%)',
-          }}
-        />
+
         <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
           Home<span className="text-thinkpad-red">lab</span>
         </h1>
