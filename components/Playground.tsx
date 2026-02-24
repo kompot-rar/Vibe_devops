@@ -882,74 +882,49 @@ const PodTopologyView: React.FC<{
 
   const isRunning  = pod.status === 'Running';
 
-  if (isMyPod) {
-    return (
-      <div className="flex items-center gap-0">
-        <span className="font-mono text-xs text-[#5a9e85]/50 w-5 shrink-0 select-none">
-          {isLast ? '└' : '├'}
-        </span>
-
-        {/* Active pod — full drama */}
-        <div
-          className="flex-1 flex items-center gap-3 px-3 py-2 border border-[#5a9e85]/70 font-mono text-xs cursor-default transition-all duration-300 min-w-0 relative overflow-hidden"
-          style={{
-            background: 'linear-gradient(90deg, rgba(90,158,133,0.12) 0%, rgba(90,158,133,0.06) 60%, transparent 100%)',
-            boxShadow: '0 0 0 1px rgba(90,158,133,0.2), 0 0 18px rgba(90,158,133,0.18)',
-          }}
-          title={`${pod.name}\nns: ${pod.namespace}\n${pod.status}`}
-        >
-          {/* Animated shimmer sweep */}
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              background: 'linear-gradient(90deg, transparent 0%, rgba(90,158,133,0.07) 50%, transparent 100%)',
-              animation: 'shimmer 3s ease-in-out infinite',
-            }}
-          />
-
-          {/* Double-ring live dot */}
-          <span className="relative flex h-2.5 w-2.5 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-40" />
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-20" style={{ animationDelay: '0.5s' }} />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#5a9e85]" style={{ boxShadow: '0 0 6px rgba(90,158,133,0.8)' }} />
-          </span>
-
-          {/* Deploy name — bright */}
-          <span className="truncate flex-1 min-w-0 text-[#5a9e85] font-semibold tracking-wide" style={{ textShadow: '0 0 10px rgba(90,158,133,0.4)' }}>
-            {deployName}
-          </span>
-
-          {/* Hash */}
-          {hash && <span className="text-[#5a9e85]/35 shrink-0 text-[10px] tabular-nums">#{hash}</span>}
-
-          {/* Namespace */}
-          <span className="text-[#5a9e85]/45 shrink-0 text-[10px] hidden sm:block">{pod.namespace}</span>
-
-          {/* LIVE badge */}
-          <span
-            className="flex items-center gap-1.5 shrink-0 px-2 py-0.5 text-[10px] uppercase tracking-widest font-bold text-[#5a9e85] border border-[#5a9e85]/50 animate-pulse"
-            style={{ background: 'rgba(90,158,133,0.12)', boxShadow: '0 0 8px rgba(90,158,133,0.2)' }}
-          >
-            ◉ live
-          </span>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex items-center gap-0">
       {/* Tree connector */}
-      <span className="font-mono text-xs text-neutral-700 w-5 shrink-0 select-none">
+      <span
+        className="font-mono text-xs w-5 shrink-0 select-none"
+        style={{ color: isMyPod ? 'rgba(90,158,133,0.5)' : '#404040' }}
+      >
         {isLast ? '└' : '├'}
       </span>
 
-      {/* Inactive pod */}
+      {/* Pod chip */}
       <div
-        className="flex-1 flex items-center gap-3 px-3 py-1.5 border border-neutral-800 bg-thinkpad-base font-mono text-xs cursor-help transition-all duration-300 min-w-0 hover:border-neutral-700 opacity-60 hover:opacity-90"
+        className={`flex-1 flex items-center gap-3 px-3 border font-mono text-xs min-w-0 transition-all duration-300 relative overflow-hidden ${
+          isMyPod
+            ? 'py-2 cursor-default'
+            : 'py-1.5 border-neutral-800 bg-thinkpad-base cursor-help hover:border-neutral-700 opacity-60 hover:opacity-90'
+        }`}
+        style={isMyPod ? {
+          borderColor: 'rgba(90,158,133,0.7)',
+          background: 'linear-gradient(90deg, rgba(90,158,133,0.13) 0%, rgba(90,158,133,0.06) 60%, transparent 100%)',
+          boxShadow: '0 0 0 1px rgba(90,158,133,0.2), 0 0 20px rgba(90,158,133,0.2)',
+        } : {}}
         title={`${pod.name}\nns: ${pod.namespace}\n${pod.status}`}
       >
-        {isRunning ? (
+        {/* Shimmer — tylko dla aktywnego */}
+        {isMyPod && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              background: 'linear-gradient(90deg, transparent 0%, rgba(90,158,133,0.08) 50%, transparent 100%)',
+              animation: 'shimmer 3s ease-in-out infinite',
+            }}
+          />
+        )}
+
+        {/* Status dot */}
+        {isMyPod ? (
+          <span className="relative flex h-2.5 w-2.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-40" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-20" style={{ animationDelay: '0.5s' }} />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#5a9e85]" style={{ boxShadow: '0 0 6px rgba(90,158,133,0.9)' }} />
+          </span>
+        ) : isRunning ? (
           <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0 bg-[#5a9e85]" />
         ) : (
           <span className="relative flex h-1.5 w-1.5 shrink-0">
@@ -958,9 +933,49 @@ const PodTopologyView: React.FC<{
           </span>
         )}
 
-        <span className="truncate flex-1 min-w-0 text-neutral-400">{deployName}</span>
-        {hash && <span className="text-neutral-700 shrink-0 text-[10px] tabular-nums">#{hash}</span>}
-        <span className="text-neutral-700 shrink-0 text-[10px] hidden sm:block">{pod.namespace}</span>
+        {/* Nazwa deploymentu */}
+        <span
+          className="truncate flex-1 min-w-0"
+          style={isMyPod
+            ? { color: '#5a9e85', fontWeight: 600, textShadow: '0 0 10px rgba(90,158,133,0.45)' }
+            : { color: '#a3a3a3' }
+          }
+        >
+          {deployName}
+        </span>
+
+        {/* Hash */}
+        {hash && (
+          <span
+            className="shrink-0 text-[10px] tabular-nums"
+            style={{ color: isMyPod ? 'rgba(90,158,133,0.4)' : '#404040' }}
+          >
+            #{hash}
+          </span>
+        )}
+
+        {/* Namespace */}
+        <span
+          className="shrink-0 text-[10px] hidden sm:block"
+          style={{ color: isMyPod ? 'rgba(90,158,133,0.5)' : '#404040' }}
+        >
+          {pod.namespace}
+        </span>
+
+        {/* LIVE badge */}
+        {isMyPod && (
+          <span
+            className="flex items-center gap-1.5 shrink-0 px-2 py-0.5 text-[10px] uppercase tracking-widest font-bold animate-pulse"
+            style={{
+              color: '#5a9e85',
+              border: '1px solid rgba(90,158,133,0.5)',
+              background: 'rgba(90,158,133,0.12)',
+              boxShadow: '0 0 8px rgba(90,158,133,0.25)',
+            }}
+          >
+            ◉ live
+          </span>
+        )}
       </div>
     </div>
   );
