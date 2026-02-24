@@ -21,7 +21,7 @@ interface ClusterInfo {
   totalPods: string;
   status: 'Healthy' | 'Warning' | 'Observed' | string;
   message: string;
-  restarts24h: number;
+  restarts_24h: number;
   gitops: 'Synced' | 'Out of Sync' | string;
   lastUpdate: string;
   stats?: ClusterStats;
@@ -241,20 +241,20 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
           <div
             className="flex items-baseline gap-2"
             title={
-              cluster.restarts24h > 0
-                ? `W ciągu ostatnich 24h klaster wykrył i automatycznie naprawił ${cluster.restarts24h} incydent${cluster.restarts24h === 1 ? '' : cluster.restarts24h < 5 ? 'y' : 'ów'} bez ingerencji człowieka.`
+              cluster.restarts_24h > 0
+                ? `W ciągu ostatnich 24h klaster wykrył i automatycznie naprawił ${cluster.restarts_24h} incydent${cluster.restarts_24h === 1 ? '' : cluster.restarts_24h < 5 ? 'y' : 'ów'} bez ingerencji człowieka.`
                 : 'Zero incydentów w ciągu ostatnich 24h. Klaster operuje w pełnej stabilności.'
             }
           >
             <span className={`font-mono text-2xl font-bold tabular-nums ${
-              cluster.restarts24h === 0 ? 'text-white' : 'text-[#b8864e]'
+              cluster.restarts_24h === 0 ? 'text-white' : 'text-[#b8864e]'
             }`}>
-              {cluster.restarts24h}
+              {cluster.restarts_24h}
             </span>
             <span className="font-mono text-xs text-thinkpad-muted">
-              {cluster.restarts24h === 0
+              {cluster.restarts_24h === 0
                 ? 'brak zdarzeń'
-                : cluster.restarts24h === 1
+                : cluster.restarts_24h === 1
                   ? 'event · recovered'
                   : 'events · recovered'}
             </span>
