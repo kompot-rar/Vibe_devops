@@ -8,6 +8,10 @@ import {
 import PipelineVisualizer from './PipelineVisualizer';
 import ArgoCDApps from './ArgoCDApps';
 
+declare global {
+  interface Window { MY_POD_NAME?: string; }
+}
+
 // --- Types ---
 
 interface ClusterStats {
@@ -79,7 +83,6 @@ interface TopologyNode {
 
 interface TopologyData {
   nodes: TopologyNode[];
-  whoami: { pod: string; node: string };
 }
 
 interface CloudflareData {
@@ -900,10 +903,13 @@ const PodTopologyView: React.FC<{
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
             <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
           </span>
+        ) : isRunning ? (
+          <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0 bg-[#5a9e85]" />
         ) : (
-          <span className={`inline-block w-1.5 h-1.5 rounded-full shrink-0 ${
-            isRunning ? 'bg-[#5a9e85]' : 'bg-[#b8864e]'
-          }`} />
+          <span className="relative flex h-1.5 w-1.5 shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#b8864e] opacity-75" />
+            <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#b8864e]" />
+          </span>
         )}
 
         {/* Nazwa deploymentu */}
@@ -979,30 +985,43 @@ const NodeTopologyRow: React.FC<{
   );
 };
 
-const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology }) => (
-  <div className="space-y-3">
-    {[...topology.nodes]
-      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
-      .map(node => (
-        <NodeTopologyRow
-          key={node.name}
-          node={node}
-          isMyNode={topology.whoami.node === node.name}
-          myPodName={topology.whoami.pod}
-        />
-      ))}
+const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology }) => {
+  // Tożsamość wstrzyknięta przez InitContainer przez /config/env.js
+  const myPodName  = window.MY_POD_NAME ?? '';
+  const myNode     = topology.nodes.find(n => n.pods.some(p => p.name === myPodName));
+  const myNodeName = myNode?.name ?? '';
 
-    {/* Whoami footer */}
-    <div className="pt-3 mt-1 border-t border-neutral-800/60 flex items-center gap-2 font-mono text-xs text-thinkpad-muted flex-wrap">
-      <span className="relative flex h-1.5 w-1.5 shrink-0">
-        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
-        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
-      </span>
-      tę stronę serwuje:&nbsp;<span className="text-white">{topology.whoami.pod}</span>
-      &nbsp;·&nbsp;node:&nbsp;<span className="text-white">{topology.whoami.node}</span>
+  return (
+    <div className="space-y-3">
+      {[...topology.nodes]
+        .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+        .map(node => (
+          <NodeTopologyRow
+            key={node.name}
+            node={node}
+            isMyNode={myNodeName === node.name}
+            myPodName={myPodName}
+          />
+        ))}
+
+      {/* Whoami footer */}
+      <div className="pt-3 mt-1 border-t border-neutral-800/60 flex items-center gap-2 font-mono text-xs text-thinkpad-muted flex-wrap">
+        {myPodName ? (
+          <>
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
+            </span>
+            tę stronę serwuje:&nbsp;<span className="text-white">{myPodName}</span>
+            {myNodeName && <>&nbsp;·&nbsp;node:&nbsp;<span className="text-white">{myNodeName}</span></>}
+          </>
+        ) : (
+          <span className="text-neutral-700 italic">MY_POD_NAME nie wstrzyknięty</span>
+        )}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // --- Main ---
 
