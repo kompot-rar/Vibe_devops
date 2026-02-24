@@ -1221,16 +1221,16 @@ const Playground: React.FC = () => {
   return (
     <div className="animate-fade-in">
       <div className="relative text-center mb-16 max-w-4xl mx-auto">
-        <div
-          className="absolute -inset-16 -z-10"
-          style={{
-            background: 'radial-gradient(ellipse 65% 50% at 50% 50%, rgba(10,11,16,0.92) 20%, rgba(10,11,16,0.4) 70%, transparent 100%)',
-          }}
-        />
-        <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
+        <h1
+          className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono"
+          style={{ textShadow: '0 0 40px #0a0b10, 0 0 20px #0a0b10, 0 0 8px #0a0b10' }}
+        >
           Home<span className="text-thinkpad-red">lab</span>
         </h1>
-        <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4">
+        <p
+          className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4"
+          style={{ textShadow: '0 0 30px #0a0b10, 0 0 15px #0a0b10' }}
+        >
           Live status klastra K3s. Trzy nody, jeden cel.
         </p>
       </div>
