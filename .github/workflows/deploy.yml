@@ -78,7 +78,14 @@ jobs:
         run: |
           # Wskazujemy config klastra
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          REGISTRY_IP="10.0.20.50"
           
+          echo "Force-refreshing local image cache for ${{ env.TAG }}..."
+          # Usuwamy lokalny tag, aby wymusić ponowne pobranie (pull) przez K3s, 
+          # jeśli runner jest jednocześnie węzłem klastra.
+          docker rmi "localhost:5000/blog-devops:${{ env.TAG }}" || true
+          docker rmi "$REGISTRY_IP:5000/blog-devops:${{ env.TAG }}" || true
+
           if [[ "${{ env.ENV }}" == "prod" ]]; then
             kubectl rollout restart deployment/blog-devops-prod -n blog-prod
           else
@@ -86,15 +93,33 @@ jobs:
           fi
 
           echo "Starting Kuźnia cleanup..."
-          # Lista repozytoriów do wyczyszczenia
-          REPOS=("localhost:5000/blog-devops" "ghcr.io/${{ github.repository_owner }}/blog-devops")
+          # Lista wszystkich aliasów repozytorium do wyczyszczenia
+          REPOS=(
+            "localhost:5000/blog-devops" 
+            "$REGISTRY_IP:5000/blog-devops"
+            "ghcr.io/${{ github.repository_owner }}/blog-devops"
+          )
           
           for REPO in "${REPOS[@]}"; do
-            echo "Keeping only 3 latest images for: $REPO"
-            # Pobieramy ID obrazów, usuwamy duplikaty (różne tagi dla tego samego ID), 
-            # pomijamy pierwsze 3 (najnowsze) i usuwamy resztę.
-            docker images "$REPO" --format "{{.ID}}" | uniq | tail -n +4 | xargs -r docker rmi || true
+            echo "Cleaning old images for: $REPO"
+            # 1. Pobieramy ID obrazów dla tego repo
+            # 2. Sortujemy od najnowszych (domyślnie w docker images)
+            # 3. Zostawiamy 2 najnowsze unikalne obrazy, resztę usuwamy
+            docker images "$REPO" --format "{{.ID}}" | uniq | tail -n +3 | xargs -r docker rmi || true
           done
           
-          # Czyścimy warstwy pośrednie i dangling images
+          # Czyścimy osierocone warstwy (dangling images)
           docker image prune -f
+
+      - name: Verify Deployment
+        run: |
+          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          echo "Waiting for rollout to finish..."
+          if [[ "${{ env.ENV }}" == "prod" ]]; then
+            kubectl rollout status deployment/blog-devops-prod -n blog-prod --timeout=60s
+          else
+            kubectl rollout status deployment/blog-devops-dev -n blog --timeout=60s
+          fi
+          
+          echo "Current image digest on cluster:"
+          kubectl get pods -n blog -l app=blog-devops-dev -o jsonpath='{.items[0].status.containerStatuses[0].imageID}'
