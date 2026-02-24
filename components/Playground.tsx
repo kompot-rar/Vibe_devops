@@ -83,6 +83,7 @@ interface TopologyNode {
 
 interface TopologyData {
   nodes: TopologyNode[];
+  whoami?: { pod: string; node: string };
 }
 
 interface CloudflareData {
@@ -1017,10 +1018,10 @@ const NodeTopologyRow: React.FC<{
 };
 
 const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology }) => {
-  // Tożsamość wstrzyknięta przez InitContainer przez /config/env.js
-  const myPodName  = window.MY_POD_NAME ?? '';
+  // Priorytet: window.MY_POD_NAME (InitContainer) → topology.whoami (backend fallback)
+  const myPodName  = window.MY_POD_NAME || topology.whoami?.pod || '';
   const myNode     = topology.nodes.find(n => n.pods.some(p => p.name === myPodName));
-  const myNodeName = myNode?.name ?? '';
+  const myNodeName = myNode?.name ?? topology.whoami?.node ?? '';
 
   return (
     <div className="space-y-3">
