@@ -76,8 +76,7 @@ jobs:
 
       - name: Trigger Rollout (DevOps Magic)
         run: |
-          # Wskazujemy config klastra (Kuźnia powinna mieć go w standardowym miejscu lub w env runnera)
-          # Jeśli K3s jest lokalnie, config to często /etc/rancher/k3s/k3s.yaml
+          # Wskazujemy config klastra
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           
           if [[ "${{ env.ENV }}" == "prod" ]]; then
@@ -85,5 +84,17 @@ jobs:
           else
             kubectl rollout restart deployment/blog-devops-dev -n blog
           fi
+
+          echo "Starting Kuźnia cleanup..."
+          # Lista repozytoriów do wyczyszczenia
+          REPOS=("localhost:5000/blog-devops" "ghcr.io/${{ github.repository_owner }}/blog-devops")
           
+          for REPO in "${REPOS[@]}"; do
+            echo "Keeping only 3 latest images for: $REPO"
+            # Pobieramy ID obrazów, usuwamy duplikaty (różne tagi dla tego samego ID), 
+            # pomijamy pierwsze 3 (najnowsze) i usuwamy resztę.
+            docker images "$REPO" --format "{{.ID}}" | uniq | tail -n +4 | xargs -r docker rmi || true
+          done
+          
+          # Czyścimy warstwy pośrednie i dangling images
           docker image prune -f
