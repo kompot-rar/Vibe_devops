@@ -48,7 +48,7 @@ jobs:
       - name: Build & Push
         env:
           GHCR_IMAGE: ghcr.io/${{ github.repository_owner }}/blog-devops
-          LOCAL_IMAGE: 10.0.20.50:5000/blog-devops
+          LOCAL_IMAGE: localhost:5000/blog-devops
         run: |
           echo "Building image for ${{ env.ENV }} environment..."
           
@@ -76,7 +76,8 @@ jobs:
 
       - name: Trigger Rollout (DevOps Magic)
         run: |
-          # Wskazujemy config klastra
+          # Wskazujemy config klastra (Kuźnia powinna mieć go w standardowym miejscu lub w env runnera)
+          # Jeśli K3s jest lokalnie, config to często /etc/rancher/k3s/k3s.yaml
           export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
           
           if [[ "${{ env.ENV }}" == "prod" ]]; then
@@ -84,13 +85,5 @@ jobs:
           else
             kubectl rollout restart deployment/blog-devops-dev -n blog
           fi
-
-          echo "Starting basic cleanup..."
-          # Czyścimy tylko nieużywane warstwy (dangling), nie ruszając otagowanych obrazów
+          
           docker image prune -f
-
-      - name: Verify Deployment
-        run: |
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
-          echo "Current image on cluster:"
-          kubectl get pods -n blog -l app=blog-devops,env=dev -o jsonpath='{.items[0].status.containerStatuses[0].imageID}'
