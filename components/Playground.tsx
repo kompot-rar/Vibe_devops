@@ -237,8 +237,7 @@ const MetricRow: React.FC<{
   </div>
 );
 
-// --- Cluster Overview widget ---
-
+// --- Cluster Overview widget (vibe-refresh-trigger) ---
 const podBaseName = (name: string) => {
   const parts = name.split('-');
   return parts.length > 2 ? parts.slice(0, -2).join('-') : name;
