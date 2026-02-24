@@ -3,7 +3,7 @@ import {
   Thermometer, RefreshCw, AlertTriangle,
   Wifi, WifiOff, Server, Cpu, MemoryStick, Clock, Box, ShieldCheck, Activity,
   HardDrive, Skull, Gauge, Download, Upload,
-  Shield, ShieldAlert, Zap, Users, Globe,
+  Shield, ShieldAlert, Zap, Users, Globe, Network,
 } from 'lucide-react';
 import PipelineVisualizer from './PipelineVisualizer';
 import ArgoCDApps from './ArgoCDApps';
@@ -65,6 +65,23 @@ interface ArgoCDApp {
   path?: string;
 }
 
+interface TopologyPod {
+  name: string;
+  namespace: string;
+  status: string;
+}
+
+interface TopologyNode {
+  name: string;
+  status: string; // 'True' = Ready
+  pods: TopologyPod[];
+}
+
+interface TopologyData {
+  nodes: TopologyNode[];
+  whoami: { pod: string; node: string };
+}
+
 interface CloudflareData {
   security: {
     threats_blocked: number;
@@ -95,6 +112,7 @@ interface ApiResponse {
   chaos_monkey_audit?: ChaosMonkeyAudit;
   argocd_apps?: ArgoCDApp[];
   cloudflare?: CloudflareData | null;
+  topology?: TopologyData | null;
 }
 
 // --- Paleta ---
@@ -846,6 +864,123 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
   );
 };
 
+// --- Cluster Topology widget ---
+
+const PodTopologyView: React.FC<{
+  pod: TopologyPod;
+  isMyPod: boolean;
+}> = ({ pod, isMyPod }) => {
+  const shortName = pod.name.split('-').slice(-2).join('-');
+
+  return (
+    <div
+      className={`flex items-center gap-2 px-3 py-1.5 border font-mono text-xs cursor-help transition-all duration-500 ${
+        isMyPod
+          ? 'border-[#5a9e85]/60 bg-[#5a9e85]/10 text-[#5a9e85]'
+          : 'border-neutral-800 bg-thinkpad-base text-thinkpad-muted opacity-75 hover:opacity-100'
+      }`}
+      title={`Name: ${pod.name}\nNamespace: ${pod.namespace}\nStatus: ${pod.status}`}
+    >
+      {isMyPod ? (
+        <span className="relative flex h-1.5 w-1.5 shrink-0">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
+        </span>
+      ) : (
+        <Box size={9} className="shrink-0" />
+      )}
+      <span className="truncate">{shortName}</span>
+      {isMyPod && (
+        <span className="ml-auto text-[9px] uppercase tracking-wider shrink-0 text-[#5a9e85]/70">
+          ← serwuje tę stronę
+        </span>
+      )}
+    </div>
+  );
+};
+
+const NodeTopologyRow: React.FC<{
+  node: TopologyNode;
+  isMyNode: boolean;
+  myPodName: string;
+}> = ({ node, isMyNode, myPodName }) => {
+  const isReady = node.status === 'True';
+
+  return (
+    <div className="flex items-start gap-0">
+      {/* Node box */}
+      <div
+        className={`shrink-0 w-36 border px-3 py-2.5 transition-all duration-500 ${
+          isMyNode
+            ? 'border-[#5a9e85]/60 bg-[#5a9e85]/5'
+            : 'border-neutral-800 bg-thinkpad-base'
+        }`}
+      >
+        <div className="flex items-center gap-1.5 mb-0.5">
+          {isMyNode && (
+            <span className="relative flex h-1.5 w-1.5 shrink-0">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
+            </span>
+          )}
+          <Server size={10} className="text-thinkpad-muted shrink-0" />
+          <span className="font-mono text-xs text-white font-semibold truncate">{node.name}</span>
+        </div>
+        <span className={`font-mono text-[10px] uppercase tracking-wider ${
+          isReady ? 'text-[#5a9e85]' : 'text-thinkpad-red'
+        }`}>
+          {isReady ? '● Ready' : '● Not Ready'}
+        </span>
+      </div>
+
+      {/* Dashed connector — pt aligns to center of first pod chip */}
+      <div className="shrink-0 w-7 pt-[14px] px-1">
+        <div className="border-t border-dashed border-neutral-700" />
+      </div>
+
+      {/* Pods */}
+      <div className="flex flex-col gap-1.5 flex-1 min-w-0 pt-0.5">
+        {node.pods.length === 0 ? (
+          <span className="font-mono text-xs text-neutral-700 italic py-1.5">no pods</span>
+        ) : (
+          node.pods.map(pod => (
+            <PodTopologyView
+              key={pod.name}
+              pod={pod}
+              isMyPod={myPodName === pod.name}
+            />
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology }) => (
+  <div className="space-y-3">
+    {[...topology.nodes]
+      .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+      .map(node => (
+        <NodeTopologyRow
+          key={node.name}
+          node={node}
+          isMyNode={topology.whoami.node === node.name}
+          myPodName={topology.whoami.pod}
+        />
+      ))}
+
+    {/* Whoami footer */}
+    <div className="pt-3 mt-1 border-t border-neutral-800/60 flex items-center gap-2 font-mono text-xs text-thinkpad-muted flex-wrap">
+      <span className="relative flex h-1.5 w-1.5 shrink-0">
+        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
+        <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
+      </span>
+      tę stronę serwuje:&nbsp;<span className="text-white">{topology.whoami.pod}</span>
+      &nbsp;·&nbsp;node:&nbsp;<span className="text-white">{topology.whoami.node}</span>
+    </div>
+  </div>
+);
+
 // --- Main ---
 
 const Playground: React.FC = () => {
@@ -952,7 +1087,25 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 2 — Cloudflare Edge */}
+        {/* Widget 2 — Cluster Topology */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Network size={15} className="text-thinkpad-red" />,
+            'Cluster Topology',
+            ':: nodes + pods',
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              data.topology
+                ? <ClusterTopologyWidget topology={data.topology} />
+                : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
+                    <AlertTriangle size={13} /> Topology data not available
+                  </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Widget 3 — Cloudflare Edge */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <Shield size={15} className="text-[#f6821f]" />,
@@ -970,7 +1123,7 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 3 — Node Metrics */}
+        {/* Widget 4 — Node Metrics */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <Cpu size={15} className="text-thinkpad-red" />,
@@ -997,7 +1150,7 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 4 — Chaos Monkey Disk Audit */}
+        {/* Widget 5 — Chaos Monkey Disk Audit */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <HardDrive size={15} className="text-thinkpad-red" />,
@@ -1015,10 +1168,10 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 5 — CI/CD Pipeline (The Forge) */}
+        {/* Widget 6 — CI/CD Pipeline (The Forge) */}
         <PipelineVisualizer />
 
-        {/* Widget 6 — ArgoCD Apps */}
+        {/* Widget 7 — ArgoCD Apps */}
         <ArgoCDApps
           apps={data?.argocd_apps ?? null}
           loading={loading}
