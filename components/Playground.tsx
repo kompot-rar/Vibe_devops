@@ -1228,10 +1228,10 @@ const Playground: React.FC = () => {
           }}
         />
         <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
-          Home<span className="text-thinkpad-red">lab</span>
+          test<span className="text-thinkpad-red">build</span>
         </h1>
         <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4">
-          Live status klastra K3s. Trzy nody, jeden cel.
+          0.0.0.1
         </p>
       </div>
 
