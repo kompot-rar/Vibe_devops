@@ -21,6 +21,26 @@ interface ClusterStats {
   network_tx_mbps: string;
 }
 
+interface Incident {
+  object: string; // "Pod/blog-devops-dev-59787c997b-g9dml"
+}
+
+interface RestartReasonEvent {
+  reason: string;
+  message: string;
+  lastTimestamp: string;
+}
+
+interface RestartReason {
+  podName: string;
+  terminated?: {
+    reason: string;
+    exitCode: number;
+    finishedAt?: string;
+  };
+  events?: RestartReasonEvent[];
+}
+
 interface ClusterInfo {
   totalPods: string;
   status: 'Healthy' | 'Warning' | 'Observed' | string;
@@ -29,6 +49,7 @@ interface ClusterInfo {
   gitops: 'Synced' | 'Out of Sync' | string;
   lastUpdate: string;
   stats?: ClusterStats;
+  incidents?: Incident[];
 }
 
 interface NodeInfo {
@@ -218,8 +239,30 @@ const MetricRow: React.FC<{
 
 // --- Cluster Overview widget ---
 
+const podBaseName = (name: string) => {
+  const parts = name.split('-');
+  return parts.length > 2 ? parts.slice(0, -2).join('-') : name;
+};
+
+const exitCodeColor = (code: number) => {
+  if (code === 0) return 'text-thinkpad-muted';
+  if (code === 137 || code === 143) return 'text-[#b8864e]';
+  return 'text-thinkpad-red';
+};
+
 const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
   const s = getStatusCfg(cluster.status);
+  const [restartReason, setRestartReason] = useState<RestartReason | null>(null);
+
+  const firstPodName = cluster.incidents?.[0]?.object?.replace(/^Pod\//, '') ?? null;
+
+  useEffect(() => {
+    if (!firstPodName) { setRestartReason(null); return; }
+    fetch(`/api/status/restart-reason/${firstPodName}`)
+      .then(r => r.json())
+      .then(setRestartReason)
+      .catch(() => {});
+  }, [firstPodName]);
 
   return (
     <div className={`border ${s.border} ${s.bg}`}>
@@ -353,6 +396,38 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
             <Bar value={parseFloat(cluster.stats.network_tx_mbps)} colorClass="bg-[#2a3f5a]" max={100} />
           </div>
 
+        </div>
+      )}
+
+      {/* Last Restart Event */}
+      {restartReason && (
+        <div className="border-t border-neutral-800/60 px-5 py-3 flex flex-wrap items-center gap-x-4 gap-y-1 bg-thinkpad-base/40">
+          <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 shrink-0">
+            <RefreshCw size={10} /> last restart
+          </span>
+          <span className="font-mono text-xs text-white shrink-0">
+            {podBaseName(restartReason.podName)}
+          </span>
+          {restartReason.terminated && (
+            <>
+              <span className={`font-mono text-xs font-bold shrink-0 ${exitCodeColor(restartReason.terminated.exitCode)}`}>
+                {restartReason.terminated.reason}
+              </span>
+              <span className="font-mono text-xs text-neutral-600 shrink-0">
+                exit {restartReason.terminated.exitCode}
+              </span>
+            </>
+          )}
+          {restartReason.events?.[0] && (
+            <span className="font-mono text-xs text-thinkpad-muted truncate">
+              · {restartReason.events[0].reason}: {restartReason.events[0].message}
+            </span>
+          )}
+          {restartReason.terminated?.finishedAt && (
+            <span className="font-mono text-xs text-neutral-600 shrink-0 ml-auto">
+              {timeAgo(restartReason.terminated.finishedAt)}
+            </span>
+          )}
         </div>
       )}
 
