@@ -1224,14 +1224,14 @@ const Playground: React.FC = () => {
         <div
           className="absolute -inset-16 -z-10"
           style={{
-            background: 'radial-gradient(ellipse 70% 80% at 50% 50%, #0a0b10 40%, transparent 100%)',
+            background: 'radial-gradient(ellipse 65% 50% at 50% 50%, rgba(10,11,16,0.92) 20%, rgba(10,11,16,0.4) 70%, transparent 100%)',
           }}
         />
         <h1 className="text-4xl sm:text-6xl font-extrabold text-white mb-6 tracking-tight font-mono">
-          test<span className="text-thinkpad-red">build</span>
+          Home<span className="text-thinkpad-red">lab</span>
         </h1>
         <p className="text-lg text-thinkpad-muted max-w-2xl mx-auto font-mono border-l-2 border-thinkpad-red pl-4">
-          0.0.0.1
+          Live status klastra K3s. Trzy nody, jeden cel.
         </p>
       </div>
 
