@@ -900,9 +900,9 @@ const PodTopologyView: React.FC<{
             : 'py-1.5 border-neutral-800 bg-thinkpad-base cursor-help hover:border-neutral-700 opacity-60 hover:opacity-90'
         }`}
         style={isMyPod ? {
-          borderColor: 'rgba(90,158,133,0.7)',
-          background: 'linear-gradient(90deg, rgba(90,158,133,0.13) 0%, rgba(90,158,133,0.06) 60%, transparent 100%)',
-          boxShadow: '0 0 0 1px rgba(90,158,133,0.2), 0 0 20px rgba(90,158,133,0.2)',
+          borderColor: 'rgba(90,158,133,0.55)',
+          background: 'linear-gradient(90deg, rgba(90,158,133,0.09) 0%, rgba(90,158,133,0.04) 60%, transparent 100%)',
+          boxShadow: '0 0 0 1px rgba(90,158,133,0.15)',
         } : {}}
         title={`${pod.name}\nns: ${pod.namespace}\n${pod.status}`}
       >
@@ -922,7 +922,7 @@ const PodTopologyView: React.FC<{
           <span className="relative flex h-2.5 w-2.5 shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-40" />
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-20" style={{ animationDelay: '0.5s' }} />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#5a9e85]" style={{ boxShadow: '0 0 6px rgba(90,158,133,0.9)' }} />
+            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#5a9e85]" style={{ boxShadow: '0 0 5px rgba(90,158,133,0.6)' }} />
           </span>
         ) : isRunning ? (
           <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0 bg-[#5a9e85]" />
@@ -937,7 +937,7 @@ const PodTopologyView: React.FC<{
         <span
           className="truncate flex-1 min-w-0"
           style={isMyPod
-            ? { color: '#5a9e85', fontWeight: 600, textShadow: '0 0 10px rgba(90,158,133,0.45)' }
+            ? { color: '#5a9e85', fontWeight: 600, textShadow: '0 0 8px rgba(90,158,133,0.28)' }
             : { color: '#a3a3a3' }
           }
         >
@@ -962,18 +962,17 @@ const PodTopologyView: React.FC<{
           {pod.namespace}
         </span>
 
-        {/* LIVE badge */}
+        {/* SERVING badge */}
         {isMyPod && (
           <span
-            className="flex items-center gap-1.5 shrink-0 px-2 py-0.5 text-[10px] uppercase tracking-widest font-bold animate-pulse"
+            className="flex items-center gap-1.5 shrink-0 px-2 py-0.5 text-[10px] uppercase tracking-widest font-bold"
             style={{
-              color: '#5a9e85',
-              border: '1px solid rgba(90,158,133,0.5)',
-              background: 'rgba(90,158,133,0.12)',
-              boxShadow: '0 0 8px rgba(90,158,133,0.25)',
+              color: 'rgba(90,158,133,0.8)',
+              border: '1px solid rgba(90,158,133,0.35)',
+              background: 'rgba(90,158,133,0.08)',
             }}
           >
-            ◉ live
+            ◉ serving
           </span>
         )}
       </div>
@@ -989,17 +988,18 @@ const NodeTopologyRow: React.FC<{
   const isReady = node.status === 'True';
 
   return (
-    <div className={`border transition-all duration-500 ${
-      isMyNode ? 'border-[#5a9e85]/40' : 'border-neutral-800'
-    }`}>
+    <div
+      className={`border transition-all duration-500 ${isMyNode ? 'border-[#5a9e85]/60' : 'border-neutral-800'}`}
+      style={isMyNode ? { boxShadow: '0 0 0 1px rgba(90,158,133,0.18), 0 0 16px rgba(90,158,133,0.1)' } : {}}
+    >
       {/* Node header */}
       <div className={`px-4 py-2.5 flex items-center gap-3 ${
-        isMyNode ? 'bg-[#5a9e85]/5' : 'bg-thinkpad-base'
+        isMyNode ? 'bg-[#5a9e85]/10' : 'bg-thinkpad-base'
       }`}>
         {isMyNode ? (
           <span className="relative flex h-2 w-2 shrink-0">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-60" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#5a9e85]" />
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#5a9e85]" style={{ boxShadow: '0 0 5px rgba(90,158,133,0.7)' }} />
           </span>
         ) : (
           <Server size={11} className="text-thinkpad-muted shrink-0" />
