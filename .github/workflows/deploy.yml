@@ -72,34 +72,30 @@ jobs:
             docker push $GHCR_IMAGE:${{ env.SHORT_SHA }}
           fi
 
-      - name: Update GitOps Manifests
+      - name: Update GitOps Manifests & Trigger Rollout
         run: |
-          # Configure Git for the runner
-          git config --global user.name "Vibe-DevOps CI"
-          git config --global user.email "ci@mrozy.org"
-          git config --global --add safe.directory /home/kompot/projekty/kubernetes
-          
-          if [[ "${{ env.ENV }}" == "prod" ]]; then
-            MANIFEST_PATH="/home/kompot/projekty/kubernetes/manifests/blog-prod/deployment.yaml"
-            echo "Updating Prod manifest: $MANIFEST_PATH"
-            sed -i "s|image: 10.0.20.50:5000/blog-devops:.*|image: 10.0.20.50:5000/blog-devops:${{ env.SHORT_SHA }}|g" $MANIFEST_PATH
-            
-            cd /home/kompot/projekty/kubernetes
-            git add manifests/blog-prod/deployment.yaml
-            git commit -m "chore(prod): release blog-devops ${{ env.SHORT_SHA }}"
-          else
-            MANIFEST_PATH="/home/kompot/projekty/kubernetes/manifests/blog-dev/deployment.yaml"
-            echo "Updating Dev manifest: $MANIFEST_PATH"
-            sed -i "s|image: 10.0.20.50:5000/blog-devops:.*|image: 10.0.20.50:5000/blog-devops:${{ env.SHORT_SHA }}|g" $MANIFEST_PATH
-            
-            cd /home/kompot/projekty/kubernetes
-            git add manifests/blog-dev/deployment.yaml
-            git commit -m "chore(dev): update blog-devops image to ${{ env.SHORT_SHA }}"
-          fi
-          
-          # Push changes to local kubernetes repo (ArgoCD will pick it up)
-          git push origin master
+          git clone git@github.com:kompot-rar/kubernetes.git /tmp/k8s-manifests
+          cd /tmp/k8s-manifests
 
-      - name: Cleanup
-        run: |
+          git config user.name "Vibe-DevOps CI"
+          git config user.email "ci@mrozy.org"
+
+          TIMESTAMP=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          if [[ "${{ env.ENV }}" == "prod" ]]; then
+            DEPLOY_FILE="manifests/blog-prod/deployment.yaml"
+          else
+            DEPLOY_FILE="manifests/blog-dev/deployment.yaml"
+          fi
+
+          # 1. Update Image Tag
+          sed -i "s|image: 10.0.20.50:5000/blog-devops:.*|image: 10.0.20.50:5000/blog-devops:${{ env.SHORT_SHA }}|g" ${DEPLOY_FILE}
+          
+          # 2. Trigger Rollout (DevOps Magic)
+          sed -i "s|vibe-devops/restartedAt:.*|vibe-devops/restartedAt: \"${TIMESTAMP}\"|" ${DEPLOY_FILE}
+
+          git add ${DEPLOY_FILE}
+          git commit -m "chore(${ENV}): release ${SHORT_SHA} and trigger rollout [skip ci]"
+          git push origin master
+          
           docker image prune -f
+          rm -rf /tmp/k8s-manifests
