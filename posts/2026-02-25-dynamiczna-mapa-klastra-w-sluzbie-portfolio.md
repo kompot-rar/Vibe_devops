@@ -78,10 +78,5 @@ Dostałem tonę frajdy i nauczyłem się w praktyce rzeczy, o których wcześnie
 
 Teraz jak robię *Rolling Update* z poziomu terminala, mogę na żywo patrzeć, jak klocki w klastrze przeskakują między nodami Lenovo. Czysta radocha.
 
-<div style="text-align: center; margin: 40px 0;">
-  <a href="https://devops.mrozy.org/playground" style="color: #ef4444; font-size: 1.5rem; font-weight: bold; text-decoration: none; border: 2px solid #ef4444; padding: 15px 30px; border-radius: 8px; display: inline-block; transition: all 0.3s ease;">
-    🔴 ZOBACZ MAPĘ KLASTRA NA ŻYWO (PLAYGROUND)
-  </a>
-</div>
 
 ![Dynamiczna mapa klastra w akcji](/dynamic-map-k3s-banner.png)
