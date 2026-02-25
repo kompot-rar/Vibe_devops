@@ -90,9 +90,27 @@ jobs:
             sed -i "s|image: 10.0.20.50:5000/blog-devops:.*|image: 10.0.20.50:5000/blog-devops:${{ env.SHORT_SHA }}|g" manifests/blog-dev/deployment.yaml
             git add manifests/blog-dev/deployment.yaml
             git commit -m "chore(dev): update blog-devops image to ${{ env.SHORT_SHA }}"
-          fi
-
           git push origin master
           
           docker image prune -f
           rm -rf /tmp/k8s-manifests
+
+      - name: Trigger ArgoCD Sync
+        env:
+          ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
+        run: |
+          if [[ "${{ env.ENV }}" == "prod" ]]; then
+            APP="blog-prod"
+          else
+            APP="blog-dev"
+          fi
+
+          curl -sk -X POST \
+            "https://argocd-server.argocd.svc.cluster.local/api/v1/applications/${APP}/sync" \
+            -H "Authorization: Bearer ${ARGOCD_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"prune": true}' \
+            --connect-timeout 10
+
+          echo "ArgoCD sync triggered for ${APP}"
+          
