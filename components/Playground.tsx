@@ -1253,7 +1253,7 @@ const Playground: React.FC = () => {
           {widgetHeader(
             <Box size={15} className="text-thinkpad-red" />,
             'Cluster Overview',
-            ':: k3s cluster',
+            ':: k3s',
           )}
           <div className="p-6">
             {bodyState(data && <ClusterOverview cluster={data.cluster} />)}
