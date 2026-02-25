@@ -1378,3 +1378,5 @@ const Playground: React.FC = () => {
 };
 
 export default Playground;
+
+// Production-ready dashboard: three nodes, one purpose.
