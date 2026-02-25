@@ -52,8 +52,8 @@ jobs:
         run: |
           echo "Building image for ${{ env.ENV }} environment..."
           
-          # Budujemy obraz z wieloma tagami
           if [[ "${{ env.ENV }}" == "prod" ]]; then
+            # Production: always use SHA + latest for stability and history
             docker build --build-arg PUBLIC_URL=${{ env.PUBLIC_URL }} -t $GHCR_IMAGE:latest -t $GHCR_IMAGE:${{ env.SHORT_SHA }} -t $LOCAL_IMAGE:latest -t $LOCAL_IMAGE:${{ env.SHORT_SHA }} .
             
             echo "Pushing Production images..."
@@ -62,27 +62,44 @@ jobs:
             docker push $GHCR_IMAGE:latest
             docker push $GHCR_IMAGE:${{ env.SHORT_SHA }}
           else
-            docker build --build-arg PUBLIC_URL=${{ env.PUBLIC_URL }} -t $GHCR_IMAGE:dev -t $LOCAL_IMAGE:dev .
+            # Dev: now using SHA to force ArgoCD/K3s image pull and bypass cache
+            docker build --build-arg PUBLIC_URL=${{ env.PUBLIC_URL }} -t $GHCR_IMAGE:dev -t $GHCR_IMAGE:${{ env.SHORT_SHA }} -t $LOCAL_IMAGE:dev -t $LOCAL_IMAGE:${{ env.SHORT_SHA }} .
             
             echo "Pushing Dev images..."
             docker push $LOCAL_IMAGE:dev
+            docker push $LOCAL_IMAGE:${{ env.SHORT_SHA }}
             docker push $GHCR_IMAGE:dev
+            docker push $GHCR_IMAGE:${{ env.SHORT_SHA }}
           fi
 
-      - name: Setup Kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
-      - name: Trigger Rollout (DevOps Magic)
+      - name: Update GitOps Manifests
         run: |
-          # Wskazujemy config klastra
-          export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+          # Configure Git for the runner
+          git config --global user.name "Vibe-DevOps CI"
+          git config --global user.email "ci@mrozy.org"
+          git config --global --add safe.directory /home/kompot/projekty/kubernetes
           
           if [[ "${{ env.ENV }}" == "prod" ]]; then
-            kubectl rollout restart deployment/blog-devops-prod -n blog-prod
+            MANIFEST_PATH="/home/kompot/projekty/kubernetes/manifests/blog-prod/deployment.yaml"
+            echo "Updating Prod manifest: $MANIFEST_PATH"
+            sed -i "s|image: 10.0.20.50:5000/blog-devops:.*|image: 10.0.20.50:5000/blog-devops:${{ env.SHORT_SHA }}|g" $MANIFEST_PATH
+            
+            cd /home/kompot/projekty/kubernetes
+            git add manifests/blog-prod/deployment.yaml
+            git commit -m "chore(prod): release blog-devops ${{ env.SHORT_SHA }}"
           else
-            kubectl rollout restart deployment/blog-devops-dev -n blog
+            MANIFEST_PATH="/home/kompot/projekty/kubernetes/manifests/blog-dev/deployment.yaml"
+            echo "Updating Dev manifest: $MANIFEST_PATH"
+            sed -i "s|image: 10.0.20.50:5000/blog-devops:.*|image: 10.0.20.50:5000/blog-devops:${{ env.SHORT_SHA }}|g" $MANIFEST_PATH
+            
+            cd /home/kompot/projekty/kubernetes
+            git add manifests/blog-dev/deployment.yaml
+            git commit -m "chore(dev): update blog-devops image to ${{ env.SHORT_SHA }}"
           fi
           
+          # Push changes to local kubernetes repo (ArgoCD will pick it up)
+          git push origin master
+
+      - name: Cleanup
+        run: |
           docker image prune -f
