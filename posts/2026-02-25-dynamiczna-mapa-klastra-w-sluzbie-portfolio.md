@@ -8,15 +8,14 @@ imageUrl: '/dynamic-map-k3s-banner.png'
 excerpt: 'Zabawa z Prometheusem przerodziła się w dynamiczny dashboard monitoringu klastra. Zobacz jak zaimplementowałem wzorzec BFF, RBAC i Downward API w K8s.'
 ---
 
-Zabawa z Prometheusem i rzeźbienie własnych modułów observability hostowanych prosto na blogu wciągnęło mnie na ładnych parę dni. Zaczęło się niewinnie – prosty projekt, który miał tylko na żywo monitorować powolną agonię mojego starego HDD wyciągniętego ze śmietnika. Zgadnijcie co? Zamiast prostego skryptu, wyewoluowało to w pełnoprawny, dynamiczny dashboard monitoringu całego klastra. Bo w świecie homelabów i DevOpsu słowo *overkill* po prostu nie istnieje. 😉
+Zabawa z Prometheusem i rzeźbienie własnych modułów observability hostowanych prosto na blogu wciągnęło mnie na ładnych parę dni. Zaczęło się niewinnie – prosty projekt, który miał tylko na żywo monitorować powolną agonię mojego starego HDD wyciągniętego ze śmietnika. Zgadnijcie co? Zamiast prostego skryptu, wyewoluowało to w pełnoprawny, dynamiczny dashboard monitoringu całego klastra. Bo w świecie homelabów  słowo *overkill* po prostu nie istnieje. 😉
 
-Tym sposobem mój blog przestał być zwykłą "czarną skrzynką". Postawiłem sobie cel: chcę widzieć na żywo topologię mojego k3s (postawionego na 3x Lenovo ThinkCentre) i wiedzieć dokładnie, z którego fizycznego węzła i konkretnego poda aktualnie serwowany jest ruch.
+Tym sposobem mój blog przestał być zwykłą "czarną skrzynką". Postawiłem sobie cel: chcę widzieć na żywo topologię mojego k3s i wiedzieć dokładnie, z którego fizycznego węzła i konkretnego poda aktualnie serwowany jest ruch.
 
-To była świetna lekcja architektury, bo to "proste dodanie modułu" zafundowało mi konkretny trening z rynkowych standardów DevOps.
 
 ## 1. Problem: Ograniczona widoczność (Cloudflare & Tunnels)
 
-Mój blog wystawiony jest na świat przez Cloudflare Tunnel. Ze względów bezpieczeństwa (podejście Zero Trust to podstawa) mam otwartą tylko jedną, wąską ścieżkę do API w klastrze: `/api/status`. Nie uśmiechało mi się rekonfigurować całej sieci i dziurawić tunelu nowymi endpointami tylko po to, by dodać nowy moduł z metrykami.
+Mój blog wystawiony jest na świat przez Cloudflare Tunnel. Ze względów bezpieczeństwa mam otwartą tylko jedną, wąską ścieżkę do API w klastrze: `/api/status`. Nie uśmiechało mi się rekonfigurować całej sieci i dziurawić tunelu nowymi endpointami tylko po to, by dodać nowy moduł z metrykami.
 
 **Decyzja:** Zastosowałem wzorzec **BFF (Backend For Frontend)**. 
 Zamiast stawiać od zera nową aplikację i przepychać ją przez reguły sieciowe Ingressa, po prostu "doładowałem" moje istniejące `status-proxy`. Teraz jeden strzał do `/api/status` ściąga i agreguje absolutnie wszystko: od temperatury procesorów z Prometheusa, przez logi Cloudflare, aż po pełną topologię klastra Kubernetes. Czysto, bezpiecznie i optymalnie.
@@ -24,14 +23,14 @@ Zamiast stawiać od zera nową aplikację i przepychać ją przez reguły siecio
 ## 2. Bezpieczeństwo przede wszystkim (RBAC)
 
 Proxy potrzebowało uprawnień, żeby móc zapytać API serwer Kubernetesa: *"Hej, jakie masz nody i pody?"*. 
-Oczywiście nie ma mowy o pójściu na łatwiznę i podpinaniu domyślnego tokena z uprawnieniami admina – za takie numery na rekrutacji czy audycie bezpieczeństwa jest natychmiastowy fail. 
+Oczywiście nie ma mowy o pójściu na łatwiznę i podpinaniu domyślnego tokena z uprawnieniami admina.
 
 Stworzyłem dedykowany `ServiceAccount` i restrykcyjną `ClusterRole`.
 Proxy może wyłącznie listować i oglądać (`get`, `list`, `watch`) obiekty typu `pods` i `nodes`. Nic więcej. Zero uprawnień do modyfikacji, zero dostępu do sekretów innych aplikacji. Zasada **Least Privilege** w czystej, inżynieryjnej postaci.
 
 ## 3. Tożsamość Poda (Downward API + InitContainers)
 
-To był chyba najciekawszy element układanki tego projektu. Obraz mojego bloga to aplikacja **immutable** (niezmienna). Buduję ją raz w CI/CD GitHub Actions, wypycham do rejestru GHCR i gotowe. Ale żeby dynamiczna mapa działała, każdy utworzony Pod tuż po wystartowaniu musi wiedzieć, jak się nazywa, by móc z dumą ogłosić frontendowi: *"To ja Cię obsługuję!"*.
+To był chyba najciekawszy element układanki tego projektu. Obraz mojego bloga to aplikacja **immutable**. Buduję ją raz w CI/CD GitHub Actions, wypycham do rejestru GHCR i gotowe. Ale żeby dynamiczna mapa działała, każdy utworzony Pod tuż po wystartowaniu musi wiedzieć, jak się nazywa, by móc z dumą ogłosić frontendowi: *"To ja Cię obsługuję!"*.
 
 Rozwiązałem to bez łamania koncepcji immutable image:
 
