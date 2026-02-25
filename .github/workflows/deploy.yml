@@ -76,6 +76,7 @@ jobs:
         env:
           K8S_REPO_TOKEN: ${{ secrets.K8S_REPO_TOKEN }}
         run: |
+          rm -rf /tmp/k8s-manifests
           git clone https://x-access-token:${K8S_REPO_TOKEN}@github.com/kompot-rar/kubernetes.git /tmp/k8s-manifests
           cd /tmp/k8s-manifests
 
