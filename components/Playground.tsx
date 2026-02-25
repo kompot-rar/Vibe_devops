@@ -1265,7 +1265,7 @@ const Playground: React.FC = () => {
         </p>
       </div>
 
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-4xl mx-auto space-y-10">
 
         {/* Widget 1 — Cluster Overview */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
