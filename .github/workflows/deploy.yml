@@ -101,6 +101,7 @@ jobs:
       - name: Trigger ArgoCD Sync
         env:
           ARGOCD_TOKEN: ${{ secrets.ARGOCD_TOKEN }}
+          ARGOCD_SERVER: "10.0.20.10:30329"
         run: |
           if [[ "${{ env.ENV }}" == "prod" ]]; then
             APP="blog-prod"
@@ -108,12 +109,14 @@ jobs:
             APP="blog-dev"
           fi
 
+          echo "Triggering ArgoCD sync for ${APP} via ${ARGOCD_SERVER}..."
+
           curl -sk -X POST \
-            "https://argocd-server.argocd.svc.cluster.local/api/v1/applications/${APP}/sync" \
+            "https://${ARGOCD_SERVER}/api/v1/applications/${APP}/sync" \
             -H "Authorization: Bearer ${ARGOCD_TOKEN}" \
             -H "Content-Type: application/json" \
             -d '{"prune": true}' \
-            --connect-timeout 10
+            --connect-timeout 15
 
-          echo "ArgoCD sync triggered for ${APP}"
+          echo "ArgoCD sync command executed."
           
