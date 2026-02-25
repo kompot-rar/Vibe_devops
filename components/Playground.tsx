@@ -411,6 +411,25 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
             <RefreshCw size={9} className="text-neutral-600" />
             <span className="font-mono text-xs text-neutral-600 uppercase tracking-wider">last events</span>
           </div>
+
+          {/* Alert summary row — first position when cluster is not Healthy */}
+          {cluster.status !== 'Healthy' && (() => {
+            const inc0 = cluster.incidents[0];
+            const pod0 = inc0.object.replace(/^Pod\//, '');
+            return (
+              <div className="px-5 py-2.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 border-b border-[#b8864e]/40 bg-[#b8864e]/[0.06]">
+                <AlertTriangle size={10} className="text-[#b8864e] shrink-0" />
+                <span className="font-mono text-xs font-bold text-[#b8864e] uppercase tracking-widest shrink-0">{cluster.status}</span>
+                <span className="font-mono text-xs text-neutral-600 shrink-0">·</span>
+                <span className="font-mono text-xs font-semibold text-white shrink-0">{podBaseName(pod0)}</span>
+                <span className="font-mono text-xs text-thinkpad-muted shrink-0">{inc0.namespace}</span>
+                <span className="font-mono text-xs text-[#b8864e] shrink-0">{inc0.reason}</span>
+                <span className="font-mono text-xs text-neutral-500 truncate">{cluster.message}</span>
+                <span className="font-mono text-xs text-neutral-600 shrink-0 ml-auto">{timeAgo(inc0.last_timestamp)}</span>
+              </div>
+            );
+          })()}
+
           {cluster.incidents.slice(0, 2).map((inc, i) => {
             const podName = inc.object.replace(/^Pod\//, '');
             const isFirst = i === 0;
