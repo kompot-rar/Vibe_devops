@@ -1288,22 +1288,22 @@ const Playground: React.FC = () => {
         </div>
 
         {/* Widget 2 — SLA Tracker */}
-        {bodyState(data && (
-          data.sla
-            ? <SLATracker sla={data.sla} />
-            : <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
-                <div className="flex items-center gap-3">
-                  <Shield size={15} className="text-[#5a9e85]" />
-                  <span className="font-mono text-sm text-white uppercase tracking-widest">SLA Tracker</span>
-                  <span className="font-mono text-xs text-thinkpad-muted">:: uptime · 30d</span>
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Shield size={15} className="text-[#5a9e85]" />,
+            'SLA Tracker',
+            ':: uptime · 30d',
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              data.sla
+                ? <SLATracker sla={data.sla} />
+                : <div className="flex items-center gap-2 py-8 font-mono text-xs text-thinkpad-muted">
+                  <AlertTriangle size={13} /> SLA data not available — Blackbox Exporter not configured
                 </div>
-              </div>
-              <div className="flex items-center gap-2 py-8 px-6 font-mono text-xs text-thinkpad-muted">
-                <AlertTriangle size={13} /> SLA data not available — Blackbox Exporter not configured
-              </div>
-            </div>
-        ))}
+            ))}
+          </div>
+        </div>
 
         {/* Widget 3 — Cluster Topology */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">

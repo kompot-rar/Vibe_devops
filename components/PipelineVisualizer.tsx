@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
-  GitBranch, Box, Package, RefreshCw, Server,
+  Github, Box, Package, RefreshCw, Server,
   Terminal, Wifi, WifiOff, AlertTriangle, ExternalLink,
 } from 'lucide-react';
 
@@ -40,7 +40,15 @@ interface WorkflowRun {
   html_url: string;
 }
 
-interface PipelineResponse { run: WorkflowRun; jobs: WorkflowJob[] }
+interface DORAMetrics {
+  deployment_frequency_per_week: number;
+  lead_time_avg_minutes: number;
+  change_failure_rate_pct: number;
+  deploys_30d: number;
+  failed_deploys_30d: number;
+}
+
+interface PipelineResponse { run: WorkflowRun; jobs: WorkflowJob[]; dora?: DORAMetrics }
 
 type StageStatus = 'pending' | 'queued' | 'in_progress' | 'success' | 'failure' | 'skipped';
 
@@ -57,7 +65,7 @@ interface Stage {
 // ---- Stage definitions ----
 
 const STAGE_DEFS = [
-  { id: 'source',   label: 'SOURCE',   Icon: GitBranch, keywords: ['checkout', 'clone'] },
+  { id: 'source',   label: 'SOURCE',   Icon: Github,    keywords: ['checkout', 'clone'] },
   { id: 'forge',    label: 'FORGE',    Icon: Box,       keywords: ['build', 'compile', 'setup', 'install', 'dependencies', 'buildx'] },
   { id: 'registry', label: 'REGISTRY', Icon: Package,   keywords: ['push', 'registry', 'ghcr', 'docker', 'login'] },
   { id: 'gitops',   label: 'GITOPS',   Icon: RefreshCw, keywords: ['sync', 'argo', 'manifest', 'gitops', 'update', 'tag'] },
@@ -377,11 +385,105 @@ const TerminalView: React.FC<{
   );
 };
 
+// ---- DORA helpers ----
+
+type DORALevel = 'ELITE' | 'HIGH' | 'MEDIUM' | 'LOW';
+
+const doraFreqLevel = (v: number): DORALevel =>
+  v >= 7 ? 'ELITE' : v >= 1 ? 'HIGH' : v >= 0.23 ? 'MEDIUM' : 'LOW';
+
+const doraLeadLevel = (v: number): DORALevel =>
+  v < 60 ? 'ELITE' : v < 1440 ? 'HIGH' : v < 10080 ? 'MEDIUM' : 'LOW';
+
+const doraCFRLevel = (v: number): DORALevel =>
+  v < 5 ? 'ELITE' : v < 15 ? 'HIGH' : v < 45 ? 'MEDIUM' : 'LOW';
+
+const doraLevelColor = (l: DORALevel): string =>
+  l === 'ELITE' || l === 'HIGH' ? 'text-[#5a9e85]'
+  : l === 'MEDIUM' ? 'text-[#b8864e]'
+  : 'text-thinkpad-red';
+
+const fmtLeadTime = (minutes: number): string => {
+  if (minutes < 60)   return `${minutes.toFixed(1)} min`;
+  if (minutes < 1440) return `${(minutes / 60).toFixed(1)} h`;
+  return `${(minutes / 1440).toFixed(1)} d`;
+};
+
+// ---- DORA Section ----
+
+const DORASection: React.FC<{ dora: DORAMetrics }> = ({ dora }) => {
+  const freqLevel = doraFreqLevel(dora.deployment_frequency_per_week);
+  const leadLevel = doraLeadLevel(dora.lead_time_avg_minutes);
+  const cfrLevel  = doraCFRLevel(dora.change_failure_rate_pct);
+
+  return (
+    <div className="border border-neutral-800">
+      {/* Section header */}
+      <div className="px-4 py-2 border-b border-neutral-800 flex items-center justify-between">
+        <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
+          <span className="text-thinkpad-red">▸</span> DORA METRICS
+          <span className="text-neutral-700">// last 30d</span>
+        </span>
+        <span className="font-mono text-xs text-neutral-600 tabular-nums">
+          {dora.deploys_30d} deploys
+        </span>
+      </div>
+
+      {/* 3-card grid */}
+      <div className="grid grid-cols-3 gap-px bg-neutral-800/30">
+
+        {/* Deploy Frequency */}
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">DEPLOY_FREQ</span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-mono text-2xl font-bold tabular-nums text-white">
+              {dora.deployment_frequency_per_week.toFixed(1)}
+            </span>
+            <span className="font-mono text-xs text-neutral-600">/week</span>
+          </div>
+          <span className={`font-mono text-[11px] font-bold ${doraLevelColor(freqLevel)}`}>
+            {freqLevel}
+          </span>
+        </div>
+
+        {/* Lead Time */}
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME_AVG</span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-mono text-2xl font-bold tabular-nums text-white">
+              {fmtLeadTime(dora.lead_time_avg_minutes)}
+            </span>
+          </div>
+          <span className={`font-mono text-[11px] font-bold ${doraLevelColor(leadLevel)}`}>
+            {leadLevel}
+          </span>
+        </div>
+
+        {/* Change Failure Rate */}
+        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">CHANGE_FAIL_RATE</span>
+          <div className="flex items-baseline gap-1">
+            <span className="font-mono text-2xl font-bold tabular-nums text-white">
+              {dora.change_failure_rate_pct.toFixed(1)}
+            </span>
+            <span className="font-mono text-xs text-neutral-600">%</span>
+          </div>
+          <span className={`font-mono text-[11px] font-bold ${doraLevelColor(cfrLevel)}`}>
+            {cfrLevel}
+          </span>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
 // ---- Main ----
 
 const PipelineVisualizer: React.FC = () => {
   const [run, setRun]         = useState<WorkflowRun | null>(null);
   const [jobs, setJobs]       = useState<WorkflowJob[]>([]);
+  const [dora, setDora]       = useState<DORAMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -399,6 +501,7 @@ const PipelineVisualizer: React.FC = () => {
       const data: PipelineResponse = await res.json();
       setRun(data.run);
       setJobs(data.jobs);
+      setDora(data.dora ?? null);
       setLogCache({});   // invalidate log cache on new run data
       setError(null);
     } catch (e) {
@@ -479,7 +582,7 @@ const PipelineVisualizer: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
         <div className="flex items-center gap-3">
-          <GitBranch size={15} className="text-thinkpad-red" />
+          <Github size={15} className="text-thinkpad-red" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">The Forge</span>
           <span className="font-mono text-xs text-thinkpad-muted">:: CI/CD Pipeline</span>
         </div>
@@ -578,6 +681,9 @@ const PipelineVisualizer: React.FC = () => {
                 stageLabel={`${activeStageData.label} · ${jobs.find(j => j.id === activeStageData.jobId)?.name ?? 'pipeline'}`}
               />
             )}
+
+            {/* DORA Metrics */}
+            {dora && <DORASection dora={dora} />}
 
             {/* Footer */}
             <div className="flex justify-end">

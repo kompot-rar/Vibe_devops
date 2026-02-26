@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-    Shield, Clock, Activity,
+    Clock, Activity,
     TrendingUp, Timer,
 } from 'lucide-react';
 
@@ -141,19 +141,7 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
     const slaMet = sla.uptime_30d_pct >= slaTarget;
 
     return (
-        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-
-            {/* Header — spójny z widgetHeader() z Playground */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
-                <div className="flex items-center gap-3">
-                    <Shield size={15} className="text-[#5a9e85]" />
-                    <span className="font-mono text-sm text-white uppercase tracking-widest">SLA Tracker</span>
-                    <span className="font-mono text-xs text-thinkpad-muted">:: uptime · 30d</span>
-                </div>
-            </div>
-
-            <div className="p-6">
-                <div className="border border-[#5a9e85]/20 bg-[#5a9e85]/[0.02]">
+        <div className="border border-[#5a9e85]/20 bg-[#5a9e85]/[0.02]">
 
                     {/* ===== Sekcja 1: Headline — 30-Day Availability ===== */}
                     <div className="px-5 py-5 border-b border-neutral-800/60">
@@ -327,8 +315,6 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                     </div>
 
                 </div>
-            </div>
-        </div>
     );
 };
 
