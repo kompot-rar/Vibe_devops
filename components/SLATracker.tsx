@@ -249,10 +249,11 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             </span>
                         </div>
 
-                        {/* Heatmap grid — zawsze 30 kolumn */}
+                        {/* Heatmap grid — zawsze 30 kolumn, dane wyrównane do prawej (dziś = pozycja 29) */}
                         <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(30, 1fr)` }}>
                             {Array.from({ length: 30 }, (_, i) => {
-                                const day = sla.daily[i];
+                                const dataIndex = i - (30 - sla.daily.length);
+                                const day = dataIndex >= 0 ? sla.daily[dataIndex] : null;
                                 return day
                                     ? <DayCell key={day.date} day={day} />
                                     : <div key={i} className="w-full aspect-square rounded-[2px] bg-[#1e2028]" />;
