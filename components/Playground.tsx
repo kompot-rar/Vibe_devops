@@ -171,7 +171,7 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
 };
 
 const tempCfg = {
-  ok:   { label: 'OK',   color: 'text-[#7a9fad]', barColor: 'bg-[#3a6678]', accentBorder: '#2a4a58', dotClass: 'bg-[#7a9fad]', borderClass: 'border-[#2a4a58]/60' },
+  ok:   { label: 'OK',   color: 'text-[#5a9e85]', barColor: 'bg-[#3a6678]', accentBorder: '#2a4a58', dotClass: 'bg-[#5a9e85]', borderClass: 'border-[#2a6654]/60' },
   warm: { label: 'WARM', color: 'text-[#b8864e]', barColor: 'bg-[#7a5530]', accentBorder: '#5a3c1e', dotClass: 'bg-[#b8864e]', borderClass: 'border-[#5a3c1e]/60' },
   hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014', dotClass: 'bg-thinkpad-red', borderClass: 'border-[#7a0014]/60' },
 };
