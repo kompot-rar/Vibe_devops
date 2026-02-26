@@ -82,6 +82,14 @@ const formatDayLabel = (iso: string): string => {
     } catch { return iso; }
 };
 
+// Data jako string YYYY-MM-DD w lokalnej strefie czasowej
+const toLocalDateStr = (d: Date): string => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+};
+
 // ---- Sub-components ----
 
 // Pasek postępu (identyczny pattern co w Playground)
@@ -139,6 +147,13 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
     // SLA target — standard 99.9% (Three Nines)
     const slaTarget = 99.9;
     const slaMet = sla.uptime_30d_pct >= slaTarget;
+
+    // Stałe etykiety okna 30 dni — zawsze obliczane od dziś, niezależnie od danych API
+    const todayDate = new Date();
+    const windowStartDate = new Date(todayDate);
+    windowStartDate.setDate(todayDate.getDate() - 29);
+    const leftLabel = formatDayLabel(toLocalDateStr(windowStartDate));
+    const rightLabel = formatDayLabel(toLocalDateStr(todayDate));
 
     return (
         <div className="border border-[#5a9e85]/20 bg-[#5a9e85]/[0.02]">
@@ -244,13 +259,13 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             })}
                         </div>
 
-                        {/* Labels — pierwszy i ostatni dzień */}
+                        {/* Labels — 29 dni temu → dziś */}
                         <div className="flex justify-between mt-2">
                             <span className="font-mono text-[10px] text-neutral-700">
-                                {sla.daily.length > 0 ? formatDayLabel(sla.daily[0].date) : ''}
+                                {leftLabel}
                             </span>
                             <span className="font-mono text-[10px] text-neutral-700">
-                                {sla.daily.length > 0 ? formatDayLabel(sla.daily[sla.daily.length - 1].date) : ''}
+                                {rightLabel}
                             </span>
                         </div>
 
