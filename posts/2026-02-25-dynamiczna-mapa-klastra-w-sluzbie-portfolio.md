@@ -8,7 +8,7 @@ imageUrl: '/dynamic-map-k3s-banner.png'
 excerpt: 'Zabawa z Prometheusem przerodziła się w dynamiczny dashboard monitoringu klastra. Zobacz jak zaimplementowałem wzorzec BFF, RBAC i Downward API w K8s.'
 ---
 
-Zabawa z Prometheusem i rzeźbienie własnych modułów observability hostowanych prosto na blogu wciągnęło mnie na ładnych parę dni. Zaczęło się niewinnie – prosty projekt, który miał tylko na żywo monitorować powolną agonię mojego starego HDD wyciągniętego ze śmietnika. Zgadnijcie co? Zamiast prostego skryptu, wyewoluowało to w pełnoprawny, dynamiczny dashboard monitoringu całego klastra. Bo w świecie homelabów  słowo *overkill* po prostu nie istnieje. 😉
+Zabawa z Prometheusem i rzeźbienie własnych modułów observability hostowanych prosto na blogu wciągnęło mnie na ładnych parę dni. Zaczęło się niewinnie – prosty projekt, który miał tylko na żywo monitorować powolną agonię mojego starego SSD wyciągniętego ze śmietnika. Zgadnijcie co? Zamiast prostego skryptu, wyewoluowało to w pełnoprawny, dynamiczny dashboard monitoringu całego klastra. Bo w świecie homelabów  słowo *overkill* po prostu nie istnieje. 😉
 
 Tym sposobem mój blog przestał być zwykłą "czarną skrzynką". Postawiłem sobie cel: chcę widzieć na żywo topologię mojego k3s i wiedzieć dokładnie, z którego fizycznego węzła i konkretnego poda aktualnie serwowany jest ruch.
 
