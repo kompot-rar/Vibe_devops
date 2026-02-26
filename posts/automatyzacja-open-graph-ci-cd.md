@@ -98,7 +98,7 @@ Dodanie `$uri/` sprawia, że Nginx najpierw sprawdza, czy istnieje **katalog** z
 ## Krok 4: CI/CD Pipeline
 
 Na koniec wszystko spiąłem w GitHub Actions.
-Co ważne – musiałem obsłużyć różne środowiska (Dev vs Prod). Obrazki na wersji deweloperskiej muszą wskazywać na `vibe-dev.mrozy.org`, a na produkcji na domenę główną.
+Co ważne – musiałem obsłużyć różne środowiska (Dev vs Prod). Obrazki na wersji deweloperskiej muszą wskazywać na `dev-devops.mrozy.org`, a na produkcji na domenę główną.
 
 ```yaml
       - name: Set Environment Variables
@@ -106,7 +106,7 @@ Co ważne – musiałem obsłużyć różne środowiska (Dev vs Prod). Obrazki n
           if [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             echo "PUBLIC_URL=https://devops.mrozy.org" >> $GITHUB_ENV
           else
-            echo "PUBLIC_URL=https://vibe-dev.mrozy.org" >> $GITHUB_ENV
+            echo "PUBLIC_URL=https://dev-devops.mrozy.org" >> $GITHUB_ENV
           fi
 
       - name: Generate Open Graph Images
