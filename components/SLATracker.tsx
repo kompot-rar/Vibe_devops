@@ -56,10 +56,12 @@ const latencyColor = (ms: number): string => {
 
 // ---- Helpers ----
 
-// Formatowanie streak (godziny → "12d 4h")
+// Formatowanie streak: minuty → godziny → dni
 const formatStreak = (hours: number): string => {
+    const totalMinutes = Math.floor(hours * 60);
+    if (totalMinutes < 60) return `${totalMinutes}min`;
     const days = Math.floor(hours / 24);
-    const h = Math.round(hours % 24);
+    const h = Math.floor(hours % 24);
     if (days === 0) return `${h}h`;
     if (h === 0) return `${days}d`;
     return `${days}d ${h}h`;
