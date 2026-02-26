@@ -235,7 +235,7 @@ const timeAgo = (iso: string): string => {
 const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
   value, colorClass, max = 100,
 }) => (
-  <div className="h-[3px] bg-[#1e2028] rounded-sm overflow-hidden">
+  <div className="h-[5px] bg-[#1e2028] rounded-sm overflow-hidden">
     <div
       className={`h-full ${colorClass} rounded-sm transition-all duration-700`}
       style={{ width: `${Math.min(100, (value / max) * 100)}%` }}
@@ -247,12 +247,12 @@ const MetricRow: React.FC<{
   icon: React.ReactNode; label: string; value: string; unit: string;
   barValue: number; barMax?: number; barColor: string; valueColor?: string;
 }> = ({ icon, label, value, unit, barValue, barMax, barColor, valueColor = 'text-white' }) => (
-  <div className="grid grid-cols-[6rem_4rem_1fr] items-center gap-3">
-    <div className="flex items-center gap-1.5 text-thinkpad-muted">
+  <div className="grid grid-cols-[7rem_5rem_1fr] items-center gap-3">
+    <div className="flex items-center gap-2 text-thinkpad-muted">
       {icon}
-      <span className="font-mono text-xs uppercase tracking-wider">{label}</span>
+      <span className="font-mono text-xs uppercase tracking-widest">{label}</span>
     </div>
-    <span className={`font-mono text-sm font-semibold ${valueColor} text-right tabular-nums`}>
+    <span className={`font-mono text-base font-semibold ${valueColor} text-right tabular-nums`}>
       {value}<span className="text-xs font-normal text-thinkpad-muted">{unit}</span>
     </span>
     <Bar value={barValue} colorClass={barColor} max={barMax} />
@@ -504,15 +504,15 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
 
   return (
     <div
-      className="bg-thinkpad-base border-l-2 border border-neutral-800/50 px-5 py-4 transition-colors duration-300"
+      className="bg-thinkpad-base border-l-2 border border-neutral-800/50 px-5 py-5 transition-colors duration-300"
       style={{
         borderLeftColor: cfg.accentBorder,
         backgroundImage: `linear-gradient(to bottom, ${cfg.accentBorder}0f 0px, transparent 40px)`,
       }}
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-2">
-          <Server size={12} className="text-thinkpad-muted" />
+          <Server size={14} className="text-thinkpad-muted" />
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-widest">
             node-{String(index + 1).padStart(2, '0')}
           </span>
@@ -520,30 +520,30 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
           <span className="font-mono text-sm text-neutral-300 font-semibold">{node.name}</span>
         </div>
         <div className="flex items-center gap-3">
-          <span className="font-mono text-xs text-neutral-600 flex items-center gap-1">
-            <Clock size={10} />
+          <span className="font-mono text-xs text-neutral-500 flex items-center gap-1.5">
+            <Clock size={12} />
             {formatUptime(node.uptime)}
           </span>
-          <span className={`font-mono text-xs ${cfg.color} tracking-widest`}>
+          <span className={`font-mono text-xs font-semibold ${cfg.color} tracking-widest`}>
             [{cfg.label}]
           </span>
         </div>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-4">
         <MetricRow
-          icon={<Thermometer size={11} />} label="temp"
+          icon={<Thermometer size={13} />} label="temp"
           value={temp.toFixed(1)} unit="°C"
           barValue={temp} barMax={100}
           barColor={cfg.barColor} valueColor={cfg.color}
         />
         <MetricRow
-          icon={<Cpu size={11} />} label="cpu"
+          icon={<Cpu size={13} />} label="cpu"
           value={cpu.toFixed(1)} unit="%"
           barValue={cpu} barColor="bg-[#2e5f80]" valueColor="text-[#6a9fbf]"
         />
         <MetricRow
-          icon={<MemoryStick size={11} />} label="ram"
+          icon={<MemoryStick size={13} />} label="ram"
           value={ram.toFixed(1)} unit="%"
           barValue={ram} barColor="bg-[#2a6654]" valueColor="text-[#5a9e85]"
         />
