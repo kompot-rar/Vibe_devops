@@ -1196,8 +1196,18 @@ const Playground: React.FC = () => {
       setRefreshing(true);
       const res = await fetch('/api/status');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json: ApiResponse = await res.json();
-      setData(json);
+      const json = await res.json();
+      const normalized: ApiResponse = {
+        ...json,
+        sla: (json.sla ?? (json.uptime_30d_pct !== undefined && json.daily !== undefined ? {
+          uptime_30d_pct: json.uptime_30d_pct,
+          current_streak_hours: json.current_streak_hours,
+          total_downtime_minutes_30d: json.total_downtime_minutes_30d,
+          response_time_p95_ms: json.response_time_p95_ms,
+          daily: json.daily,
+        } : null)),
+      };
+      setData(normalized);
       setLastUpdated(new Date());
       setError(null);
     } catch (err) {
