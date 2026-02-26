@@ -423,21 +423,11 @@ const DORASection: React.FC<{ dora: DORAMetrics }> = ({ dora }) => {
   const leadLevel = doraLeadLevel(dora.lead_time_avg_minutes);
   const cfrLevel  = doraCFRLevel(dora.change_failure_rate_pct);
 
-  const levelBadge = (l: DORALevel) => {
-    const base = 'font-mono text-[10px] font-bold border px-1.5 py-px';
-    if (l === 'ELITE' || l === 'HIGH') return `${base} text-[#5a9e85] border-[#5a9e85]/30`;
-    if (l === 'MEDIUM') return `${base} text-[#b8864e] border-[#b8864e]/30`;
-    return `${base} text-thinkpad-red border-thinkpad-red/30`;
-  };
-
   return (
     <div className="grid grid-cols-3 gap-px bg-neutral-800/40 border-b border-neutral-800">
       {/* Deploy Frequency */}
       <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">DEPLOY_FREQ</span>
-          <span className={levelBadge(freqLevel)}>{freqLevel}</span>
-        </div>
+        <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">DEPLOY_FREQ</span>
         <div className="flex items-baseline gap-1 mt-0.5">
           <span className="font-mono text-xl font-bold tabular-nums text-white">
             {dora.deployment_frequency_per_week.toFixed(1)}
@@ -449,10 +439,7 @@ const DORASection: React.FC<{ dora: DORAMetrics }> = ({ dora }) => {
 
       {/* Lead Time */}
       <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME_AVG</span>
-          <span className={levelBadge(leadLevel)}>{leadLevel}</span>
-        </div>
+        <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME_AVG</span>
         <div className="flex items-baseline gap-1 mt-0.5">
           <span className="font-mono text-xl font-bold tabular-nums text-white">
             {fmtLeadTime(dora.lead_time_avg_minutes)}
@@ -463,10 +450,7 @@ const DORASection: React.FC<{ dora: DORAMetrics }> = ({ dora }) => {
 
       {/* Change Failure Rate */}
       <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
-        <div className="flex items-center justify-between">
-          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">CHANGE_FAIL_RATE</span>
-          <span className={levelBadge(cfrLevel)}>{cfrLevel}</span>
-        </div>
+        <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">CHANGE_FAIL_RATE</span>
         <div className="flex items-baseline gap-1 mt-0.5">
           <span className="font-mono text-xl font-bold tabular-nums text-white">
             {dora.change_failure_rate_pct.toFixed(1)}
@@ -583,7 +567,7 @@ const PipelineVisualizer: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-800">
         <div className="flex items-center gap-2.5">
-          <Github size={14} className="text-thinkpad-red" />
+          <Github size={14} className="text-[#6a9fbf]" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">The Forge</span>
           <span className="font-mono text-xs text-neutral-700">// CI/CD Pipeline</span>
         </div>
