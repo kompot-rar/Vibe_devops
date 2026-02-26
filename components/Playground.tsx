@@ -171,9 +171,9 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
 };
 
 const tempCfg = {
-  ok:   { label: 'OK',   color: 'text-[#7a9fad]', barColor: 'bg-[#3a6678]', accentBorder: '#2a4a58', dotClass: 'bg-[#7a9fad]' },
-  warm: { label: 'WARM', color: 'text-[#b8864e]', barColor: 'bg-[#7a5530]', accentBorder: '#5a3c1e', dotClass: 'bg-[#b8864e]' },
-  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014', dotClass: 'bg-thinkpad-red' },
+  ok:   { label: 'OK',   color: 'text-[#7a9fad]', barColor: 'bg-[#3a6678]', accentBorder: '#2a4a58', dotClass: 'bg-[#7a9fad]', borderClass: 'border-[#2a4a58]/60' },
+  warm: { label: 'WARM', color: 'text-[#b8864e]', barColor: 'bg-[#7a5530]', accentBorder: '#5a3c1e', dotClass: 'bg-[#b8864e]', borderClass: 'border-[#5a3c1e]/60' },
+  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014', dotClass: 'bg-thinkpad-red', borderClass: 'border-[#7a0014]/60' },
 };
 
 const clusterStatusCfg: Record<string, {
@@ -528,8 +528,7 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
             {formatUptime(node.uptime)}
           </span>
           <span
-            className={`font-mono text-[10px] font-semibold ${cfg.color} tracking-widest flex items-center gap-1.5 px-2 py-0.5 border`}
-            style={{ borderColor: cfg.accentBorder + 'cc', backgroundColor: cfg.accentBorder + '30' }}
+            className={`font-mono text-[10px] font-semibold ${cfg.color} tracking-widest flex items-center gap-1.5 px-2 py-0.5 border ${cfg.borderClass}`}
           >
             <span className={`inline-block w-1.5 h-1.5 rounded-full ${cfg.dotClass}`} />
             {cfg.label}
