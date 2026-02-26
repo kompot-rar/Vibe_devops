@@ -1297,25 +1297,7 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 2 — SLA Tracker */}
-        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-          {widgetHeader(
-            <Shield size={15} className="text-[#5a9e85]" />,
-            'SLA Tracker',
-            ':: uptime · 30d',
-          )}
-          <div className="p-6">
-            {bodyState(data && (
-              data.sla
-                ? <SLATracker sla={data.sla} />
-                : <div className="flex items-center gap-2 py-8 font-mono text-xs text-thinkpad-muted">
-                  <AlertTriangle size={13} /> SLA data not available — Blackbox Exporter not configured
-                </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Widget 3 — Cluster Topology */}
+        {/* Widget 2 — Cluster Topology */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <Network size={15} className="text-thinkpad-red" />,
@@ -1328,6 +1310,24 @@ const Playground: React.FC = () => {
                 ? <ClusterTopologyWidget topology={data.topology} />
                 : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
                   <AlertTriangle size={13} /> Topology data not available
+                </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Widget 3 — SLA Tracker */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Shield size={15} className="text-[#5a9e85]" />,
+            'SLA Tracker',
+            ':: uptime · 30d',
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              data.sla
+                ? <SLATracker sla={data.sla} />
+                : <div className="flex items-center gap-2 py-8 font-mono text-xs text-thinkpad-muted">
+                  <AlertTriangle size={13} /> SLA data not available — Blackbox Exporter not configured
                 </div>
             ))}
           </div>
