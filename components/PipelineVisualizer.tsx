@@ -565,11 +565,11 @@ const PipelineVisualizer: React.FC = () => {
     <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-800">
-        <div className="flex items-center gap-2.5">
-          <Github size={14} className="text-[#6a9fbf]" />
+      <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
+        <div className="flex items-center gap-3">
+          <Github size={15} className="text-[#6a9fbf]" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">The Forge</span>
-          <span className="font-mono text-xs text-neutral-700">// CI/CD Pipeline</span>
+          <span className="font-mono text-xs text-thinkpad-muted">:: CI/CD Pipeline</span>
         </div>
         <div className="flex items-center gap-3">
           {!loading && (

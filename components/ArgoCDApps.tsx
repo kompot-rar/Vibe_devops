@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  GitBranch, AlertTriangle, Activity, Clock,
+  GitBranch, GitMerge, AlertTriangle, Activity, Clock,
   CheckCircle2, XCircle, Loader2, PauseCircle, HelpCircle,
   RefreshCw, Wifi, WifiOff,
 } from 'lucide-react';
@@ -173,7 +173,7 @@ const ArgoCDApps: React.FC<ArgoCDAppsProps> = ({ apps, loading, error, refreshin
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
         <div className="flex items-center gap-3">
-          <GitBranch size={15} className="text-thinkpad-red" />
+          <GitMerge size={15} className="text-[#ef7b4d]" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">ArgoCD Apps</span>
           {apps !== null && (
             <span className="font-mono text-xs text-thinkpad-muted">:: {total} aplikacji</span>
