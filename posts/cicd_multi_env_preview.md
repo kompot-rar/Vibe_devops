@@ -62,7 +62,7 @@ Cel był prosty:
               +-------------+-------------+
               |                           |
               v                           v
-     [devops.mrozy.org]          [vibe-dev.mrozy.org]
+     [devops.mrozy.org]          [dev-devops.mrozy.org]
        (PROD ACCESS)                (DEV ACCESS)
 ```
 
@@ -103,7 +103,7 @@ Samo skopiowanie plików to połowa sukcesu. Trzeba je jeszcze wystawić na świ
 *   **Nginx:** Skonfigurowany do serwowania dwóch różnych katalogów (Virtual Hosts).
 *   **Cloudflare Tunnel:** To tutaj dzieje się magia sieciowa. Dodałem drugą domenę do tunelu.
     *   `devops.mrozy.org` -> kieruje do aplikacji produkcyjnej.
-    *   `vibe-dev.mrozy.org` -> kieruje do wersji preview.
+    *   `dev-devops.mrozy.org` -> kieruje do wersji preview.
 
 To pozwala mi testować zmiany na żywo, na prawdziwej infrastrukturze, ale bez ryzyka wysadzenia głównego bloga.
 
