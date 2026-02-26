@@ -75,7 +75,14 @@ const STAGE_DEFS = [
 // ---- Helpers ----
 
 const shortSha = (sha: string) => sha.slice(0, 7);
-const firstLine = (msg: string) => msg.split('\n')[0].slice(0, 55);
+const firstLine = (msg: string) => msg.split('\n')[0].slice(0, 60);
+const timeAgo = (iso: string): string => {
+  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60)   return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+};
 
 const leadTime = (start: string, end: string): string => {
   const s = Math.floor((new Date(end).getTime() - new Date(start).getTime()) / 1000);
@@ -416,63 +423,57 @@ const DORASection: React.FC<{ dora: DORAMetrics }> = ({ dora }) => {
   const leadLevel = doraLeadLevel(dora.lead_time_avg_minutes);
   const cfrLevel  = doraCFRLevel(dora.change_failure_rate_pct);
 
+  const levelBadge = (l: DORALevel) => {
+    const base = 'font-mono text-[10px] font-bold border px-1.5 py-px';
+    if (l === 'ELITE' || l === 'HIGH') return `${base} text-[#5a9e85] border-[#5a9e85]/30`;
+    if (l === 'MEDIUM') return `${base} text-[#b8864e] border-[#b8864e]/30`;
+    return `${base} text-thinkpad-red border-thinkpad-red/30`;
+  };
+
   return (
-    <div className="border border-neutral-800">
-      {/* Section header */}
-      <div className="px-4 py-2 border-b border-neutral-800 flex items-center justify-between">
-        <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-          <span className="text-thinkpad-red">▸</span> DORA METRICS
-          <span className="text-neutral-700">// last 30d</span>
-        </span>
-        <span className="font-mono text-xs text-neutral-600 tabular-nums">
-          {dora.deploys_30d} deploys
-        </span>
+    <div className="grid grid-cols-3 gap-px bg-neutral-800/40 border-b border-neutral-800">
+      {/* Deploy Frequency */}
+      <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
+        <div className="flex items-center justify-between">
+          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">DEPLOY_FREQ</span>
+          <span className={levelBadge(freqLevel)}>{freqLevel}</span>
+        </div>
+        <div className="flex items-baseline gap-1 mt-0.5">
+          <span className="font-mono text-xl font-bold tabular-nums text-white">
+            {dora.deployment_frequency_per_week.toFixed(1)}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">/week</span>
+        </div>
+        <span className="font-mono text-[10px] text-neutral-700">{dora.deploys_30d} deploys · 30d</span>
       </div>
 
-      {/* 3-card grid */}
-      <div className="grid grid-cols-3 gap-px bg-neutral-800/30">
-
-        {/* Deploy Frequency */}
-        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
-          <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">DEPLOY_FREQ</span>
-          <div className="flex items-baseline gap-1">
-            <span className="font-mono text-2xl font-bold tabular-nums text-white">
-              {dora.deployment_frequency_per_week.toFixed(1)}
-            </span>
-            <span className="font-mono text-xs text-neutral-600">/week</span>
-          </div>
-          <span className={`font-mono text-[11px] font-bold ${doraLevelColor(freqLevel)}`}>
-            {freqLevel}
-          </span>
-        </div>
-
-        {/* Lead Time */}
-        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+      {/* Lead Time */}
+      <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
+        <div className="flex items-center justify-between">
           <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME_AVG</span>
-          <div className="flex items-baseline gap-1">
-            <span className="font-mono text-2xl font-bold tabular-nums text-white">
-              {fmtLeadTime(dora.lead_time_avg_minutes)}
-            </span>
-          </div>
-          <span className={`font-mono text-[11px] font-bold ${doraLevelColor(leadLevel)}`}>
-            {leadLevel}
+          <span className={levelBadge(leadLevel)}>{leadLevel}</span>
+        </div>
+        <div className="flex items-baseline gap-1 mt-0.5">
+          <span className="font-mono text-xl font-bold tabular-nums text-white">
+            {fmtLeadTime(dora.lead_time_avg_minutes)}
           </span>
         </div>
+        <span className="font-mono text-[10px] text-neutral-700">commit → deploy</span>
+      </div>
 
-        {/* Change Failure Rate */}
-        <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
+      {/* Change Failure Rate */}
+      <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
+        <div className="flex items-center justify-between">
           <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">CHANGE_FAIL_RATE</span>
-          <div className="flex items-baseline gap-1">
-            <span className="font-mono text-2xl font-bold tabular-nums text-white">
-              {dora.change_failure_rate_pct.toFixed(1)}
-            </span>
-            <span className="font-mono text-xs text-neutral-600">%</span>
-          </div>
-          <span className={`font-mono text-[11px] font-bold ${doraLevelColor(cfrLevel)}`}>
-            {cfrLevel}
-          </span>
+          <span className={levelBadge(cfrLevel)}>{cfrLevel}</span>
         </div>
-
+        <div className="flex items-baseline gap-1 mt-0.5">
+          <span className="font-mono text-xl font-bold tabular-nums text-white">
+            {dora.change_failure_rate_pct.toFixed(1)}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">%</span>
+        </div>
+        <span className="font-mono text-[10px] text-neutral-700">{dora.failed_deploys_30d} failed · 30d</span>
       </div>
     </div>
   );
@@ -580,17 +581,17 @@ const PipelineVisualizer: React.FC = () => {
     <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
 
       {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
-        <div className="flex items-center gap-3">
-          <Github size={15} className="text-thinkpad-red" />
+      <div className="flex items-center justify-between px-5 py-3 border-b border-neutral-800">
+        <div className="flex items-center gap-2.5">
+          <Github size={14} className="text-thinkpad-red" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">The Forge</span>
-          <span className="font-mono text-xs text-thinkpad-muted">:: CI/CD Pipeline</span>
+          <span className="font-mono text-xs text-neutral-700">// CI/CD Pipeline</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
           {!loading && (
             error
-              ? <WifiOff size={13} className="text-thinkpad-red" />
-              : <Wifi    size={13} className="text-[#5a9e85]" />
+              ? <WifiOff size={12} className="text-thinkpad-red" />
+              : <Wifi    size={12} className="text-[#5a9e85]" />
           )}
           <button
             onClick={fetchData}
@@ -598,68 +599,78 @@ const PipelineVisualizer: React.FC = () => {
             className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
             aria-label="Odśwież pipeline"
           >
-            <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
 
-      {/* Body */}
-      <div className="p-6">
-        {loading ? (
-          <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
-            <RefreshCw size={15} className="animate-spin" /> Łączenie z GitHub Actions...
+      {/* States */}
+      {loading ? (
+        <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
+          <RefreshCw size={14} className="animate-spin" /> Łączenie z GitHub Actions...
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
+          <div className="flex items-center gap-2 text-thinkpad-red">
+            <AlertTriangle size={14} /> Brak danych z pipeline
           </div>
-        ) : error ? (
-          <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
-            <div className="flex items-center gap-2 text-thinkpad-red">
-              <AlertTriangle size={15} /> Brak danych z pipeline
+          <p className="text-xs text-thinkpad-muted">{error}</p>
+        </div>
+      ) : !run ? (
+        <div className="text-center font-mono text-xs text-thinkpad-muted py-8">
+          // brak workflow runs
+        </div>
+      ) : (
+        <>
+          {/* DORA strip — nad run-barem */}
+          {dora && <DORASection dora={dora} />}
+
+          {/* Run bar — 4 karty w stylu DORA */}
+          <div className={`grid grid-cols-4 gap-px border-b transition-colors duration-300 ${
+            failed ? 'bg-thinkpad-red/20 border-thinkpad-red/30' : 'bg-neutral-800/40 border-neutral-800'
+          }`}>
+
+            {/* HOST */}
+            <div className={`px-5 py-3 flex flex-col gap-0.5 ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
+              <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">HOST</span>
+              <span className="font-mono text-base font-bold text-white">KUŹNIA-LXC</span>
+              <span className="font-mono text-[10px] text-neutral-700">runner · lxc container</span>
             </div>
-            <p className="text-xs text-thinkpad-muted">{error}</p>
-          </div>
-        ) : run ? (
-          <div className="space-y-6">
 
-            {/* Stats bar */}
-            <div className={`border px-5 py-3 transition-colors duration-300 ${
-              failed ? 'border-thinkpad-red/40 bg-thinkpad-red/5' : 'border-neutral-800'
-            }`}>
-              <div className="flex items-start justify-between">
+            {/* LAST_COMMIT — spans 2 cols */}
+            <div className={`col-span-2 px-5 py-3 flex flex-col gap-0.5 min-w-0 ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
+              <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LAST_COMMIT</span>
+              <span className="font-mono text-sm text-neutral-300 truncate" title={run.head_commit.message}>
+                <span className="text-neutral-600">[{shortSha(run.head_sha)}]</span>
+                {' '}{firstLine(run.head_commit.message)}
+              </span>
+              <span className="font-mono text-[10px] text-neutral-700">
+                by {run.head_commit.author.name} · {timeAgo(run.created_at)}
+              </span>
+            </div>
 
-                <div className="flex flex-col gap-0.5 shrink-0">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">HOST</span>
-                  <span className="font-mono text-xs text-neutral-300">KUŹNIA-LXC</span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 min-w-0 max-w-56 px-4">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
-                  <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
-                    <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
-                    {' '}{firstLine(run.head_commit.message)}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 shrink-0">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LEAD_TIME</span>
-                  <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 shrink-0 items-end text-right">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">STATUS</span>
-                  <span className={`font-mono text-xs font-bold ${
-                    failed                       ? 'text-thinkpad-red' :
-                    run.status === 'in_progress' ? 'text-[#6a9fbf] animate-pulse' :
-                    run.conclusion === 'success' ? 'text-[#5a9e85]' :
-                    'text-thinkpad-muted'
-                  }`}>
-                    {runStatusLabel(run)}
-                  </span>
-                </div>
-
+            {/* LEAD_TIME + STATUS badge */}
+            <div className={`px-5 py-3 flex flex-col gap-0.5 ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
+              <div className="flex items-center justify-between gap-2">
+                <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME</span>
+                <span className={`font-mono text-[10px] font-bold border px-1.5 py-px shrink-0 ${
+                  failed                       ? 'text-thinkpad-red border-thinkpad-red/40' :
+                  run.status === 'in_progress' ? 'text-[#6a9fbf] border-[#6a9fbf]/40 animate-pulse' :
+                  run.conclusion === 'success' ? 'text-[#5a9e85] border-[#5a9e85]/30' :
+                  'text-thinkpad-muted border-neutral-700'
+                }`}>
+                  {runStatusLabel(run)}
+                </span>
               </div>
+              <span className="font-mono text-xl font-bold tabular-nums text-white">{lt}</span>
+              <span className="font-mono text-[10px] text-neutral-700">commit → deploy</span>
             </div>
 
-            {/* Pipeline */}
-            <div className="flex items-start px-2 py-4">
+          </div>
+
+          {/* Pipeline stages */}
+          <div className="px-5 py-5 border-b border-neutral-800">
+            <div className="flex items-start">
               {stages.map((stage, i) => (
                 <StageNode
                   key={stage.id}
@@ -670,9 +681,11 @@ const PipelineVisualizer: React.FC = () => {
                 />
               ))}
             </div>
+          </div>
 
-            {/* Terminal */}
-            {activeStageData && (
+          {/* Terminal */}
+          {activeStageData && (
+            <div className="px-5 py-4 border-b border-neutral-800">
               <TerminalView
                 key={`${activeStage}-${activeStageData.jobId}-${run.updated_at}`}
                 lines={terminalLines}
@@ -680,32 +693,24 @@ const PipelineVisualizer: React.FC = () => {
                 failed={failed && activeStageData.status === 'failure'}
                 stageLabel={`${activeStageData.label} · ${jobs.find(j => j.id === activeStageData.jobId)?.name ?? 'pipeline'}`}
               />
-            )}
-
-            {/* DORA Metrics */}
-            {dora && <DORASection dora={dora} />}
-
-            {/* Footer */}
-            <div className="flex justify-end">
-              <a
-                href={run.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
-              >
-                <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
-                View on GitHub Actions
-                <ExternalLink size={10} />
-              </a>
             </div>
+          )}
 
+          {/* Footer */}
+          <div className="px-5 py-2.5 flex justify-end">
+            <a
+              href={run.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+            >
+              <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
+              View on GitHub Actions
+              <ExternalLink size={10} />
+            </a>
           </div>
-        ) : (
-          <div className="text-center font-mono text-xs text-thinkpad-muted py-8">
-            // brak workflow runs
-          </div>
-        )}
-      </div>
+        </>
+      )}
 
     </div>
   );
