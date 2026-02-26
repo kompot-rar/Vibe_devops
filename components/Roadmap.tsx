@@ -71,7 +71,7 @@ const ROADMAP_DATA: RoadmapItem[] = [
     title: 'Kubernetes Core',
     description: 'Orkiestracja kontenerów. Instalacja K3s, zarządzanie i konfiguracja sieci klastra.',
     tools: ['K3s', 'Helm', 'Ingress', 'K8s'],
-    status: 'pending'
+    status: 'in-progress'
   },
   {
     id: '14',
