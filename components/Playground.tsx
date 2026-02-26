@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import PipelineVisualizer from './PipelineVisualizer';
 import ArgoCDApps from './ArgoCDApps';
+import SLATracker from './SLATracker';
 
 declare global {
   interface Window { MY_POD_NAME?: string; }
@@ -137,6 +138,20 @@ interface CloudflareData {
   };
 }
 
+interface SLADay {
+  date: string;            // "2026-01-27"
+  uptime_pct: number;      // 0-100
+  avg_response_ms: number;
+}
+
+interface SLAData {
+  uptime_30d_pct: number;
+  current_streak_hours: number;
+  total_downtime_minutes_30d: number;
+  response_time_p95_ms: number;
+  daily: SLADay[];
+}
+
 interface ApiResponse {
   cluster: ClusterInfo;
   nodes: NodeInfo[];
@@ -144,6 +159,7 @@ interface ApiResponse {
   argocd_apps?: ArgoCDApp[];
   cloudflare?: CloudflareData | null;
   topology?: TopologyData | null;
+  sla?: SLAData | null;
 }
 
 // --- Paleta ---
@@ -155,17 +171,17 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
 };
 
 const tempCfg = {
-  ok:   { label: 'OK',   color: 'text-[#7a9fad]',    barColor: 'bg-[#3a6678]',    accentBorder: '#2a4a58' },
-  warm: { label: 'WARM', color: 'text-[#b8864e]',    barColor: 'bg-[#7a5530]',    accentBorder: '#5a3c1e' },
-  hot:  { label: 'HOT',  color: 'text-thinkpad-red',  barColor: 'bg-thinkpad-red', accentBorder: '#7a0014' },
+  ok: { label: 'OK', color: 'text-[#7a9fad]', barColor: 'bg-[#3a6678]', accentBorder: '#2a4a58' },
+  warm: { label: 'WARM', color: 'text-[#b8864e]', barColor: 'bg-[#7a5530]', accentBorder: '#5a3c1e' },
+  hot: { label: 'HOT', color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014' },
 };
 
 const clusterStatusCfg: Record<string, {
   color: string; dotColor: string; bg: string; border: string;
 }> = {
-  Healthy:  { color: 'text-[#5a9e85]', dotColor: 'bg-[#5a9e85]', bg: 'bg-[#5a9e85]/5',   border: 'border-[#2a6654]/50' },
-  Warning:  { color: 'text-[#b8864e]', dotColor: 'bg-[#b8864e]', bg: 'bg-[#7a5530]/10',  border: 'border-[#7a5530]/50' },
-  Observed: { color: 'text-[#6a9fbf]', dotColor: 'bg-[#6a9fbf]', bg: 'bg-[#2e5f80]/10',  border: 'border-[#2e5f80]/50' },
+  Healthy: { color: 'text-[#5a9e85]', dotColor: 'bg-[#5a9e85]', bg: 'bg-[#5a9e85]/5', border: 'border-[#2a6654]/50' },
+  Warning: { color: 'text-[#b8864e]', dotColor: 'bg-[#b8864e]', bg: 'bg-[#7a5530]/10', border: 'border-[#7a5530]/50' },
+  Observed: { color: 'text-[#6a9fbf]', dotColor: 'bg-[#6a9fbf]', bg: 'bg-[#2e5f80]/10', border: 'border-[#2e5f80]/50' },
 };
 
 const getStatusCfg = (status: string) =>
@@ -174,10 +190,10 @@ const getStatusCfg = (status: string) =>
 const alertLevelCfg: Record<string, {
   color: string; dotColor: string; bg: string; border: string;
 }> = {
-  Radioactive: { color: 'text-[#a855f7]',      dotColor: 'bg-[#a855f7]',      bg: 'bg-[#4c1d95]/10',   border: 'border-[#7c3aed]/40'  },
-  Critical:    { color: 'text-thinkpad-red',    dotColor: 'bg-thinkpad-red',    bg: 'bg-thinkpad-red/5', border: 'border-thinkpad-red/40' },
-  Warning:     { color: 'text-[#b8864e]',       dotColor: 'bg-[#b8864e]',       bg: 'bg-[#7a5530]/10',   border: 'border-[#7a5530]/50'  },
-  Nominal:     { color: 'text-[#5a9e85]',       dotColor: 'bg-[#5a9e85]',       bg: 'bg-[#5a9e85]/5',    border: 'border-[#2a6654]/50'  },
+  Radioactive: { color: 'text-[#a855f7]', dotColor: 'bg-[#a855f7]', bg: 'bg-[#4c1d95]/10', border: 'border-[#7c3aed]/40' },
+  Critical: { color: 'text-thinkpad-red', dotColor: 'bg-thinkpad-red', bg: 'bg-thinkpad-red/5', border: 'border-thinkpad-red/40' },
+  Warning: { color: 'text-[#b8864e]', dotColor: 'bg-[#b8864e]', bg: 'bg-[#7a5530]/10', border: 'border-[#7a5530]/50' },
+  Nominal: { color: 'text-[#5a9e85]', dotColor: 'bg-[#5a9e85]', bg: 'bg-[#5a9e85]/5', border: 'border-[#2a6654]/50' },
 };
 
 const getAlertLevelCfg = (level: string) =>
@@ -266,7 +282,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
     fetch(`/api/status/restart-reason/${firstPodName}`)
       .then(r => r.json())
       .then(d => { if (d?.podName) setRestartReason(d); })
-      .catch(() => {});
+      .catch(() => { });
   }, [firstPodName]);
 
   return (
@@ -316,9 +332,8 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
                 : 'Zero incydentów w ciągu ostatnich 24h. Klaster operuje w pełnej stabilności.'
             }
           >
-            <span className={`font-mono text-2xl font-bold tabular-nums ${
-              cluster.restarts_24h === 0 ? 'text-white' : 'text-[#b8864e]'
-            }`}>
+            <span className={`font-mono text-2xl font-bold tabular-nums ${cluster.restarts_24h === 0 ? 'text-white' : 'text-[#b8864e]'
+              }`}>
               {cluster.restarts_24h}
             </span>
             <span className="font-mono text-xs text-thinkpad-muted">
@@ -481,11 +496,11 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 // --- Node Card ---
 
 const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) => {
-  const temp  = parseFloat(node.temp);
-  const cpu   = parseFloat(node.cpu);
-  const ram   = parseFloat(node.ram);
+  const temp = parseFloat(node.temp);
+  const cpu = parseFloat(node.cpu);
+  const ram = parseFloat(node.ram);
   const level = getTempLevel(temp);
-  const cfg   = tempCfg[level];
+  const cfg = tempCfg[level];
 
   return (
     <div
@@ -542,9 +557,9 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
 const CircularProgress: React.FC<{
   pct: number; stroke: string; textColor: string;
 }> = ({ pct, stroke, textColor }) => {
-  const r             = 18;
+  const r = 18;
   const circumference = 2 * Math.PI * r;
-  const dash          = (Math.min(100, Math.max(0, pct)) / 100) * circumference;
+  const dash = (Math.min(100, Math.max(0, pct)) / 100) * circumference;
   return (
     <div className="relative inline-flex items-center justify-center" style={{ width: 48, height: 48 }}>
       <svg width="48" height="48" viewBox="0 0 48 48" style={{ transform: 'rotate(-90deg)' }}>
@@ -565,19 +580,19 @@ const CircularProgress: React.FC<{
 
 const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => {
   const { metrics } = audit;
-  const s           = getAlertLevelCfg(audit.alert_level);
-  const isCritical  = audit.alert_level === 'Radioactive' || audit.alert_level === 'Critical';
+  const s = getAlertLevelCfg(audit.alert_level);
+  const isCritical = audit.alert_level === 'Radioactive' || audit.alert_level === 'Critical';
 
-  const latMs    = metrics.avg_write_lat_sec * 1000;
+  const latMs = metrics.avg_write_lat_sec * 1000;
   const latLabel = latMs < 10 ? latMs.toFixed(2) : latMs.toFixed(1);
   const latColor = latMs > 100 ? 'text-thinkpad-red' : latMs > 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
 
-  const lifeRemain  = metrics.lifetime_remain_pct;
-  const lifeStroke  = lifeRemain < 20 ? '#ff002b' : lifeRemain < 50 ? '#b8864e' : '#5a9e85';
-  const lifeColor   = lifeRemain < 20 ? 'text-thinkpad-red' : lifeRemain < 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
+  const lifeRemain = metrics.lifetime_remain_pct;
+  const lifeStroke = lifeRemain < 20 ? '#ff002b' : lifeRemain < 50 ? '#b8864e' : '#5a9e85';
+  const lifeColor = lifeRemain < 20 ? 'text-thinkpad-red' : lifeRemain < 50 ? 'text-[#b8864e]' : 'text-[#5a9e85]';
 
   const poDays = Math.floor(metrics.power_on_hours / 24);
-  const poSub  = poDays >= 365
+  const poSub = poDays >= 365
     ? `≈ ${poDays.toLocaleString('pl-PL')} dni · ${(poDays / 365).toFixed(1)} lat`
     : `≈ ${poDays.toLocaleString('pl-PL')} dni · power_on_hours`;
 
@@ -631,11 +646,10 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           </div>
         </div>
         {isCritical && (
-          <span className={`font-mono text-xs border px-2 py-0.5 shrink-0 flex items-center gap-1.5 animate-pulse ${
-            audit.alert_level === 'Radioactive'
-              ? 'text-[#a855f7] border-[#7c3aed]/40'
-              : 'text-thinkpad-red border-thinkpad-red/30'
-          }`}>
+          <span className={`font-mono text-xs border px-2 py-0.5 shrink-0 flex items-center gap-1.5 animate-pulse ${audit.alert_level === 'Radioactive'
+            ? 'text-[#a855f7] border-[#7c3aed]/40'
+            : 'text-thinkpad-red border-thinkpad-red/30'
+            }`}>
             <span className={`inline-block w-1.5 h-1.5 rounded-full ${s.dotColor}`} />
             {audit.alert_level.toUpperCase()}
           </span>
@@ -705,9 +719,8 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
             <RefreshCw size={10} /> Incydenty
           </span>
-          <span className={`font-mono text-2xl font-bold tabular-nums ${
-            metrics.reallocated_events > 0 ? 'text-[#b8864e]' : 'text-[#5a9e85]'
-          }`}>
+          <span className={`font-mono text-2xl font-bold tabular-nums ${metrics.reallocated_events > 0 ? 'text-[#b8864e]' : 'text-[#5a9e85]'
+            }`}>
             {metrics.reallocated_events}
           </span>
           <span className="font-mono text-xs text-neutral-600">reallocated_events</span>
@@ -718,9 +731,8 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
             <Skull size={10} /> Nieczytelne
           </span>
-          <span className={`font-mono text-2xl font-bold tabular-nums ${
-            metrics.offline_uncorrectable > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
-          }`}>
+          <span className={`font-mono text-2xl font-bold tabular-nums ${metrics.offline_uncorrectable > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
+            }`}>
             {metrics.offline_uncorrectable}
           </span>
           <span className="font-mono text-xs text-neutral-600">offline_uncorrectable</span>
@@ -728,9 +740,8 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
           title="Średnie opóźnienie zapisu. Zdrowy SSD: &lt;1ms. Powyżej 100ms dysk zaczyna 'mulić'.">
-          <span className={`font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 ${
-            isCritical ? 'animate-pulse' : ''
-          }`}>
+          <span className={`font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 ${isCritical ? 'animate-pulse' : ''
+            }`}>
             <Activity size={10} /> Tętno
           </span>
           <div className="flex items-baseline gap-1.5">
@@ -763,18 +774,18 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
 // --- Cloudflare Edge widget ---
 
 const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
-  const cacheHit  = parseFloat(data.performance.cache_hit_ratio_pct);
-  const savedGb   = parseFloat(data.performance.saved_transfer_gb);
-  const uptime    = parseFloat(data.reliability.synthetic_uptime_pct);
+  const cacheHit = parseFloat(data.performance.cache_hit_ratio_pct);
+  const savedGb = parseFloat(data.performance.saved_transfer_gb);
+  const uptime = parseFloat(data.reliability.synthetic_uptime_pct);
   const errorRate = parseFloat(data.reliability.edge_error_rate_pct);
-  const visitors  = data.traffic.unique_visitors_7d;
-  const threats   = data.security.threats_blocked;
+  const visitors = data.traffic.unique_visitors_7d;
+  const threats = data.security.threats_blocked;
 
-  const bm       = data.traffic.bot_management ?? null;
+  const bm = data.traffic.bot_management ?? null;
   const botTotal = bm ? (bm.human + bm.bot_good + bm.bot_bad + bm.other || 1) : 1;
 
   const uptimeColor = uptime >= 99.9 ? 'text-[#5a9e85]' : uptime >= 99 ? 'text-[#b8864e]' : 'text-thinkpad-red';
-  const errorColor  = errorRate < 0.5 ? 'text-[#5a9e85]' : errorRate < 2 ? 'text-[#b8864e]' : 'text-thinkpad-red';
+  const errorColor = errorRate < 0.5 ? 'text-[#5a9e85]' : errorRate < 2 ? 'text-[#b8864e]' : 'text-thinkpad-red';
 
   return (
     <div className="border border-[#f6821f]/25 bg-[#f6821f]/[0.015]">
@@ -857,8 +868,8 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
             <div className="h-[6px] w-full flex rounded-sm overflow-hidden gap-px bg-[#1e2028]">
               <div className="bg-[#5a9e85] transition-all duration-700" style={{ width: `${(bm.human / botTotal) * 100}%` }} />
               <div className="bg-[#6a9fbf] transition-all duration-700" style={{ width: `${(bm.bot_good / botTotal) * 100}%` }} />
-              <div className="bg-thinkpad-red transition-all duration-700"  style={{ width: `${(bm.bot_bad / botTotal) * 100}%` }} />
-              <div className="bg-[#3a4050] transition-all duration-700"    style={{ width: `${(bm.other / botTotal) * 100}%` }} />
+              <div className="bg-thinkpad-red transition-all duration-700" style={{ width: `${(bm.bot_bad / botTotal) * 100}%` }} />
+              <div className="bg-[#3a4050] transition-all duration-700" style={{ width: `${(bm.other / botTotal) * 100}%` }} />
             </div>
 
             {/* Legend row */}
@@ -982,9 +993,9 @@ const PodTopologyView: React.FC<{
   const parts = pod.name.split('-');
   // Nazwa deploymentu = wszystko poza ostatnimi 2 losowymi segmentami (hash poda)
   const deployName = parts.length > 2 ? parts.slice(0, -2).join('-') : pod.name;
-  const hash       = parts.length > 1 ? parts[parts.length - 1].slice(0, 6) : '';
+  const hash = parts.length > 1 ? parts[parts.length - 1].slice(0, 6) : '';
 
-  const isRunning  = pod.status === 'Running';
+  const isRunning = pod.status === 'Running';
 
   return (
     <div className="flex items-center gap-0">
@@ -998,11 +1009,10 @@ const PodTopologyView: React.FC<{
 
       {/* Pod chip */}
       <div
-        className={`flex-1 flex items-center gap-3 px-3 border font-mono text-xs min-w-0 transition-all duration-300 relative overflow-hidden ${
-          isMyPod
-            ? 'py-2 cursor-default'
-            : 'py-1.5 border-neutral-800 bg-thinkpad-base cursor-help hover:border-neutral-700 opacity-60 hover:opacity-90'
-        }`}
+        className={`flex-1 flex items-center gap-3 px-3 border font-mono text-xs min-w-0 transition-all duration-300 relative overflow-hidden ${isMyPod
+          ? 'py-2 cursor-default'
+          : 'py-1.5 border-neutral-800 bg-thinkpad-base cursor-help hover:border-neutral-700 opacity-60 hover:opacity-90'
+          }`}
         style={isMyPod ? {
           borderColor: 'rgba(90,158,133,0.55)',
           background: 'linear-gradient(90deg, rgba(90,158,133,0.09) 0%, rgba(90,158,133,0.04) 60%, transparent 100%)',
@@ -1097,9 +1107,8 @@ const NodeTopologyRow: React.FC<{
       style={isMyNode ? { boxShadow: '0 0 0 1px rgba(90,158,133,0.18), 0 0 16px rgba(90,158,133,0.1)' } : {}}
     >
       {/* Node header */}
-      <div className={`px-4 py-2.5 flex items-center gap-3 ${
-        isMyNode ? 'bg-[#5a9e85]/10' : 'bg-thinkpad-base'
-      }`}>
+      <div className={`px-4 py-2.5 flex items-center gap-3 ${isMyNode ? 'bg-[#5a9e85]/10' : 'bg-thinkpad-base'
+        }`}>
         {isMyNode ? (
           <span className="relative flex h-2 w-2 shrink-0">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
@@ -1109,9 +1118,8 @@ const NodeTopologyRow: React.FC<{
           <Server size={11} className="text-thinkpad-muted shrink-0" />
         )}
         <span className="font-mono text-xs text-white font-semibold">{node.name}</span>
-        <span className={`font-mono text-[10px] uppercase tracking-wider ml-auto ${
-          isReady ? 'text-[#5a9e85]' : 'text-thinkpad-red'
-        }`}>
+        <span className={`font-mono text-[10px] uppercase tracking-wider ml-auto ${isReady ? 'text-[#5a9e85]' : 'text-thinkpad-red'
+          }`}>
           {isReady ? (isMyNode ? '● READY & SERVING' : '● Ready') : '● Not Ready'}
         </span>
         <span className="font-mono text-[10px] text-neutral-700 tabular-nums">
@@ -1138,8 +1146,8 @@ const NodeTopologyRow: React.FC<{
 
 const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology }) => {
   // Priorytet: window.MY_POD_NAME (InitContainer) → topology.whoami (backend fallback)
-  const myPodName  = window.MY_POD_NAME || topology.whoami?.pod || '';
-  const myNode     = topology.nodes.find(n => n.pods.some(p => p.name === myPodName));
+  const myPodName = window.MY_POD_NAME || topology.whoami?.pod || '';
+  const myNode = topology.nodes.find(n => n.pods.some(p => p.name === myPodName));
   const myNodeName = myNode?.name ?? topology.whoami?.node ?? '';
 
   return (
@@ -1177,11 +1185,11 @@ const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology 
 // --- Main ---
 
 const Playground: React.FC = () => {
-  const [data, setData]               = useState<ApiResponse | null>(null);
-  const [loading, setLoading]         = useState(true);
-  const [error, setError]             = useState<string | null>(null);
+  const [data, setData] = useState<ApiResponse | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const [refreshing, setRefreshing]   = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const fetchData = useCallback(async () => {
     try {
@@ -1217,7 +1225,7 @@ const Playground: React.FC = () => {
         {!loading && (
           error
             ? <WifiOff size={13} className="text-thinkpad-red" />
-            : <Wifi    size={13} className="text-[#5a9e85]" />
+            : <Wifi size={13} className="text-[#5a9e85]" />
         )}
         <button
           onClick={fetchData}
@@ -1279,7 +1287,25 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 2 — Cluster Topology */}
+        {/* Widget 2 — SLA Tracker */}
+        {bodyState(data && (
+          data.sla
+            ? <SLATracker sla={data.sla} />
+            : <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
+                <div className="flex items-center gap-3">
+                  <Shield size={15} className="text-[#5a9e85]" />
+                  <span className="font-mono text-sm text-white uppercase tracking-widest">SLA Tracker</span>
+                  <span className="font-mono text-xs text-thinkpad-muted">:: uptime · 30d</span>
+                </div>
+              </div>
+              <div className="flex items-center gap-2 py-8 px-6 font-mono text-xs text-thinkpad-muted">
+                <AlertTriangle size={13} /> SLA data not available — Blackbox Exporter not configured
+              </div>
+            </div>
+        ))}
+
+        {/* Widget 3 — Cluster Topology */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <Network size={15} className="text-thinkpad-red" />,
@@ -1291,8 +1317,8 @@ const Playground: React.FC = () => {
               data.topology
                 ? <ClusterTopologyWidget topology={data.topology} />
                 : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
-                    <AlertTriangle size={13} /> Topology data not available
-                  </div>
+                  <AlertTriangle size={13} /> Topology data not available
+                </div>
             ))}
           </div>
         </div>
@@ -1309,8 +1335,8 @@ const Playground: React.FC = () => {
               data.cloudflare?.security
                 ? <CloudflareWidget data={data.cloudflare} />
                 : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
-                    <AlertTriangle size={13} /> Cloudflare API token not configured
-                  </div>
+                  <AlertTriangle size={13} /> Cloudflare API token not configured
+                </div>
             ))}
           </div>
         </div>
@@ -1354,8 +1380,8 @@ const Playground: React.FC = () => {
               data.chaos_monkey_audit
                 ? <ChaosMonkeyWidget audit={data.chaos_monkey_audit} />
                 : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
-                    <AlertTriangle size={13} /> Chaos Monkey offline — node niedostępny
-                  </div>
+                  <AlertTriangle size={13} /> Chaos Monkey offline — node niedostępny
+                </div>
             ))}
           </div>
         </div>
