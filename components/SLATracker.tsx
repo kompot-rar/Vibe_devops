@@ -32,18 +32,18 @@ interface SLATrackerProps {
 const dayColorCfg = (pct: number) => {
     // 100% → pełna zieleń (dzień bez żadnych problemów)
     if (pct >= 100) return { bg: '#5a9e85', glow: 'rgba(90,158,133,0.25)' };
-    // 99.9-99.99% → przygaszona zieleń (krótki blip, ale w normie SLA)
-    if (pct >= 99.9) return { bg: '#3a7a60', glow: 'rgba(90,158,133,0.12)' };
-    // 99-99.9% → bursztyn (zauważalne degradacje, ale jeszcze w SLA)
-    if (pct >= 99) return { bg: '#b8864e', glow: 'rgba(184,134,78,0.20)' };
-    // <99% → czerwień (SLA violation, real incident)
+    // 99-99.99% → przygaszona zieleń (krótki blip, ale w normie SLA)
+    if (pct >= 99) return { bg: '#3a7a60', glow: 'rgba(90,158,133,0.12)' };
+    // 98-99% → bursztyn (zauważalne degradacje, bliski granicy SLA)
+    if (pct >= 98) return { bg: '#b8864e', glow: 'rgba(184,134,78,0.20)' };
+    // <98% → czerwień (SLA violation, real incident)
     return { bg: '#ff002b', glow: 'rgba(255,0,43,0.25)' };
 };
 
 // Kolor dużego headline uptime %
 const uptimeHeadlineColor = (pct: number): string => {
-    if (pct >= 99.9) return 'text-[#5a9e85]';  // zielony — SLA OK
-    if (pct >= 99) return 'text-[#b8864e]';  // bursztyn — bliski granicy
+    if (pct >= 99) return 'text-[#5a9e85]';   // zielony — SLA OK
+    if (pct >= 98) return 'text-[#b8864e]';   // bursztyn — bliski granicy
     return 'text-thinkpad-red';                // czerwony — SLA naruszony
 };
 
@@ -144,16 +144,16 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
     const incidentDays = sla.daily.filter(d => d.uptime_pct < 100).length;
     const perfectDays = sla.daily.filter(d => d.uptime_pct >= 100).length;
 
-    // SLA target — standard 99.9% (Three Nines)
-    const slaTarget = 99.9;
+    // SLA target — Two Nines
+    const slaTarget = 99;
     const slaMet = sla.uptime_30d_pct >= slaTarget;
 
     // Stałe etykiety okna 30 dni — zawsze obliczane od dziś, niezależnie od danych API
     const todayDate = new Date();
     const windowStartDate = new Date(todayDate);
     windowStartDate.setDate(todayDate.getDate() - 29);
-    const leftLabel = formatDayLabel(toLocalDateStr(windowStartDate));
-    const rightLabel = formatDayLabel(toLocalDateStr(todayDate));
+    const leftLabel = formatDayLabel(toLocalDateStr(todayDate));
+    const rightLabel = formatDayLabel(toLocalDateStr(windowStartDate));
 
     return (
         <div className="border border-[#5a9e85]/20 bg-[#5a9e85]/[0.02]">
@@ -249,10 +249,10 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             </span>
                         </div>
 
-                        {/* Heatmap grid — zawsze 30 kolumn, dane wyrównane do prawej (dziś = pozycja 29) */}
+                        {/* Heatmap grid — zawsze 30 kolumn, dane wyrównane do lewej (dziś = pozycja 0) */}
                         <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(30, 1fr)` }}>
                             {Array.from({ length: 30 }, (_, i) => {
-                                const dataIndex = i - (30 - sla.daily.length);
+                                const dataIndex = sla.daily.length - 1 - i;
                                 const day = dataIndex >= 0 ? sla.daily[dataIndex] : null;
                                 return day
                                     ? <DayCell key={day.date} day={day} />
@@ -278,15 +278,15 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             </div>
                             <div className="flex items-center gap-1.5">
                                 <span className="inline-block w-2.5 h-2.5 rounded-[2px] bg-[#3a7a60]" />
-                                <span className="font-mono text-[10px] text-neutral-600">≥99.9%</span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                                <span className="inline-block w-2.5 h-2.5 rounded-[2px] bg-[#b8864e]" />
                                 <span className="font-mono text-[10px] text-neutral-600">≥99%</span>
                             </div>
                             <div className="flex items-center gap-1.5">
+                                <span className="inline-block w-2.5 h-2.5 rounded-[2px] bg-[#b8864e]" />
+                                <span className="font-mono text-[10px] text-neutral-600">≥98%</span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
                                 <span className="inline-block w-2.5 h-2.5 rounded-[2px] bg-[#ff002b]" />
-                                <span className="font-mono text-[10px] text-neutral-600">&lt;99%</span>
+                                <span className="font-mono text-[10px] text-neutral-600">&lt;98%</span>
                             </div>
                             {incidentDays > 0 && (
                                 <span className="font-mono text-[10px] text-neutral-700 ml-auto">
