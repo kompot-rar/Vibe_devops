@@ -171,9 +171,9 @@ const getTempLevel = (temp: number): 'ok' | 'warm' | 'hot' => {
 };
 
 const tempCfg = {
-  ok: { label: 'OK', color: 'text-[#7a9fad]', barColor: 'bg-[#3a6678]', accentBorder: '#2a4a58' },
-  warm: { label: 'WARM', color: 'text-[#b8864e]', barColor: 'bg-[#7a5530]', accentBorder: '#5a3c1e' },
-  hot: { label: 'HOT', color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014' },
+  ok:   { label: 'OK',   color: 'text-[#7a9fad]', barColor: 'bg-[#3a6678]', accentBorder: '#2a4a58', dotClass: 'bg-[#7a9fad]' },
+  warm: { label: 'WARM', color: 'text-[#b8864e]', barColor: 'bg-[#7a5530]', accentBorder: '#5a3c1e', dotClass: 'bg-[#b8864e]' },
+  hot:  { label: 'HOT',  color: 'text-thinkpad-red', barColor: 'bg-thinkpad-red', accentBorder: '#7a0014', dotClass: 'bg-thinkpad-red' },
 };
 
 const clusterStatusCfg: Record<string, {
@@ -243,18 +243,21 @@ const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
   </div>
 );
 
-const MetricRow: React.FC<{
+const MetricCell: React.FC<{
   icon: React.ReactNode; label: string; value: string; unit: string;
   barValue: number; barMax?: number; barColor: string; valueColor?: string;
-}> = ({ icon, label, value, unit, barValue, barMax, barColor, valueColor = 'text-white' }) => (
-  <div className="grid grid-cols-[7rem_5rem_1fr] items-center gap-3">
-    <div className="flex items-center gap-2 text-thinkpad-muted">
-      {icon}
-      <span className="font-mono text-xs uppercase tracking-widest">{label}</span>
+  withSeparator?: boolean;
+}> = ({ icon, label, value, unit, barValue, barMax, barColor, valueColor = 'text-white', withSeparator }) => (
+  <div className={`flex flex-col gap-3 ${withSeparator ? 'border-l border-neutral-800/60 pl-4' : ''}`}>
+    <div className="flex flex-col gap-1.5">
+      <span className={`font-mono text-xl font-semibold ${valueColor} tabular-nums leading-none`}>
+        {value}<span className="text-[11px] font-normal text-thinkpad-muted ml-0.5">{unit}</span>
+      </span>
+      <div className="flex items-center gap-1.5 text-thinkpad-muted">
+        {icon}
+        <span className="font-mono text-[10px] uppercase tracking-widest">{label}</span>
+      </div>
     </div>
-    <span className={`font-mono text-base font-semibold ${valueColor} text-right tabular-nums`}>
-      {value}<span className="text-xs font-normal text-thinkpad-muted">{unit}</span>
-    </span>
     <Bar value={barValue} colorClass={barColor} max={barMax} />
   </div>
 );
@@ -510,7 +513,7 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
         backgroundImage: `linear-gradient(to bottom, ${cfg.accentBorder}0f 0px, transparent 40px)`,
       }}
     >
-      <div className="flex items-center justify-between mb-5">
+      <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
           <Server size={14} className="text-thinkpad-muted" />
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-widest">
@@ -524,26 +527,32 @@ const NodeCard: React.FC<{ node: NodeInfo; index: number }> = ({ node, index }) 
             <Clock size={12} />
             {formatUptime(node.uptime)}
           </span>
-          <span className={`font-mono text-xs font-semibold ${cfg.color} tracking-widest`}>
-            [{cfg.label}]
+          <span
+            className={`font-mono text-[10px] font-semibold ${cfg.color} tracking-widest flex items-center gap-1.5 px-2 py-0.5 border`}
+            style={{ borderColor: cfg.accentBorder + 'cc', backgroundColor: cfg.accentBorder + '30' }}
+          >
+            <span className={`inline-block w-1.5 h-1.5 rounded-full ${cfg.dotClass}`} />
+            {cfg.label}
           </span>
         </div>
       </div>
 
-      <div className="space-y-4">
-        <MetricRow
-          icon={<Thermometer size={13} />} label="temp"
+      <div className="-mx-5 border-t border-neutral-800/40 mb-4" />
+
+      <div className="grid grid-cols-3 gap-0">
+        <MetricCell
+          icon={<Thermometer size={11} />} label="temp"
           value={temp.toFixed(1)} unit="°C"
           barValue={temp} barMax={100}
           barColor={cfg.barColor} valueColor={cfg.color}
         />
-        <MetricRow
-          icon={<Cpu size={13} />} label="cpu"
+        <MetricCell withSeparator
+          icon={<Cpu size={11} />} label="cpu"
           value={cpu.toFixed(1)} unit="%"
           barValue={cpu} barColor="bg-[#2e5f80]" valueColor="text-[#6a9fbf]"
         />
-        <MetricRow
-          icon={<MemoryStick size={13} />} label="ram"
+        <MetricCell withSeparator
+          icon={<MemoryStick size={11} />} label="ram"
           value={ram.toFixed(1)} unit="%"
           barValue={ram} barColor="bg-[#2a6654]" valueColor="text-[#5a9e85]"
         />
