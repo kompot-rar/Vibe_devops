@@ -634,9 +634,9 @@ const PipelineVisualizer: React.FC = () => {
             </div>
 
             {/* LEAD_TIME + STATUS badge */}
-            <div className={`px-5 py-3 flex flex-col gap-0.5 ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME</span>
+            <div className={`px-5 py-3 flex flex-col gap-0.5 min-w-0 ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
+              <div className="flex items-center justify-between gap-2 min-w-0">
+                <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider truncate">LEAD_TIME</span>
                 <span className={`font-mono text-[10px] font-bold border px-1.5 py-px shrink-0 ${
                   failed                       ? 'text-thinkpad-red border-thinkpad-red/40' :
                   run.status === 'in_progress' ? 'text-[#6a9fbf] border-[#6a9fbf]/40 animate-pulse' :
