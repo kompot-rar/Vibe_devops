@@ -807,7 +807,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
             </span>
             {threats === 0 ? (
               <div className="flex items-center gap-2 mt-1">
-                <span className="font-mono text-sm text-emerald-500/80">No incidents in the last 7 days</span>
+                <span className="font-mono text-2xl font-bold text-white">No incidents in the last 7 days</span>
               </div>
             ) : (
               <>
