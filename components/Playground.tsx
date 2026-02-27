@@ -1349,10 +1349,16 @@ const Playground: React.FC = () => {
               <span className="text-white">{data.cluster.totalPods}</span>
               <span className="text-neutral-700">pods</span>
             </span>
-            {/* Last sync */}
+            {/* Live sync status */}
             <span className="font-mono text-xs border border-neutral-800 px-3 py-1 flex items-center gap-1.5 text-thinkpad-muted">
-              <Clock size={10} />
-              <span className="text-neutral-400">{timeAgo(data.cluster.lastUpdate)}</span>
+              {refreshing ? (
+                <RefreshCw size={10} className="animate-spin text-[#5a9e85]" />
+              ) : (
+                <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#5a9e85] animate-pulse" />
+              )}
+              <span className="text-[#5a9e85]">{refreshing ? 'syncing' : 'live'}</span>
+              <span className="text-neutral-700">·</span>
+              <span className="text-neutral-500">{timeAgo(data.cluster.lastUpdate)}</span>
             </span>
           </div>
         )}
@@ -1389,33 +1395,6 @@ const Playground: React.FC = () => {
                 : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
                   <AlertTriangle size={13} /> Topology data not available
                 </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Widget 3 — Node Metrics */}
-        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-          {widgetHeader(
-            <Cpu size={15} className="text-thinkpad-red" />,
-            'Node Metrics',
-            `:: ${data?.nodes.length ?? '—'} nodes`,
-          )}
-          <div className="p-6">
-            {bodyState(data && (
-              <>
-                <div className="flex flex-col gap-3">
-                  {[...data.nodes]
-                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
-                    .map((node, i) => (
-                      <NodeCard key={node.name} node={node} index={i} />
-                    ))}
-                </div>
-                {lastUpdated && (
-                  <div className="mt-5 text-right font-mono text-xs text-neutral-700">
-                    updated: {lastUpdated.toLocaleTimeString('pl-PL')}&nbsp;·&nbsp;auto-refresh: 30s
-                  </div>
-                )}
-              </>
             ))}
           </div>
         </div>
@@ -1462,7 +1441,34 @@ const Playground: React.FC = () => {
         {/* // hardware */}
         <SectionLabel label="hardware" />
 
-        {/* Widget 6 — Chaos Monkey Disk Audit */}
+        {/* Widget — Node Metrics */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Cpu size={15} className="text-thinkpad-red" />,
+            'Node Metrics',
+            `:: ${data?.nodes.length ?? '—'} nodes`,
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              <>
+                <div className="flex flex-col gap-3">
+                  {[...data.nodes]
+                    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }))
+                    .map((node, i) => (
+                      <NodeCard key={node.name} node={node} index={i} />
+                    ))}
+                </div>
+                {lastUpdated && (
+                  <div className="mt-5 text-right font-mono text-xs text-neutral-700">
+                    updated: {lastUpdated.toLocaleTimeString('pl-PL')}&nbsp;·&nbsp;auto-refresh: 30s
+                  </div>
+                )}
+              </>
+            ))}
+          </div>
+        </div>
+
+        {/* Widget — Chaos Monkey Disk Audit */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <HardDrive size={15} className="text-thinkpad-red" />,
