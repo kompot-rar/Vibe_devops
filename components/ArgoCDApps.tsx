@@ -131,7 +131,7 @@ const AppCard: React.FC<{ app: ArgoCDApp }> = ({ app }) => {
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1">
             <GitBranch size={9} /> Revision
           </span>
-          <span className="font-mono text-xs text-neutral-300 tabular-nums bg-neutral-900/70 border border-neutral-800/60 px-1.5 py-px">
+          <span className="font-mono text-xs text-neutral-300 tabular-nums">
             {app.revision !== 'N/A' ? app.revision : '—'}
           </span>
         </div>
