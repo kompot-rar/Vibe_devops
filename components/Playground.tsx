@@ -476,20 +476,6 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
         </div>
       )}
 
-      {/* View Source */}
-      <div className="px-5 py-3 border-t border-neutral-800/60 flex justify-end">
-        <a
-          href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/monitoring/status-proxy.yaml"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
-        >
-          <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
-          View Source: GitOps Manifest &amp; PromQL Logic
-          <span className="text-neutral-700">↗</span>
-        </a>
-      </div>
-
     </div>
   );
 };
@@ -1165,16 +1151,6 @@ const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology 
         ) : (
           <span className="text-neutral-700 italic">MY_POD_NAME nie wstrzyknięty</span>
         )}
-        <a
-          href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/blog-devops/deployment.yaml"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="ml-auto font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
-        >
-          <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
-          Deployment manifest
-          <span className="text-neutral-700">↗</span>
-        </a>
       </div>
     </div>
   );
@@ -1353,6 +1329,18 @@ const Playground: React.FC = () => {
           <div className="p-6">
             {bodyState(data && <ClusterOverview cluster={data.cluster} />)}
           </div>
+          <div className="px-6 py-3 border-t border-neutral-800 flex justify-end">
+            <a
+              href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/monitoring/status-proxy.yaml"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+            >
+              <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
+              View Source: GitOps Manifest &amp; PromQL Logic
+              <span className="text-neutral-700">↗</span>
+            </a>
+          </div>
         </div>
 
         {/* Widget 2 — Cluster Topology */}
@@ -1392,7 +1380,7 @@ const Playground: React.FC = () => {
                 </div>
             ))}
           </div>
-          <div className="px-6 py-3 border-t border-neutral-800">
+          <div className="px-6 py-3 border-t border-neutral-800 flex justify-end">
             <a
               href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/monitoring/"
               target="_blank"
@@ -1422,7 +1410,7 @@ const Playground: React.FC = () => {
                 </div>
             ))}
           </div>
-          <div className="px-6 py-3 border-t border-neutral-800">
+          <div className="px-6 py-3 border-t border-neutral-800 flex justify-end">
             <a
               href="https://developers.cloudflare.com/api/"
               target="_blank"
@@ -1482,14 +1470,14 @@ const Playground: React.FC = () => {
                 </div>
             ))}
           </div>
-          <div className="px-6 py-3 border-t border-neutral-800">
+          <div className="px-6 py-3 border-t border-neutral-800 flex justify-end">
             <a
               href="/blog/homelab-20-architektura-totalna-od-druku-3d-po-kubernetes"
               className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
             >
-              // chaos engineering · k8s self-healing on real hardware ·
               <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
-              origin story ↗
+              ORIGIN STORY
+              <span className="text-neutral-700">// chaos engineering · k8s self-healing on real hardware ↗</span>
             </a>
           </div>
         </div>
