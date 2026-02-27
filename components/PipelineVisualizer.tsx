@@ -572,7 +572,7 @@ const PipelineVisualizer: React.FC = () => {
       const data: { lines: string[] } = await res.json();
       setLogCache(prev => ({ ...prev, [jobId]: data.lines }));
     } catch {
-      setLogCache(prev => ({ ...prev, [jobId]: ['✗ Nie udało się pobrać logów'] }));
+      setLogCache(prev => ({ ...prev, [jobId]: ['✗ Failed to fetch logs'] }));
     } finally {
       setLogsLoading(false);
     }
@@ -655,7 +655,7 @@ const PipelineVisualizer: React.FC = () => {
             onClick={fetchData}
             disabled={refreshing}
             className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
-            aria-label="Odśwież pipeline"
+            aria-label="Refresh pipeline"
           >
             <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
           </button>
@@ -665,7 +665,7 @@ const PipelineVisualizer: React.FC = () => {
       {/* States */}
       {loading ? (
         <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
-          <RefreshCw size={14} className="animate-spin" /> Łączenie z GitHub Actions...
+          <RefreshCw size={14} className="animate-spin" /> Connecting to GitHub Actions...
         </div>
       ) : error ? (
         <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">

@@ -108,7 +108,7 @@ const AppCard: React.FC<{ app: ArgoCDApp }> = ({ app }) => {
 
         <span
           className={`font-mono text-xs border px-2 py-0.5 flex items-center gap-1.5 shrink-0 ${sync.color} ${sync.border} ${sync.bg}`}
-          title="Czy stan live cluster zgadza się ze stanem w Git."
+          title="Whether the live cluster state matches the desired state in Git."
         >
           <span className={`inline-block w-1.5 h-1.5 rounded-full ${sync.dot} ${sync.pulse ? 'animate-pulse' : ''}`} />
           {sync.label}
@@ -208,7 +208,7 @@ const ArgoCDApps: React.FC<ArgoCDAppsProps> = ({ apps, loading, error, refreshin
             onClick={onRefresh}
             disabled={refreshing}
             className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
-            aria-label="Odśwież listę aplikacji"
+            aria-label="Refresh application list"
           >
             <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
           </button>
@@ -218,7 +218,7 @@ const ArgoCDApps: React.FC<ArgoCDAppsProps> = ({ apps, loading, error, refreshin
       {/* Loading */}
       {loading && (
         <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
-          <RefreshCw size={15} className="animate-spin" /> Łączenie z ArgoCD...
+          <RefreshCw size={15} className="animate-spin" /> Connecting to ArgoCD...
         </div>
       )}
 

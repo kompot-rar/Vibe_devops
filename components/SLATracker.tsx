@@ -216,7 +216,7 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
 
                         {/* Current streak — ile godzin/dni od ostatniego incydentu */}
                         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-                            title="Czas od ostatniego incydentu (probe failure). Dłuższy streak = stabilniejsza infra.">
+                            title="Time since the last incident (probe failure). Longer streak = more stable infra.">
                             <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
                                 <Clock size={10} /> Current streak
                             </span>
@@ -230,7 +230,7 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
 
                         {/* Total downtime */}
                         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-                            title="Łączny czas niedostępności w ciągu 30 dni.">
+                            title="Total downtime accumulated over the last 30 days.">
                             <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
                                 <Timer size={10} /> Total downtime
                                 <span className="text-neutral-700">/ 30d</span>
@@ -306,7 +306,7 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
 
                     {/* ===== Sekcja 4: Response Time p95 ===== */}
                     <div className="px-5 py-4"
-                        title="95. percentyl czasu odpowiedzi. Poniżej 200ms = świetna. Powyżej 500ms = problem.">
+                        title="95th percentile response time. Below 200ms = great. Above 500ms = problem.">
                         <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 mb-2">
                             <Activity size={10} />
                             Response time p95

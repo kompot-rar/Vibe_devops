@@ -329,8 +329,8 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
             className="flex items-baseline gap-2"
             title={
               cluster.restarts_24h > 0
-                ? `W ciągu ostatnich 24h klaster wykrył i automatycznie naprawił ${cluster.restarts_24h} incydent${cluster.restarts_24h === 1 ? '' : cluster.restarts_24h < 5 ? 'y' : 'ów'} bez ingerencji człowieka.`
-                : 'Zero incydentów w ciągu ostatnich 24h. Klaster operuje w pełnej stabilności.'
+                ? `In the last 24h the cluster detected and self-healed ${cluster.restarts_24h} incident${cluster.restarts_24h === 1 ? '' : 's'} without human intervention.`
+                : 'Zero incidents in the last 24h. Cluster operating at full stability.'
             }
           >
             <span className={`font-mono text-2xl font-bold tabular-nums ${cluster.restarts_24h === 0 ? 'text-white' : 'text-[#b8864e]'
@@ -339,7 +339,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
             </span>
             <span className="font-mono text-xs text-thinkpad-muted">
               {cluster.restarts_24h === 0
-                ? 'brak zdarzeń'
+                ? 'no events'
                 : cluster.restarts_24h === 1
                   ? 'event · recovered'
                   : 'events · recovered'}
@@ -623,7 +623,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
                 {audit.health_status}
               </span>
               <span className="font-mono text-xs border border-neutral-700 px-2 py-0.5 text-neutral-500 flex items-center gap-1.5"
-                title="Self-Monitoring, Analysis and Reporting Technology — dane wprost z dysku, bez pośredników.">
+                title="Self-Monitoring, Analysis and Reporting Technology — data straight from the drive, no intermediaries.">
                 <HardDrive size={10} />
                 S.M.A.R.T. monitor
               </span>
@@ -632,7 +632,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
               {audit.sre_message}
             </p>
             <p className="font-mono text-xs text-neutral-700 mt-1 italic"
-              title="Oficjalna diagnoza sprzętowa. Przymknij oko na te kilkanaście tysięcy błędów.">
+              title="Official hardware self-diagnosis. Those few thousand errors? The drive says it's fine.">
               self-diagnosis:&nbsp;{audit.firmware_verdict}
             </p>
           </div>
@@ -650,11 +650,11 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
 
       {/* Primary counter — reported_uncorrectable_ecc */}
       <div className="border-t border-neutral-800/60 px-5 py-4"
-        title="Błędy ECC, których sprzętowy korektor nie zdołał naprawić. Każdy to potencjalna trwała utrata danych.">
+        title="ECC errors the hardware corrector could not fix. Each one is a potential permanent data loss.">
         <div className="flex items-start justify-between gap-4">
           <div>
             <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 mb-2">
-              <Skull size={10} /> Błędy ECC bez korekcji
+              <Skull size={10} /> Uncorrected ECC errors
             </span>
             <span className={`font-mono text-4xl font-bold tabular-nums leading-none ${s.color}`}>
               {metrics.reported_uncorrectable_ecc.toLocaleString('pl-PL')}
@@ -670,7 +670,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
       <div className="grid grid-cols-2 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
-          title="Pozostała żywotność nośnika NAND. Poniżej 30% — strefa niebezpieczna. Zero = koniec.">
+          title="Remaining NAND lifetime. Below 30% — danger zone. Zero = end of life.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
             <Gauge size={10} /> Life Remaining
           </span>
@@ -688,9 +688,9 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
         </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Łączny czas pracy dysku. Dłuższy staż = wyższe zużycie. Ten dysk walczył.">
+          title="Total drive power-on time. More hours = more wear. This drive has seen things.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Clock size={10} /> Czas w służbie
+            <Clock size={10} /> Time in service
           </span>
           <div className="flex items-baseline gap-1.5">
             <span className="font-mono text-2xl font-bold tabular-nums text-white">
@@ -707,9 +707,9 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
       <div className="grid grid-cols-3 gap-px border-t border-neutral-800/60 bg-neutral-800/30">
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Liczba zdarzeń relokacji — ile razy kontroler przeniósł dane z uszkodzonego sektora do rezerwowego.">
+          title="Reallocation events — how many times the controller moved data from a bad sector to a spare one.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <RefreshCw size={10} /> Incydenty
+            <RefreshCw size={10} /> Incidents
           </span>
           <span className={`font-mono text-2xl font-bold tabular-nums ${metrics.reallocated_events > 0 ? 'text-[#b8864e]' : 'text-[#5a9e85]'
             }`}>
@@ -719,9 +719,9 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
         </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Sektory nieczytelne podczas offline scan — dane bezpowrotnie utracone lub niedostępne.">
+          title="Unreadable sectors found during offline scan — data permanently lost or inaccessible.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Skull size={10} /> Nieczytelne
+            <Skull size={10} /> Unreadable
           </span>
           <span className={`font-mono text-2xl font-bold tabular-nums ${metrics.offline_uncorrectable > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
             }`}>
@@ -731,10 +731,10 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
         </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
-          title="Średnie opóźnienie zapisu. Zdrowy SSD: &lt;1ms. Powyżej 100ms dysk zaczyna 'mulić'.">
+          title="Average write latency. Healthy SSD: &lt;1ms. Above 100ms the drive starts to crawl.">
           <span className={`font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 ${isCritical ? 'animate-pulse' : ''
             }`}>
-            <Activity size={10} /> Tętno
+            <Activity size={10} /> Heartbeat
           </span>
           <div className="flex items-baseline gap-1.5">
             <span className={`font-mono text-2xl font-bold tabular-nums ${latColor}`}>
@@ -808,7 +808,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
       <div className="grid grid-cols-2 gap-px border-b border-neutral-800/60 bg-neutral-800/30">
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
-          title="Procent żądań obsłużony z cache Cloudflare — bez dotykania serwera domowego">
+          title="Percentage of requests served from Cloudflare cache — without touching the origin server.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
             <Zap size={10} /> Cache hit ratio
           </span>
@@ -822,7 +822,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
         </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
-          title="Transfer zaoszczędzony przez CDN — GB, które nie obciążyły serwera domowego">
+          title="Transfer saved by CDN — GB that never hit the origin server.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
             <Download size={10} /> Saved transfer
           </span>
@@ -841,7 +841,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
       {bm && (
         <div className="border-b border-neutral-800/60">
           <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-3"
-            title="Klasyfikacja ruchu przez Cloudflare Bot Management — każde żądanie dostaje score 1-99">
+            title="Traffic classification by Cloudflare Bot Management — every request gets a score 1-99.">
             <div className="flex items-center justify-between">
               <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
                 <Users size={10} /> Traffic classification
@@ -911,7 +911,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
       <div className="grid grid-cols-2 gap-px border-b border-neutral-800/60 bg-neutral-800/30">
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
-          title="Unikalni odwiedzający z ostatnich 7 dni — distinct IP + fingerprint">
+          title="Unique visitors over the last 7 days — distinct IP + fingerprint.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
             <Users size={10} /> Unique visitors
           </span>
@@ -933,7 +933,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
         </div>
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-2"
-          title="Uptime mierzony z perspektywy sieci Cloudflare — edge_error_rate jako dopełnienie do 100%">
+          title="Uptime measured from the Cloudflare edge network — complement of edge_error_rate.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
             <Globe size={10} /> Edge uptime
           </span>
@@ -1145,11 +1145,11 @@ const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology 
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
             </span>
-            stronę serwuje:&nbsp;<span className="text-white">{myPodName}</span>
+            served by:&nbsp;<span className="text-white">{myPodName}</span>
             {myNodeName && <>&nbsp;·&nbsp;node:&nbsp;<span className="text-white">{myNodeName}</span></>}
           </>
         ) : (
-          <span className="text-neutral-700 italic">MY_POD_NAME nie wstrzyknięty</span>
+          <span className="text-neutral-700 italic">MY_POD_NAME not injected</span>
         )}
       </div>
     </div>
@@ -1232,7 +1232,7 @@ const Playground: React.FC = () => {
           onClick={fetchData}
           disabled={refreshing}
           className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
-          aria-label="Odśwież dane"
+          aria-label="Refresh data"
         >
           <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
         </button>
@@ -1243,13 +1243,13 @@ const Playground: React.FC = () => {
   const bodyState = (children: React.ReactNode) => {
     if (loading) return (
       <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
-        <RefreshCw size={15} className="animate-spin" /> Łączenie z klastrem...
+        <RefreshCw size={15} className="animate-spin" /> Connecting to cluster...
       </div>
     );
     if (error) return (
       <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
         <div className="flex items-center gap-2 text-thinkpad-red">
-          <AlertTriangle size={15} /> Brak połączenia z klastrem
+          <AlertTriangle size={15} /> No connection to cluster
         </div>
         <p className="text-xs text-thinkpad-muted">{error}</p>
       </div>
@@ -1466,7 +1466,7 @@ const Playground: React.FC = () => {
               data.chaos_monkey_audit
                 ? <ChaosMonkeyWidget audit={data.chaos_monkey_audit} />
                 : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
-                  <AlertTriangle size={13} /> Chaos Monkey offline — node niedostępny
+                  <AlertTriangle size={13} /> Chaos Monkey offline — node unavailable
                 </div>
             ))}
           </div>
