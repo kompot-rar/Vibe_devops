@@ -250,13 +250,13 @@ const runStatusLabel = (run: WorkflowRun): string => {
 
 // ---- Status palette ----
 
-const statusCfg: Record<StageStatus, { nodeColor: string; dot: string; pulse: boolean }> = {
-  success:     { nodeColor: 'text-[#5a9e85]',    dot: 'bg-[#5a9e85]',    pulse: false },
-  failure:     { nodeColor: 'text-thinkpad-red',  dot: 'bg-thinkpad-red', pulse: false },
-  in_progress: { nodeColor: 'text-[#6a9fbf]',    dot: 'bg-[#6a9fbf]',   pulse: true  },
-  queued:      { nodeColor: 'text-thinkpad-muted', dot: 'bg-neutral-600', pulse: true  },
-  pending:     { nodeColor: 'text-neutral-700',   dot: 'bg-neutral-800', pulse: false },
-  skipped:     { nodeColor: 'text-neutral-700',   dot: 'bg-neutral-800', pulse: false },
+const statusCfg: Record<StageStatus, { nodeColor: string; dot: string; pulse: boolean; glow: string }> = {
+  success:     { nodeColor: 'text-[#5a9e85]',     dot: 'bg-[#5a9e85]',    pulse: false, glow: '0 0 10px rgba(90,158,133,0.22), inset 0 0 8px rgba(90,158,133,0.06)' },
+  failure:     { nodeColor: 'text-thinkpad-red',   dot: 'bg-thinkpad-red', pulse: false, glow: '0 0 12px rgba(220,38,38,0.3), inset 0 0 8px rgba(220,38,38,0.08)' },
+  in_progress: { nodeColor: 'text-[#6a9fbf]',     dot: 'bg-[#6a9fbf]',   pulse: true,  glow: '0 0 14px rgba(106,159,191,0.32), inset 0 0 8px rgba(106,159,191,0.08)' },
+  queued:      { nodeColor: 'text-thinkpad-muted', dot: 'bg-neutral-600', pulse: true,  glow: 'none' },
+  pending:     { nodeColor: 'text-neutral-700',    dot: 'bg-neutral-800', pulse: false, glow: 'none' },
+  skipped:     { nodeColor: 'text-neutral-700',    dot: 'bg-neutral-800', pulse: false, glow: 'none' },
 };
 
 // ---- Stage Node ----
@@ -275,6 +275,7 @@ const StageNode: React.FC<{
       <div className="flex flex-col items-center gap-2" style={{ flex: '0 0 auto' }}>
         <button
           onClick={onClick}
+          style={{ boxShadow: cfg.glow }}
           className={`relative w-12 h-12 border-2 flex items-center justify-center transition-all duration-300 cursor-pointer ${
             active
               ? 'border-thinkpad-red bg-thinkpad-red/10'
@@ -299,7 +300,7 @@ const StageNode: React.FC<{
         <div className={`flex-1 h-px mx-2 transition-colors duration-500 ${
           stage.status === 'success'     ? 'bg-[#2a6654]' :
           stage.status === 'failure'     ? 'bg-thinkpad-red/40' :
-          stage.status === 'in_progress' ? 'bg-[#2e5f80]/60' :
+          stage.status === 'in_progress' ? 'bg-[#2e5f80]/60 animate-pulse' :
           'bg-neutral-800'
         }`} />
       )}
@@ -355,6 +356,11 @@ const TerminalView: React.FC<{
       <div className={`px-4 py-2 border-b flex items-center gap-2 ${
         failed ? 'border-thinkpad-red/30 bg-thinkpad-red/5' : 'border-neutral-800'
       }`}>
+        <div className="flex items-center gap-1 mr-1 shrink-0">
+          <span className={`w-2 h-2 rounded-full ${failed ? 'bg-thinkpad-red/80' : 'bg-thinkpad-red/35'}`} />
+          <span className="w-2 h-2 rounded-full bg-[#b8864e]/35" />
+          <span className="w-2 h-2 rounded-full bg-[#5a9e85]/35" />
+        </div>
         <Terminal size={11} className={failed ? 'text-thinkpad-red' : 'text-thinkpad-muted'} />
         <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">
           {stageLabel}
@@ -572,6 +578,15 @@ const PipelineVisualizer: React.FC = () => {
           <span className="font-mono text-xs text-thinkpad-muted">:: CI/CD Pipeline</span>
         </div>
         <div className="flex items-center gap-3">
+          {!loading && !error && run?.status === 'in_progress' && (
+            <span className="flex items-center gap-1.5 font-mono text-[10px] text-[#6a9fbf] uppercase tracking-wider">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6a9fbf] opacity-60" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#6a9fbf]" />
+              </span>
+              live
+            </span>
+          )}
           {!loading && (
             error
               ? <WifiOff size={12} className="text-thinkpad-red" />
