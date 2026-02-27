@@ -1254,11 +1254,8 @@ const Playground: React.FC = () => {
       </div>
     );
     if (error) return (
-      <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
-        <div className="flex items-center gap-2 text-thinkpad-red">
-          <AlertTriangle size={15} /> No connection to cluster
-        </div>
-        <p className="text-xs text-thinkpad-muted">{error}</p>
+      <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
+        <RefreshCw size={15} className="animate-spin" /> Connecting to cluster...
       </div>
     );
     return children;
