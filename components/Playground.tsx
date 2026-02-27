@@ -248,16 +248,14 @@ const MetricCell: React.FC<{
   barValue: number; barMax?: number; barColor: string; valueColor?: string;
   withSeparator?: boolean;
 }> = ({ icon, label, value, unit, barValue, barMax, barColor, valueColor = 'text-white', withSeparator }) => (
-  <div className={`flex flex-col gap-3 ${withSeparator ? 'border-l border-neutral-800/60 pl-4' : ''}`}>
-    <div className="flex flex-col gap-1.5">
-      <span className={`font-mono text-xl font-semibold ${valueColor} tabular-nums leading-none`}>
-        {value}<span className="text-[11px] font-normal text-thinkpad-muted ml-0.5">{unit}</span>
-      </span>
-      <div className="flex items-center gap-1.5 text-thinkpad-muted">
-        {icon}
-        <span className="font-mono text-[10px] uppercase tracking-widest">{label}</span>
-      </div>
+  <div className={`flex flex-col gap-2 ${withSeparator ? 'border-l border-neutral-800/60 pl-4' : ''}`}>
+    <div className="flex items-center gap-1.5 text-thinkpad-muted">
+      {icon}
+      <span className="font-mono text-[10px] uppercase tracking-widest">{label}</span>
     </div>
+    <span className={`font-mono text-xl font-semibold ${valueColor} tabular-nums leading-none`}>
+      {value}<span className="text-[11px] font-normal text-thinkpad-muted ml-0.5">{unit}</span>
+    </span>
     <Bar value={barValue} colorClass={barColor} max={barMax} />
   </div>
 );
