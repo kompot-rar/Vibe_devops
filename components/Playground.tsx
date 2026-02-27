@@ -805,15 +805,23 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
               Threats blocked
               <span className="text-neutral-700 ml-1">// WAF · Bot Fight Mode · DDoS mitigation</span>
             </span>
-            <div className="flex items-baseline gap-3">
-              <span className="font-mono text-5xl font-bold tabular-nums text-[#f6821f]">
-                {threats.toLocaleString('pl-PL')}
-              </span>
-              <span className="font-mono text-sm text-thinkpad-muted">attacks / 7d</span>
-            </div>
-            <div className="mt-3">
-              <Bar value={threats} max={500} colorClass="bg-[#f6821f]/60" />
-            </div>
+            {threats === 0 ? (
+              <div className="flex items-center gap-2 mt-1">
+                <span className="font-mono text-sm text-emerald-500/80">No incidents in the last 7 days</span>
+              </div>
+            ) : (
+              <>
+                <div className="flex items-baseline gap-3">
+                  <span className="font-mono text-5xl font-bold tabular-nums text-[#f6821f]">
+                    {threats.toLocaleString('pl-PL')}
+                  </span>
+                  <span className="font-mono text-sm text-thinkpad-muted">attacks / 7d</span>
+                </div>
+                <div className="mt-3">
+                  <Bar value={threats} max={500} colorClass="bg-[#f6821f]/60" />
+                </div>
+              </>
+            )}
           </div>
           <div className="flex items-center gap-1.5 border border-[#f6821f]/25 px-2.5 py-1 shrink-0 self-start mt-1">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#f6821f] animate-pulse" />
