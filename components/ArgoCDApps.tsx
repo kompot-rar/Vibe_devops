@@ -174,10 +174,10 @@ const ArgoCDApps: React.FC<ArgoCDAppsProps> = ({ apps, loading, error, refreshin
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
         <div className="flex items-center gap-3">
-          <GitMerge size={15} className="text-[#ef7b4d]" />
+          <GitMerge size={15} className="text-[#f6821f]" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">ArgoCD Apps</span>
           {apps !== null && (
-            <span className="font-mono text-xs text-thinkpad-muted">:: {total} aplikacji</span>
+            <span className="font-mono text-xs text-thinkpad-muted">:: {total} apps</span>
           )}
           {/* Summary */}
           {apps !== null && total > 0 && (

@@ -98,7 +98,7 @@ const toLocalDateStr = (d: Date): string => {
 const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
     value, colorClass, max = 100,
 }) => (
-    <div className="h-[3px] bg-[#1e2028] rounded-sm overflow-hidden">
+    <div className="h-[4px] bg-[#1e2028] rounded-sm overflow-hidden">
         <div
             className={`h-full ${colorClass} rounded-sm transition-all duration-700`}
             style={{ width: `${Math.min(100, (value / max) * 100)}%` }}
@@ -175,12 +175,18 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                                     </span>
                                     <span className="font-mono text-lg text-thinkpad-muted">%</span>
                                 </div>
-                                {/* SLA target bar */}
-                                <div className="mt-2">
+                                {/* SLA target bar z markerem 99% */}
+                                <div className="mt-2 relative">
                                     <Bar
                                         value={sla.uptime_30d_pct}
                                         colorClass={slaMet ? 'bg-[#2a6654]' : 'bg-thinkpad-red/60'}
                                         max={100}
+                                    />
+                                    {/* Marker docelowy SLA na pozycji 99% */}
+                                    <div
+                                        className="absolute top-0 h-full w-px bg-neutral-500/60 pointer-events-none"
+                                        style={{ left: '99%' }}
+                                        title="SLA target: 99%"
                                     />
                                 </div>
                                 <div className="flex items-center gap-2 mt-2">
@@ -196,9 +202,9 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             {/* Badge — SLA status */}
                             <span className={`font-mono text-xs border px-2.5 py-1 shrink-0 flex items-center gap-1.5 ${slaMet
                                     ? 'text-[#5a9e85] border-[#5a9e85]/30'
-                                    : 'text-thinkpad-red border-thinkpad-red/30 animate-pulse'
+                                    : 'text-thinkpad-red border-thinkpad-red/30'
                                 }`}>
-                                <span className={`inline-block w-1.5 h-1.5 rounded-full ${slaMet ? 'bg-[#5a9e85] animate-pulse' : 'bg-thinkpad-red'
+                                <span className={`inline-block w-1.5 h-1.5 rounded-full ${slaMet ? 'bg-[#5a9e85] animate-pulse' : 'bg-thinkpad-red animate-pulse'
                                     }`} />
                                 {slaMet ? 'SLA OK' : 'SLA BREACH'}
                             </span>

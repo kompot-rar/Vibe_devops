@@ -235,7 +235,7 @@ const timeAgo = (iso: string): string => {
 const Bar: React.FC<{ value: number; colorClass: string; max?: number }> = ({
   value, colorClass, max = 100,
 }) => (
-  <div className="h-[5px] bg-[#1e2028] rounded-sm overflow-hidden">
+  <div className="h-[4px] bg-[#1e2028] rounded-sm overflow-hidden">
     <div
       className={`h-full ${colorClass} rounded-sm transition-all duration-700`}
       style={{ width: `${Math.min(100, (value / max) * 100)}%` }}
@@ -314,7 +314,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Box size={10} /> Pody aktywne
+            <Box size={10} /> Active pods
           </span>
           <span className="font-mono text-2xl font-bold text-white tabular-nums">
             {cluster.totalPods}
@@ -349,7 +349,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Activity size={10} /> Ostatni sync
+            <Activity size={10} /> Last sync
           </span>
           <span className="font-mono text-base font-semibold text-white tabular-nums">
             {timeAgo(cluster.lastUpdate)}
@@ -424,7 +424,7 @@ const ClusterOverview: React.FC<{ cluster: ClusterInfo }> = ({ cluster }) => {
       {cluster.incidents && cluster.incidents.length > 0 && (
         <div className="border-t border-neutral-800/60">
           <div className="px-5 py-2 flex items-center gap-1.5">
-            <RefreshCw size={9} className="text-neutral-600" />
+            <Clock size={9} className="text-neutral-600" />
             <span className="font-mono text-xs text-neutral-600 uppercase tracking-wider">last events</span>
           </div>
 
@@ -1191,10 +1191,37 @@ const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology 
         ) : (
           <span className="text-neutral-700 italic">MY_POD_NAME nie wstrzyknięty</span>
         )}
+        <a
+          href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/blog-devops/deployment.yaml"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-auto font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+        >
+          <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
+          Deployment manifest
+          <span className="text-neutral-700">↗</span>
+        </a>
       </div>
     </div>
   );
 };
+
+// --- Helper dla status strip ---
+
+const uptimeHeadlineColorStrip = (pct: number): string => {
+  if (pct >= 99) return 'text-[#5a9e85]';
+  if (pct >= 98) return 'text-[#b8864e]';
+  return 'text-thinkpad-red';
+};
+
+// --- Section label separator ---
+
+const SectionLabel: React.FC<{ label: string }> = ({ label }) => (
+  <div className="flex items-center gap-3 pt-2">
+    <span className="font-mono text-xs text-neutral-700 uppercase tracking-widest">// {label}</span>
+    <div className="flex-1 h-px bg-neutral-800/60" />
+  </div>
+);
 
 // --- Main ---
 
@@ -1295,9 +1322,46 @@ const Playground: React.FC = () => {
         >
           Live status klastra K3s. Trzy nody, jeden cel.
         </p>
+
+        {/* Status strip — quick overview bez scrollowania */}
+        {data && !loading && !error && (
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+            {/* Cluster status */}
+            <span className={`font-mono text-xs border px-3 py-1 flex items-center gap-1.5 ${
+              getStatusCfg(data.cluster.status).color
+            } ${getStatusCfg(data.cluster.status).border}`}>
+              <span className={`inline-block w-1.5 h-1.5 rounded-full ${getStatusCfg(data.cluster.status).dotColor} animate-pulse`} />
+              {data.cluster.status}
+            </span>
+            {/* SLA uptime */}
+            {data.sla && (
+              <span className="font-mono text-xs border border-neutral-800 px-3 py-1 flex items-center gap-1.5 text-thinkpad-muted">
+                <Shield size={10} />
+                <span className={uptimeHeadlineColorStrip(data.sla.uptime_30d_pct)}>
+                  {data.sla.uptime_30d_pct.toFixed(2)}%
+                </span>
+                <span className="text-neutral-700">uptime/30d</span>
+              </span>
+            )}
+            {/* Active pods */}
+            <span className="font-mono text-xs border border-neutral-800 px-3 py-1 flex items-center gap-1.5 text-thinkpad-muted">
+              <Box size={10} />
+              <span className="text-white">{data.cluster.totalPods}</span>
+              <span className="text-neutral-700">pods</span>
+            </span>
+            {/* Last sync */}
+            <span className="font-mono text-xs border border-neutral-800 px-3 py-1 flex items-center gap-1.5 text-thinkpad-muted">
+              <Clock size={10} />
+              <span className="text-neutral-400">{timeAgo(data.cluster.lastUpdate)}</span>
+            </span>
+          </div>
+        )}
       </div>
 
       <div className="max-w-4xl mx-auto space-y-10">
+
+        {/* // infrastructure */}
+        <SectionLabel label="infrastructure" />
 
         {/* Widget 1 — Cluster Overview */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
@@ -1329,43 +1393,7 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 3 — SLA Tracker */}
-        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-          {widgetHeader(
-            <Shield size={15} className="text-[#5a9e85]" />,
-            'SLA Tracker',
-            ':: uptime · 30d',
-          )}
-          <div className="p-6">
-            {bodyState(data && (
-              data.sla
-                ? <SLATracker sla={data.sla} />
-                : <div className="flex items-center gap-2 py-8 font-mono text-xs text-thinkpad-muted">
-                  <AlertTriangle size={13} /> SLA data not available — Blackbox Exporter not configured
-                </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Widget 3 — Cloudflare Edge */}
-        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
-          {widgetHeader(
-            <Shield size={15} className="text-[#f6821f]" />,
-            'Cloudflare Edge',
-            ':: WAF + CDN + Analytics',
-          )}
-          <div className="p-6">
-            {bodyState(data && (
-              data.cloudflare?.security
-                ? <CloudflareWidget data={data.cloudflare} />
-                : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
-                  <AlertTriangle size={13} /> Cloudflare API token not configured
-                </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Widget 4 — Node Metrics */}
+        {/* Widget 3 — Node Metrics */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <Cpu size={15} className="text-thinkpad-red" />,
@@ -1392,7 +1420,49 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 5 — Chaos Monkey Disk Audit */}
+        {/* // reliability */}
+        <SectionLabel label="reliability" />
+
+        {/* Widget 4 — SLA Tracker */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Shield size={15} className="text-[#5a9e85]" />,
+            'SLA Tracker',
+            ':: uptime · 30d',
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              data.sla
+                ? <SLATracker sla={data.sla} />
+                : <div className="flex items-center gap-2 py-8 font-mono text-xs text-thinkpad-muted">
+                  <AlertTriangle size={13} /> SLA data not available — Blackbox Exporter not configured
+                </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Widget 5 — Cloudflare Edge */}
+        <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+          {widgetHeader(
+            <Shield size={15} className="text-[#f6821f]" />,
+            'Cloudflare Edge',
+            ':: WAF + CDN + Analytics',
+          )}
+          <div className="p-6">
+            {bodyState(data && (
+              data.cloudflare?.security
+                ? <CloudflareWidget data={data.cloudflare} />
+                : <div className="flex items-center gap-2 py-4 font-mono text-xs text-thinkpad-muted">
+                  <AlertTriangle size={13} /> Cloudflare API token not configured
+                </div>
+            ))}
+          </div>
+        </div>
+
+        {/* // hardware */}
+        <SectionLabel label="hardware" />
+
+        {/* Widget 6 — Chaos Monkey Disk Audit */}
         <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
           {widgetHeader(
             <HardDrive size={15} className="text-thinkpad-red" />,
@@ -1410,10 +1480,13 @@ const Playground: React.FC = () => {
           </div>
         </div>
 
-        {/* Widget 6 — CI/CD Pipeline (The Forge) */}
+        {/* // gitops & ci/cd */}
+        <SectionLabel label="gitops & ci/cd" />
+
+        {/* Widget 7 — CI/CD Pipeline (The Forge) */}
         <PipelineVisualizer />
 
-        {/* Widget 7 — ArgoCD Apps */}
+        {/* Widget 8 — ArgoCD Apps */}
         <ArgoCDApps
           apps={data?.argocd_apps ?? null}
           loading={loading}
