@@ -264,19 +264,30 @@ const statusCfg: Record<StageStatus, { nodeColor: string; dot: string; pulse: bo
 const StageNode: React.FC<{
   stage: Stage;
   active: boolean;
+  isFirst: boolean;
   isLast: boolean;
+  prevStatus: StageStatus | null;
   onClick: () => void;
-}> = ({ stage, active, isLast, onClick }) => {
+}> = ({ stage, active, isFirst, isLast, prevStatus, onClick }) => {
   const cfg = statusCfg[stage.status];
   const { Icon } = stage;
 
+  const lineClass = (status: StageStatus | null) =>
+    `flex-1 h-px transition-colors duration-500 ${
+      status === 'success'     ? 'bg-[#2a6654]' :
+      status === 'failure'     ? 'bg-thinkpad-red/40' :
+      status === 'in_progress' ? 'bg-[#2e5f80]/60 animate-pulse' :
+      'bg-neutral-800'
+    }`;
+
   return (
-    <div className="flex items-center flex-1 min-w-0">
-      <div className="flex flex-col items-center gap-2" style={{ flex: '0 0 auto' }}>
+    <div className="flex flex-col items-center flex-1">
+      <div className="flex items-center w-full">
+        <div className={lineClass(isFirst ? null : prevStatus)} />
         <button
           onClick={onClick}
           style={{ boxShadow: cfg.glow }}
-          className={`relative w-12 h-12 border-2 flex items-center justify-center transition-all duration-300 cursor-pointer ${
+          className={`relative w-12 h-12 border-2 flex items-center justify-center transition-all duration-300 cursor-pointer shrink-0 ${
             active
               ? 'border-thinkpad-red bg-thinkpad-red/10'
               : 'border-neutral-700 bg-thinkpad-surface hover:border-neutral-500'
@@ -291,19 +302,11 @@ const StageNode: React.FC<{
           </span>
           <Icon size={18} className={cfg.nodeColor} />
         </button>
-        <span className={`font-mono text-[10px] uppercase tracking-widest ${active ? 'text-white' : 'text-thinkpad-muted'}`}>
-          {stage.label}
-        </span>
+        <div className={lineClass(isLast ? null : stage.status)} />
       </div>
-
-      {!isLast && (
-        <div className={`flex-1 h-px mx-2 transition-colors duration-500 ${
-          stage.status === 'success'     ? 'bg-[#2a6654]' :
-          stage.status === 'failure'     ? 'bg-thinkpad-red/40' :
-          stage.status === 'in_progress' ? 'bg-[#2e5f80]/60 animate-pulse' :
-          'bg-neutral-800'
-        }`} />
-      )}
+      <span className={`mt-2 font-mono text-[10px] uppercase tracking-widest ${active ? 'text-white' : 'text-thinkpad-muted'}`}>
+        {stage.label}
+      </span>
     </div>
   );
 };
@@ -668,14 +671,16 @@ const PipelineVisualizer: React.FC = () => {
           </div>
 
           {/* Pipeline stages */}
-          <div className="px-5 py-5 border-b border-neutral-800">
+          <div className="py-5 border-b border-neutral-800">
             <div className="flex items-start">
               {stages.map((stage, i) => (
                 <StageNode
                   key={stage.id}
                   stage={stage}
                   active={activeStage === i}
+                  isFirst={i === 0}
                   isLast={i === stages.length - 1}
+                  prevStatus={i > 0 ? stages[i - 1].status : null}
                   onClick={() => handleStageClick(i)}
                 />
               ))}
@@ -705,7 +710,7 @@ const PipelineVisualizer: React.FC = () => {
             >
               <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
               View on GitHub Actions
-              <ExternalLink size={10} />
+              <span className="text-neutral-700">↗</span>
             </a>
           </div>
         </>

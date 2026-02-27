@@ -182,9 +182,8 @@ const ArgoCDApps: React.FC<ArgoCDAppsProps> = ({ apps, loading, error, refreshin
           {/* Summary */}
           {apps !== null && total > 0 && (
             <div className="flex items-center gap-2 font-mono text-[10px]">
-              <span className="text-neutral-800">·</span>
-              <span className="text-[#5a9e85] tabular-nums border border-[#2a6654]/50 bg-[#5a9e85]/8 px-1.5 py-px">
-                {synced} synced
+              <span className="text-[#5a9e85] tabular-nums">
+                · {synced} synced
               </span>
               {outOfSync > 0 && (
                 <span className="text-[#b8864e] tabular-nums border border-[#7a5530]/50 bg-[#b8864e]/8 px-1.5 py-px animate-pulse">

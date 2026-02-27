@@ -1477,7 +1477,7 @@ const Playground: React.FC = () => {
             >
               <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
               ORIGIN STORY
-              <span className="text-neutral-700">// chaos engineering · k8s self-healing on real hardware ↗</span>
+              <span className="text-neutral-700 group-hover:text-neutral-400 transition-colors duration-200">// chaos engineering · k8s self-healing on real hardware ↗</span>
             </a>
           </div>
         </div>
