@@ -963,13 +963,15 @@ const PodTopologyView: React.FC<{
   pod: TopologyPod;
   isMyPod: boolean;
   isLast: boolean;
-}> = ({ pod, isMyPod, isLast }) => {
+  nodeIsReady: boolean;
+}> = ({ pod, isMyPod, isLast, nodeIsReady }) => {
   const parts = pod.name.split('-');
   // Nazwa deploymentu = wszystko poza ostatnimi 2 losowymi segmentami (hash poda)
   const deployName = parts.length > 2 ? parts.slice(0, -2).join('-') : pod.name;
   const hash = parts.length > 1 ? parts[parts.length - 1].slice(0, 6) : '';
 
   const isRunning = pod.status === 'Running';
+  const isOffline = !nodeIsReady;
 
   return (
     <div className="flex items-center gap-0">
@@ -985,14 +987,16 @@ const PodTopologyView: React.FC<{
       <div
         className={`flex-1 flex items-center gap-3 px-3 border font-mono text-xs min-w-0 transition-all duration-300 relative overflow-hidden ${isMyPod
           ? 'py-2 cursor-default'
-          : 'py-1.5 border-neutral-800 bg-thinkpad-base cursor-help hover:border-neutral-700 opacity-60 hover:opacity-90'
+          : isOffline
+            ? 'py-1.5 border-neutral-800/40 bg-thinkpad-base cursor-help opacity-30'
+            : 'py-1.5 border-neutral-800 bg-thinkpad-base cursor-help hover:border-neutral-700 opacity-60 hover:opacity-90'
           }`}
         style={isMyPod ? {
           borderColor: 'rgba(90,158,133,0.55)',
           background: 'linear-gradient(90deg, rgba(90,158,133,0.09) 0%, rgba(90,158,133,0.04) 60%, transparent 100%)',
           boxShadow: '0 0 0 1px rgba(90,158,133,0.15)',
         } : {}}
-        title={`${pod.name}\nns: ${pod.namespace}\n${pod.status}`}
+        title={isOffline ? `${pod.name}\nns: ${pod.namespace}\n${pod.status}\n⚠ Node: Not Ready` : `${pod.name}\nns: ${pod.namespace}\n${pod.status}`}
       >
         {/* Shimmer — tylko dla aktywnego */}
         {isMyPod && (
@@ -1012,6 +1016,8 @@ const PodTopologyView: React.FC<{
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-20" style={{ animationDelay: '0.5s' }} />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#5a9e85]" style={{ boxShadow: '0 0 5px rgba(90,158,133,0.6)' }} />
           </span>
+        ) : isOffline ? (
+          <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0 bg-neutral-600" />
         ) : isRunning ? (
           <span className="inline-block w-1.5 h-1.5 rounded-full shrink-0 bg-[#5a9e85]" />
         ) : (
@@ -1110,6 +1116,7 @@ const NodeTopologyRow: React.FC<{
               pod={pod}
               isMyPod={pod.name === myPodName}
               isLast={idx === node.pods.length - 1}
+              nodeIsReady={isReady}
             />
           ))}
         </div>
