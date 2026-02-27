@@ -212,7 +212,7 @@ const formatUptime = (days: string) => {
 
 const formatTimestamp = (iso: string) => {
   try {
-    return new Date(iso).toLocaleTimeString('pl-PL', {
+    return new Date(iso).toLocaleTimeString('en-GB', {
       hour: '2-digit', minute: '2-digit', second: '2-digit',
     });
   } catch { return iso; }
@@ -585,8 +585,8 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
 
   const poDays = Math.floor(metrics.power_on_hours / 24);
   const poSub = poDays >= 365
-    ? `≈ ${poDays.toLocaleString('pl-PL')} dni · ${(poDays / 365).toFixed(1)} lat`
-    : `≈ ${poDays.toLocaleString('pl-PL')} dni · power_on_hours`;
+    ? `≈ ${poDays.toLocaleString('en-US')} days · ${(poDays / 365).toFixed(1)} yrs`
+    : `≈ ${poDays.toLocaleString('en-US')} days · power_on_hours`;
 
   return (
     <div className={`border ${s.border} ${s.bg}`}>
@@ -657,7 +657,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
               <Skull size={10} /> Uncorrected ECC errors
             </span>
             <span className={`font-mono text-4xl font-bold tabular-nums leading-none ${s.color}`}>
-              {metrics.reported_uncorrectable_ecc.toLocaleString('pl-PL')}
+              {metrics.reported_uncorrectable_ecc.toLocaleString('en-US')}
             </span>
           </div>
           <span className="font-mono text-xs text-neutral-800 text-right mt-1 shrink-0 leading-relaxed">
@@ -694,7 +694,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           </span>
           <div className="flex items-baseline gap-1.5">
             <span className="font-mono text-2xl font-bold tabular-nums text-white">
-              {metrics.power_on_hours.toLocaleString('pl-PL')}
+              {metrics.power_on_hours.toLocaleString('en-US')}
             </span>
             <span className="font-mono text-sm text-thinkpad-muted">h</span>
           </div>
@@ -709,7 +709,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
           title="Reallocation events — how many times the controller moved data from a bad sector to a spare one.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <RefreshCw size={10} /> Incidents
+            <RefreshCw size={10} /> Reallocations
           </span>
           <span className={`font-mono text-2xl font-bold tabular-nums ${metrics.reallocated_events > 0 ? 'text-[#b8864e]' : 'text-[#5a9e85]'
             }`}>
@@ -721,7 +721,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
         <div className="bg-thinkpad-surface px-4 py-3 flex flex-col gap-1"
           title="Unreadable sectors found during offline scan — data permanently lost or inaccessible.">
           <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5">
-            <Skull size={10} /> Unreadable
+            <Skull size={10} /> Bad sectors
           </span>
           <span className={`font-mono text-2xl font-bold tabular-nums ${metrics.offline_uncorrectable > 0 ? 'text-thinkpad-red' : 'text-[#5a9e85]'
             }`}>
@@ -734,7 +734,7 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
           title="Average write latency. Healthy SSD: &lt;1ms. Above 100ms the drive starts to crawl.">
           <span className={`font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 ${isCritical ? 'animate-pulse' : ''
             }`}>
-            <Activity size={10} /> Heartbeat
+            <Activity size={10} /> Write latency
           </span>
           <div className="flex items-baseline gap-1.5">
             <span className={`font-mono text-2xl font-bold tabular-nums ${latColor}`}>
@@ -787,7 +787,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
               <>
                 <div className="flex items-baseline gap-3">
                   <span className="font-mono text-5xl font-bold tabular-nums text-[#f6821f]">
-                    {threats.toLocaleString('pl-PL')}
+                    {threats.toLocaleString('en-US')}
                   </span>
                   <span className="font-mono text-sm text-thinkpad-muted">attacks / 7d</span>
                 </div>
@@ -848,7 +848,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
                 <span className="text-neutral-700 ml-1">// bot management · 7d</span>
               </span>
               <span className="font-mono text-xs text-thinkpad-muted tabular-nums">
-                {botTotal.toLocaleString('pl-PL')} req total
+                {botTotal.toLocaleString('en-US')} req total
               </span>
             </div>
 
@@ -868,7 +868,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
                   <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Human</span>
                 </div>
                 <span className="font-mono text-base font-bold tabular-nums text-[#5a9e85]">
-                  {bm.human.toLocaleString('pl-PL')}
+                  {bm.human.toLocaleString('en-US')}
                 </span>
                 <span className="font-mono text-xs text-neutral-700">{((bm.human / botTotal) * 100).toFixed(1)}%</span>
               </div>
@@ -878,7 +878,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
                   <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Crawlers</span>
                 </div>
                 <span className="font-mono text-base font-bold tabular-nums text-[#6a9fbf]">
-                  {bm.bot_good.toLocaleString('pl-PL')}
+                  {bm.bot_good.toLocaleString('en-US')}
                 </span>
                 <span className="font-mono text-xs text-neutral-700">{((bm.bot_good / botTotal) * 100).toFixed(1)}%</span>
               </div>
@@ -888,7 +888,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
                   <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Threats</span>
                 </div>
                 <span className="font-mono text-base font-bold tabular-nums text-thinkpad-red">
-                  {bm.bot_bad.toLocaleString('pl-PL')}
+                  {bm.bot_bad.toLocaleString('en-US')}
                 </span>
                 <span className="font-mono text-xs text-neutral-700">{((bm.bot_bad / botTotal) * 100).toFixed(1)}%</span>
               </div>
@@ -898,7 +898,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
                   <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">Other</span>
                 </div>
                 <span className="font-mono text-base font-bold tabular-nums text-neutral-500">
-                  {bm.other.toLocaleString('pl-PL')}
+                  {bm.other.toLocaleString('en-US')}
                 </span>
                 <span className="font-mono text-xs text-neutral-700">{((bm.other / botTotal) * 100).toFixed(1)}%</span>
               </div>
@@ -917,7 +917,7 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
           </span>
           <div className="flex items-baseline gap-1 leading-none">
             <span className="font-mono text-2xl font-bold tabular-nums text-white">
-              {visitors.toLocaleString('pl-PL')}
+              {visitors.toLocaleString('en-US')}
             </span>
             <span className="font-mono text-xs text-thinkpad-muted ml-0.5">/7d</span>
           </div>
@@ -1450,7 +1450,7 @@ const Playground: React.FC = () => {
                 </div>
                 {lastUpdated && (
                   <div className="mt-5 text-right font-mono text-xs text-neutral-700">
-                    updated: {lastUpdated.toLocaleTimeString('pl-PL')}&nbsp;·&nbsp;auto-refresh: 30s
+                    updated: {lastUpdated.toLocaleTimeString('en-GB')}&nbsp;·&nbsp;auto-refresh: 30s
                   </div>
                 )}
               </>
