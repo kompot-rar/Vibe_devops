@@ -41,15 +41,8 @@
   .animate-deploy-scan {
     animation: deploy-scan 2s linear infinite;
   }
-  .animate-flow-line {
-    background: linear-gradient(
-      90deg,
-      rgba(46, 95, 128, 0.15) 0%,
-      rgba(106, 159, 191, 0.55) 50%,
-      rgba(46, 95, 128, 0.15) 100%
-    );
-    background-size: 200% 100%;
-    animation: flow-line 1.6s linear infinite;
+  .animate-pipeline-flow {
+    animation: pipeline-flow 2.5s linear infinite;
   }
 }
 
@@ -65,7 +58,7 @@
   100% { transform: translateX(500%); opacity: 0; }
 }
 
-@keyframes flow-line {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+@keyframes pipeline-flow {
+  0%   { left: 0%; }
+  100% { left: 85%; }
 }

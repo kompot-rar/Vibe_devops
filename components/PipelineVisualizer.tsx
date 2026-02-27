@@ -276,7 +276,7 @@ const StageNode: React.FC<{
     `flex-1 h-px transition-colors duration-500 ${
       status === 'success'     ? 'bg-[#2a6654]' :
       status === 'failure'     ? 'bg-thinkpad-red/40' :
-      status === 'in_progress' ? 'animate-flow-line' :
+      status === 'in_progress' ? 'bg-[#2e5f80]/50' :
       'bg-neutral-800'
     }`;
 
@@ -362,9 +362,8 @@ const DeployWaiting: React.FC = () => {
   }, []);
 
   return (
-    <div className="space-y-2 py-1">
+    <div className="py-1">
       <div className="text-neutral-700 text-xs">// waiting · stage not reached yet{dots}</div>
-      <div className="text-neutral-800 font-mono text-xs tracking-wide">{'░'.repeat(20)}</div>
     </div>
   );
 };
@@ -727,7 +726,12 @@ const PipelineVisualizer: React.FC = () => {
           </div>
 
           {/* Pipeline stages */}
-          <div className="py-5 border-b border-neutral-800">
+          <div className="py-5 border-b border-neutral-800 relative">
+            {run.status === 'in_progress' && (
+              <div className="absolute left-0 right-0 h-px overflow-hidden pointer-events-none" style={{ top: 44 }}>
+                <div className="absolute top-0 h-full w-[15%] bg-gradient-to-r from-transparent via-[#6a9fbf]/70 to-transparent animate-pipeline-flow" />
+              </div>
+            )}
             <div className="flex items-start">
               {stages.map((stage, i) => (
                 <StageNode
