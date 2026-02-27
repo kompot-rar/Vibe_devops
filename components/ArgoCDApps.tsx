@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  GitBranch, AlertTriangle, Activity, Clock,
+  GitBranch, GitMerge, AlertTriangle, Activity, Clock,
   CheckCircle2, XCircle, Loader2, PauseCircle, HelpCircle,
   RefreshCw, Wifi, WifiOff,
 } from 'lucide-react';
@@ -51,13 +51,13 @@ const repoLabel = (repo: string, path?: string): string => {
 
 // ---- Status configs ----
 
-const syncCfg: Record<string, { label: string; color: string; border: string; dot: string; pulse: boolean }> = {
-  Synced:    { label: 'Synced',      color: 'text-[#5a9e85]', border: 'border-[#2a6654]/60', dot: 'bg-[#5a9e85]', pulse: false },
-  OutOfSync: { label: 'Out of Sync', color: 'text-[#b8864e]', border: 'border-[#7a5530]/60', dot: 'bg-[#b8864e]', pulse: true  },
-  Unknown:   { label: 'Unknown',     color: 'text-neutral-500', border: 'border-neutral-700', dot: 'bg-neutral-500', pulse: false },
+const syncCfg: Record<string, { label: string; color: string; border: string; dot: string; pulse: boolean; bg: string }> = {
+  Synced:    { label: 'Synced',      color: 'text-[#5a9e85]',   border: 'border-[#2a6654]/60', dot: 'bg-[#5a9e85]',   pulse: false, bg: 'bg-[#5a9e85]/8'  },
+  OutOfSync: { label: 'Out of Sync', color: 'text-[#b8864e]',   border: 'border-[#7a5530]/60', dot: 'bg-[#b8864e]',   pulse: true,  bg: 'bg-[#b8864e]/8'  },
+  Unknown:   { label: 'Unknown',     color: 'text-neutral-500', border: 'border-neutral-700',   dot: 'bg-neutral-500', pulse: false, bg: ''                },
 };
 const getSyncCfg = (s: string) =>
-  syncCfg[s] ?? { label: s, color: 'text-neutral-500', border: 'border-neutral-700', dot: 'bg-neutral-500', pulse: false };
+  syncCfg[s] ?? { label: s, color: 'text-neutral-500', border: 'border-neutral-700', dot: 'bg-neutral-500', pulse: false, bg: '' };
 
 const healthCfg: Record<string, { color: string; Icon: React.ElementType; spin: boolean }> = {
   Healthy:     { color: 'text-[#5a9e85]',    Icon: CheckCircle2, spin: false },
@@ -89,6 +89,7 @@ const AppCard: React.FC<{ app: ArgoCDApp }> = ({ app }) => {
       style={{
         borderLeftColor: accentColor(app.status),
         backgroundImage: `linear-gradient(to bottom, ${accentColor(app.status)}0f 0px, transparent 40px)`,
+        boxShadow: `inset 3px 0 12px -6px ${accentColor(app.status)}70`,
       }}
     >
       {/* Name + sync badge */}
@@ -106,7 +107,7 @@ const AppCard: React.FC<{ app: ArgoCDApp }> = ({ app }) => {
         </div>
 
         <span
-          className={`font-mono text-xs border px-2 py-0.5 flex items-center gap-1.5 shrink-0 ${sync.color} ${sync.border}`}
+          className={`font-mono text-xs border px-2 py-0.5 flex items-center gap-1.5 shrink-0 ${sync.color} ${sync.border} ${sync.bg}`}
           title="Czy stan live cluster zgadza się ze stanem w Git."
         >
           <span className={`inline-block w-1.5 h-1.5 rounded-full ${sync.dot} ${sync.pulse ? 'animate-pulse' : ''}`} />
@@ -173,33 +174,27 @@ const ArgoCDApps: React.FC<ArgoCDAppsProps> = ({ apps, loading, error, refreshin
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
         <div className="flex items-center gap-3">
-          <GitBranch size={15} className="text-thinkpad-red" />
+          <GitMerge size={15} className="text-[#f6821f]" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">ArgoCD Apps</span>
           {apps !== null && (
-            <span className="font-mono text-xs text-thinkpad-muted">:: {total} aplikacji</span>
+            <span className="font-mono text-xs text-thinkpad-muted">:: {total} apps</span>
           )}
           {/* Summary */}
           {apps !== null && total > 0 && (
-            <div className="flex items-center gap-3 font-mono text-xs">
+            <div className="flex items-center gap-2 font-mono text-[10px]">
               <span className="text-neutral-800">·</span>
-              <span className="text-[#5a9e85] tabular-nums">
-                {synced}<span className="text-thinkpad-muted ml-1">synced</span>
+              <span className="text-[#5a9e85] tabular-nums border border-[#2a6654]/50 bg-[#5a9e85]/8 px-1.5 py-px">
+                {synced} synced
               </span>
               {outOfSync > 0 && (
-                <>
-                  <span className="text-neutral-800">·</span>
-                  <span className="text-[#b8864e] tabular-nums">
-                    {outOfSync}<span className="text-thinkpad-muted ml-1">out of sync</span>
-                  </span>
-                </>
+                <span className="text-[#b8864e] tabular-nums border border-[#7a5530]/50 bg-[#b8864e]/8 px-1.5 py-px animate-pulse">
+                  {outOfSync} out of sync
+                </span>
               )}
               {degraded > 0 && (
-                <>
-                  <span className="text-neutral-800">·</span>
-                  <span className="text-thinkpad-red tabular-nums">
-                    {degraded}<span className="text-thinkpad-muted ml-1">degraded</span>
-                  </span>
-                </>
+                <span className="text-thinkpad-red tabular-nums border border-thinkpad-red/30 bg-thinkpad-red/8 px-1.5 py-px animate-pulse">
+                  {degraded} degraded
+                </span>
               )}
             </div>
           )}

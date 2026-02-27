@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
-  GitBranch, Box, Package, RefreshCw, Server,
+  Github, Box, Package, RefreshCw, Server,
   Terminal, Wifi, WifiOff, AlertTriangle, ExternalLink,
 } from 'lucide-react';
 
@@ -40,7 +40,15 @@ interface WorkflowRun {
   html_url: string;
 }
 
-interface PipelineResponse { run: WorkflowRun; jobs: WorkflowJob[] }
+interface DORAMetrics {
+  deployment_frequency_per_week: number;
+  lead_time_avg_minutes: number;
+  change_failure_rate_pct: number;
+  deploys_30d: number;
+  failed_deploys_30d: number;
+}
+
+interface PipelineResponse { run: WorkflowRun; jobs: WorkflowJob[]; dora?: DORAMetrics }
 
 type StageStatus = 'pending' | 'queued' | 'in_progress' | 'success' | 'failure' | 'skipped';
 
@@ -57,7 +65,7 @@ interface Stage {
 // ---- Stage definitions ----
 
 const STAGE_DEFS = [
-  { id: 'source',   label: 'SOURCE',   Icon: GitBranch, keywords: ['checkout', 'clone'] },
+  { id: 'source',   label: 'SOURCE',   Icon: Github,    keywords: ['checkout', 'clone'] },
   { id: 'forge',    label: 'FORGE',    Icon: Box,       keywords: ['build', 'compile', 'setup', 'install', 'dependencies', 'buildx'] },
   { id: 'registry', label: 'REGISTRY', Icon: Package,   keywords: ['push', 'registry', 'ghcr', 'docker', 'login'] },
   { id: 'gitops',   label: 'GITOPS',   Icon: RefreshCw, keywords: ['sync', 'argo', 'manifest', 'gitops', 'update', 'tag'] },
@@ -67,7 +75,14 @@ const STAGE_DEFS = [
 // ---- Helpers ----
 
 const shortSha = (sha: string) => sha.slice(0, 7);
-const firstLine = (msg: string) => msg.split('\n')[0].slice(0, 55);
+const firstLine = (msg: string) => msg.split('\n')[0].slice(0, 60);
+const timeAgo = (iso: string): string => {
+  const s = Math.floor((Date.now() - new Date(iso).getTime()) / 1000);
+  if (s < 60)   return `${s}s ago`;
+  if (s < 3600) return `${Math.floor(s / 60)}m ago`;
+  if (s < 86400) return `${Math.floor(s / 3600)}h ago`;
+  return `${Math.floor(s / 86400)}d ago`;
+};
 
 const leadTime = (start: string, end: string): string => {
   const s = Math.floor((new Date(end).getTime() - new Date(start).getTime()) / 1000);
@@ -235,13 +250,13 @@ const runStatusLabel = (run: WorkflowRun): string => {
 
 // ---- Status palette ----
 
-const statusCfg: Record<StageStatus, { nodeColor: string; dot: string; pulse: boolean }> = {
-  success:     { nodeColor: 'text-[#5a9e85]',    dot: 'bg-[#5a9e85]',    pulse: false },
-  failure:     { nodeColor: 'text-thinkpad-red',  dot: 'bg-thinkpad-red', pulse: false },
-  in_progress: { nodeColor: 'text-[#6a9fbf]',    dot: 'bg-[#6a9fbf]',   pulse: true  },
-  queued:      { nodeColor: 'text-thinkpad-muted', dot: 'bg-neutral-600', pulse: true  },
-  pending:     { nodeColor: 'text-neutral-700',   dot: 'bg-neutral-800', pulse: false },
-  skipped:     { nodeColor: 'text-neutral-700',   dot: 'bg-neutral-800', pulse: false },
+const statusCfg: Record<StageStatus, { nodeColor: string; dot: string; pulse: boolean; glow: string }> = {
+  success:     { nodeColor: 'text-[#5a9e85]',     dot: 'bg-[#5a9e85]',    pulse: false, glow: '0 0 10px rgba(90,158,133,0.22), inset 0 0 8px rgba(90,158,133,0.06)' },
+  failure:     { nodeColor: 'text-thinkpad-red',   dot: 'bg-thinkpad-red', pulse: false, glow: '0 0 12px rgba(220,38,38,0.3), inset 0 0 8px rgba(220,38,38,0.08)' },
+  in_progress: { nodeColor: 'text-[#6a9fbf]',     dot: 'bg-[#6a9fbf]',   pulse: true,  glow: '0 0 14px rgba(106,159,191,0.32), inset 0 0 8px rgba(106,159,191,0.08)' },
+  queued:      { nodeColor: 'text-thinkpad-muted', dot: 'bg-neutral-600', pulse: true,  glow: 'none' },
+  pending:     { nodeColor: 'text-neutral-700',    dot: 'bg-neutral-800', pulse: false, glow: 'none' },
+  skipped:     { nodeColor: 'text-neutral-700',    dot: 'bg-neutral-800', pulse: false, glow: 'none' },
 };
 
 // ---- Stage Node ----
@@ -260,6 +275,7 @@ const StageNode: React.FC<{
       <div className="flex flex-col items-center gap-2" style={{ flex: '0 0 auto' }}>
         <button
           onClick={onClick}
+          style={{ boxShadow: cfg.glow }}
           className={`relative w-12 h-12 border-2 flex items-center justify-center transition-all duration-300 cursor-pointer ${
             active
               ? 'border-thinkpad-red bg-thinkpad-red/10'
@@ -284,7 +300,7 @@ const StageNode: React.FC<{
         <div className={`flex-1 h-px mx-2 transition-colors duration-500 ${
           stage.status === 'success'     ? 'bg-[#2a6654]' :
           stage.status === 'failure'     ? 'bg-thinkpad-red/40' :
-          stage.status === 'in_progress' ? 'bg-[#2e5f80]/60' :
+          stage.status === 'in_progress' ? 'bg-[#2e5f80]/60 animate-pulse' :
           'bg-neutral-800'
         }`} />
       )}
@@ -340,6 +356,11 @@ const TerminalView: React.FC<{
       <div className={`px-4 py-2 border-b flex items-center gap-2 ${
         failed ? 'border-thinkpad-red/30 bg-thinkpad-red/5' : 'border-neutral-800'
       }`}>
+        <div className="flex items-center gap-1 mr-1 shrink-0">
+          <span className={`w-2 h-2 rounded-full ${failed ? 'bg-thinkpad-red/80' : 'bg-thinkpad-red/35'}`} />
+          <span className="w-2 h-2 rounded-full bg-[#b8864e]/35" />
+          <span className="w-2 h-2 rounded-full bg-[#5a9e85]/35" />
+        </div>
         <Terminal size={11} className={failed ? 'text-thinkpad-red' : 'text-thinkpad-muted'} />
         <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">
           {stageLabel}
@@ -377,11 +398,83 @@ const TerminalView: React.FC<{
   );
 };
 
+// ---- DORA helpers ----
+
+type DORALevel = 'ELITE' | 'HIGH' | 'MEDIUM' | 'LOW';
+
+const doraFreqLevel = (v: number): DORALevel =>
+  v >= 7 ? 'ELITE' : v >= 1 ? 'HIGH' : v >= 0.23 ? 'MEDIUM' : 'LOW';
+
+const doraLeadLevel = (v: number): DORALevel =>
+  v < 60 ? 'ELITE' : v < 1440 ? 'HIGH' : v < 10080 ? 'MEDIUM' : 'LOW';
+
+const doraCFRLevel = (v: number): DORALevel =>
+  v < 5 ? 'ELITE' : v < 15 ? 'HIGH' : v < 45 ? 'MEDIUM' : 'LOW';
+
+const doraLevelColor = (l: DORALevel): string =>
+  l === 'ELITE' || l === 'HIGH' ? 'text-[#5a9e85]'
+  : l === 'MEDIUM' ? 'text-[#b8864e]'
+  : 'text-thinkpad-red';
+
+const fmtLeadTime = (minutes: number): string => {
+  if (minutes < 60)   return `${minutes.toFixed(1)} min`;
+  if (minutes < 1440) return `${(minutes / 60).toFixed(1)} h`;
+  return `${(minutes / 1440).toFixed(1)} d`;
+};
+
+// ---- DORA Section ----
+
+const DORASection: React.FC<{ dora: DORAMetrics }> = ({ dora }) => {
+  const freqLevel = doraFreqLevel(dora.deployment_frequency_per_week);
+  const leadLevel = doraLeadLevel(dora.lead_time_avg_minutes);
+  const cfrLevel  = doraCFRLevel(dora.change_failure_rate_pct);
+
+  return (
+    <div className="grid grid-cols-3 gap-px bg-neutral-800/40 border-b border-neutral-800">
+      {/* Deploy Frequency */}
+      <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
+        <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">DEPLOY_FREQ</span>
+        <div className="flex items-baseline gap-1 mt-0.5">
+          <span className="font-mono text-xl font-bold tabular-nums text-white">
+            {dora.deployment_frequency_per_week.toFixed(1)}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">/week</span>
+        </div>
+        <span className="font-mono text-[10px] text-neutral-700">{dora.deploys_30d} deploys · 30d</span>
+      </div>
+
+      {/* Lead Time */}
+      <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
+        <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME_AVG</span>
+        <div className="flex items-baseline gap-1 mt-0.5">
+          <span className="font-mono text-xl font-bold tabular-nums text-white">
+            {fmtLeadTime(dora.lead_time_avg_minutes)}
+          </span>
+        </div>
+        <span className="font-mono text-[10px] text-neutral-700">commit → deploy</span>
+      </div>
+
+      {/* Change Failure Rate */}
+      <div className="bg-thinkpad-surface px-5 py-3 flex flex-col gap-0.5">
+        <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">CHANGE_FAIL_RATE</span>
+        <div className="flex items-baseline gap-1 mt-0.5">
+          <span className="font-mono text-xl font-bold tabular-nums text-white">
+            {dora.change_failure_rate_pct.toFixed(1)}
+          </span>
+          <span className="font-mono text-xs text-neutral-600">%</span>
+        </div>
+        <span className="font-mono text-[10px] text-neutral-700">{dora.failed_deploys_30d} failed · 30d</span>
+      </div>
+    </div>
+  );
+};
+
 // ---- Main ----
 
 const PipelineVisualizer: React.FC = () => {
   const [run, setRun]         = useState<WorkflowRun | null>(null);
   const [jobs, setJobs]       = useState<WorkflowJob[]>([]);
+  const [dora, setDora]       = useState<DORAMetrics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
@@ -399,6 +492,7 @@ const PipelineVisualizer: React.FC = () => {
       const data: PipelineResponse = await res.json();
       setRun(data.run);
       setJobs(data.jobs);
+      setDora(data.dora ?? null);
       setLogCache({});   // invalidate log cache on new run data
       setError(null);
     } catch (e) {
@@ -479,15 +573,24 @@ const PipelineVisualizer: React.FC = () => {
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
         <div className="flex items-center gap-3">
-          <GitBranch size={15} className="text-thinkpad-red" />
+          <Github size={15} className="text-[#6a9fbf]" />
           <span className="font-mono text-sm text-white uppercase tracking-widest">The Forge</span>
           <span className="font-mono text-xs text-thinkpad-muted">:: CI/CD Pipeline</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          {!loading && !error && run?.status === 'in_progress' && (
+            <span className="flex items-center gap-1.5 font-mono text-[10px] text-[#6a9fbf] uppercase tracking-wider">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6a9fbf] opacity-60" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#6a9fbf]" />
+              </span>
+              live
+            </span>
+          )}
           {!loading && (
             error
-              ? <WifiOff size={13} className="text-thinkpad-red" />
-              : <Wifi    size={13} className="text-[#5a9e85]" />
+              ? <WifiOff size={12} className="text-thinkpad-red" />
+              : <Wifi    size={12} className="text-[#5a9e85]" />
           )}
           <button
             onClick={fetchData}
@@ -495,68 +598,78 @@ const PipelineVisualizer: React.FC = () => {
             className="text-thinkpad-muted hover:text-white transition-colors duration-200 disabled:opacity-30 cursor-pointer"
             aria-label="Odśwież pipeline"
           >
-            <RefreshCw size={13} className={refreshing ? 'animate-spin' : ''} />
+            <RefreshCw size={12} className={refreshing ? 'animate-spin' : ''} />
           </button>
         </div>
       </div>
 
-      {/* Body */}
-      <div className="p-6">
-        {loading ? (
-          <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
-            <RefreshCw size={15} className="animate-spin" /> Łączenie z GitHub Actions...
+      {/* States */}
+      {loading ? (
+        <div className="flex items-center justify-center py-12 gap-3 text-thinkpad-muted font-mono text-sm">
+          <RefreshCw size={14} className="animate-spin" /> Łączenie z GitHub Actions...
+        </div>
+      ) : error ? (
+        <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
+          <div className="flex items-center gap-2 text-thinkpad-red">
+            <AlertTriangle size={14} /> Brak danych z pipeline
           </div>
-        ) : error ? (
-          <div className="flex flex-col items-center gap-2 py-8 font-mono text-sm">
-            <div className="flex items-center gap-2 text-thinkpad-red">
-              <AlertTriangle size={15} /> Brak danych z pipeline
+          <p className="text-xs text-thinkpad-muted">{error}</p>
+        </div>
+      ) : !run ? (
+        <div className="text-center font-mono text-xs text-thinkpad-muted py-8">
+          // brak workflow runs
+        </div>
+      ) : (
+        <>
+          {/* DORA strip — nad run-barem */}
+          {dora && <DORASection dora={dora} />}
+
+          {/* Run bar — 4 karty w stylu DORA */}
+          <div className={`grid grid-cols-4 gap-px border-b transition-colors duration-300 ${
+            failed ? 'bg-thinkpad-red/20 border-thinkpad-red/30' : 'bg-neutral-800/40 border-neutral-800'
+          }`}>
+
+            {/* HOST */}
+            <div className={`px-5 py-3 flex flex-col gap-0.5 ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
+              <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">HOST</span>
+              <span className="font-mono text-base font-bold text-white">KUŹNIA-LXC</span>
+              <span className="font-mono text-[10px] text-neutral-700">runner · lxc container</span>
             </div>
-            <p className="text-xs text-thinkpad-muted">{error}</p>
-          </div>
-        ) : run ? (
-          <div className="space-y-6">
 
-            {/* Stats bar */}
-            <div className={`border px-5 py-3 transition-colors duration-300 ${
-              failed ? 'border-thinkpad-red/40 bg-thinkpad-red/5' : 'border-neutral-800'
-            }`}>
-              <div className="flex items-start justify-between">
+            {/* LAST_COMMIT — spans 2 cols */}
+            <div className={`col-span-2 px-5 py-3 flex flex-col gap-0.5 min-w-0 ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
+              <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LAST_COMMIT</span>
+              <span className="font-mono text-sm text-neutral-300 truncate" title={run.head_commit.message}>
+                <span className="text-neutral-600">[{shortSha(run.head_sha)}]</span>
+                {' '}{firstLine(run.head_commit.message)}
+              </span>
+              <span className="font-mono text-[10px] text-neutral-700">
+                by {run.head_commit.author.name} · {timeAgo(run.created_at)}
+              </span>
+            </div>
 
-                <div className="flex flex-col gap-0.5 shrink-0">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">HOST</span>
-                  <span className="font-mono text-xs text-neutral-300">KUŹNIA-LXC</span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 min-w-0 max-w-56 px-4">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LAST_COMMIT</span>
-                  <span className="font-mono text-xs text-neutral-400 truncate" title={run.head_commit.message}>
-                    <span className="text-thinkpad-muted">[{shortSha(run.head_sha)}]</span>
-                    {' '}{firstLine(run.head_commit.message)}
-                  </span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 shrink-0">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">LEAD_TIME</span>
-                  <span className="font-mono text-xs text-neutral-300 tabular-nums">{lt}</span>
-                </div>
-
-                <div className="flex flex-col gap-0.5 shrink-0 items-end text-right">
-                  <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-widest">STATUS</span>
-                  <span className={`font-mono text-xs font-bold ${
-                    failed                       ? 'text-thinkpad-red' :
-                    run.status === 'in_progress' ? 'text-[#6a9fbf] animate-pulse' :
-                    run.conclusion === 'success' ? 'text-[#5a9e85]' :
-                    'text-thinkpad-muted'
-                  }`}>
-                    {runStatusLabel(run)}
-                  </span>
-                </div>
-
+            {/* LEAD_TIME + STATUS badge */}
+            <div className={`px-5 py-3 flex flex-col gap-0.5 min-w-0 overflow-hidden ${failed ? 'bg-thinkpad-red/5' : 'bg-thinkpad-surface'}`}>
+              <span className="font-mono text-[10px] text-thinkpad-muted uppercase tracking-wider">LEAD_TIME</span>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-mono text-xl font-bold tabular-nums text-white shrink-0">{lt}</span>
+                <span className={`font-mono text-[10px] font-bold border px-1.5 py-px shrink-0 ${
+                  failed                       ? 'text-thinkpad-red border-thinkpad-red/40' :
+                  run.status === 'in_progress' ? 'text-[#6a9fbf] border-[#6a9fbf]/40 animate-pulse' :
+                  run.conclusion === 'success' ? 'text-[#5a9e85] border-[#5a9e85]/30' :
+                  'text-thinkpad-muted border-neutral-700'
+                }`}>
+                  {runStatusLabel(run)}
+                </span>
               </div>
+              <span className="font-mono text-[10px] text-neutral-700">commit → deploy</span>
             </div>
 
-            {/* Pipeline */}
-            <div className="flex items-start px-2 py-4">
+          </div>
+
+          {/* Pipeline stages */}
+          <div className="px-5 py-5 border-b border-neutral-800">
+            <div className="flex items-start">
               {stages.map((stage, i) => (
                 <StageNode
                   key={stage.id}
@@ -567,9 +680,11 @@ const PipelineVisualizer: React.FC = () => {
                 />
               ))}
             </div>
+          </div>
 
-            {/* Terminal */}
-            {activeStageData && (
+          {/* Terminal */}
+          {activeStageData && (
+            <div className="px-5 py-4 border-b border-neutral-800">
               <TerminalView
                 key={`${activeStage}-${activeStageData.jobId}-${run.updated_at}`}
                 lines={terminalLines}
@@ -577,29 +692,24 @@ const PipelineVisualizer: React.FC = () => {
                 failed={failed && activeStageData.status === 'failure'}
                 stageLabel={`${activeStageData.label} · ${jobs.find(j => j.id === activeStageData.jobId)?.name ?? 'pipeline'}`}
               />
-            )}
-
-            {/* Footer */}
-            <div className="flex justify-end">
-              <a
-                href={run.html_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
-              >
-                <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
-                View on GitHub Actions
-                <ExternalLink size={10} />
-              </a>
             </div>
+          )}
 
+          {/* Footer */}
+          <div className="px-5 py-2.5 flex justify-end">
+            <a
+              href={run.html_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+            >
+              <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
+              View on GitHub Actions
+              <ExternalLink size={10} />
+            </a>
           </div>
-        ) : (
-          <div className="text-center font-mono text-xs text-thinkpad-muted py-8">
-            // brak workflow runs
-          </div>
-        )}
-      </div>
+        </>
+      )}
 
     </div>
   );

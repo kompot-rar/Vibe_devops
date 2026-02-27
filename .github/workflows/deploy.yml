@@ -115,7 +115,7 @@ jobs:
             "https://${ARGOCD_SERVER}/api/v1/applications/${APP}/sync" \
             -H "Authorization: Bearer ${ARGOCD_TOKEN}" \
             -H "Content-Type: application/json" \
-            -d '{"prune": true}' \
+            -d '{"revision": "master", "prune": true}' \
             --connect-timeout 15
 
           echo "ArgoCD sync command executed."
