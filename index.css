@@ -38,9 +38,34 @@
   .animate-blink {
     animation: blink 1s step-end infinite;
   }
+  .animate-deploy-scan {
+    animation: deploy-scan 2s linear infinite;
+  }
+  .animate-flow-line {
+    background: linear-gradient(
+      90deg,
+      rgba(46, 95, 128, 0.15) 0%,
+      rgba(106, 159, 191, 0.55) 50%,
+      rgba(46, 95, 128, 0.15) 100%
+    );
+    background-size: 200% 100%;
+    animation: flow-line 1.6s linear infinite;
+  }
 }
 
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
+}
+
+@keyframes deploy-scan {
+  0%   { transform: translateX(-400%); opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { transform: translateX(500%); opacity: 0; }
+}
+
+@keyframes flow-line {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }

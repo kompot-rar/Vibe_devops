@@ -276,7 +276,7 @@ const StageNode: React.FC<{
     `flex-1 h-px transition-colors duration-500 ${
       status === 'success'     ? 'bg-[#2a6654]' :
       status === 'failure'     ? 'bg-thinkpad-red/40' :
-      status === 'in_progress' ? 'bg-[#2e5f80]/60 animate-pulse' :
+      status === 'in_progress' ? 'animate-flow-line' :
       'bg-neutral-800'
     }`;
 
@@ -326,6 +326,49 @@ const logLineClass = (line: string): string => {
 const logLineText = (line: string): string =>
   line.startsWith('\x00group\x00') ? `▶ ${line.slice(7)}` : line;
 
+// ---- Deploy state sub-components ----
+
+const DeployProgress: React.FC = () => {
+  const TOTAL = 20;
+  const [frame, setFrame] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setFrame(f => (f + 1) % (TOTAL + 5)), 110);
+    return () => clearInterval(id);
+  }, []);
+
+  const fill = Math.min(frame, TOTAL);
+  const bar = Array.from({ length: TOTAL }, (_, i) => {
+    if (i < fill - 1) return '█';
+    if (i === fill - 1 && fill > 0) return '▒';
+    return '░';
+  }).join('');
+
+  return (
+    <div className="space-y-2 py-1">
+      <div className="text-neutral-600 text-xs">// deploy in progress — stage logs incoming</div>
+      <div className="text-[#6a9fbf] font-mono text-xs tracking-wide">
+        {bar} <span className="animate-blink">▮</span>
+      </div>
+    </div>
+  );
+};
+
+const DeployWaiting: React.FC = () => {
+  const [dots, setDots] = useState('');
+  useEffect(() => {
+    const id = setInterval(() => setDots(d => d.length >= 3 ? '' : d + '.'), 500);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="space-y-2 py-1">
+      <div className="text-neutral-700 text-xs">// waiting · stage not reached yet{dots}</div>
+      <div className="text-neutral-800 font-mono text-xs tracking-wide">{'░'.repeat(20)}</div>
+    </div>
+  );
+};
+
 // ---- Terminal ----
 
 const TerminalView: React.FC<{
@@ -333,7 +376,9 @@ const TerminalView: React.FC<{
   loading: boolean;
   failed: boolean;
   stageLabel: string;
-}> = ({ lines, loading, failed, stageLabel }) => {
+  runInProgress: boolean;
+  stagePending: boolean;
+}> = ({ lines, loading, failed, stageLabel, runInProgress, stagePending }) => {
   const ref = useRef<HTMLDivElement>(null);
   const [shown, setShown] = useState(0);
 
@@ -359,11 +404,6 @@ const TerminalView: React.FC<{
       <div className={`px-4 py-2 border-b flex items-center gap-2 ${
         failed ? 'border-thinkpad-red/30 bg-thinkpad-red/5' : 'border-neutral-800'
       }`}>
-        <div className="flex items-center gap-1 mr-1 shrink-0">
-          <span className={`w-2 h-2 rounded-full ${failed ? 'bg-thinkpad-red/80' : 'bg-thinkpad-red/35'}`} />
-          <span className="w-2 h-2 rounded-full bg-[#b8864e]/35" />
-          <span className="w-2 h-2 rounded-full bg-[#5a9e85]/35" />
-        </div>
         <Terminal size={11} className={failed ? 'text-thinkpad-red' : 'text-thinkpad-muted'} />
         <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider">
           {stageLabel}
@@ -384,7 +424,11 @@ const TerminalView: React.FC<{
         {loading ? (
           <div className="text-thinkpad-muted animate-pulse">// ładowanie logów...</div>
         ) : lines.length === 0 ? (
-          <div className="text-neutral-700">// brak logów dla tego etapu</div>
+          runInProgress
+            ? stagePending
+              ? <DeployWaiting />
+              : <DeployProgress />
+            : <div className="text-neutral-700">// brak logów dla tego etapu</div>
         ) : (
           <>
             {lines.slice(0, shown).map((line, i) => (
@@ -571,7 +615,19 @@ const PipelineVisualizer: React.FC = () => {
     logCache[activeStageData.jobId!] === undefined;
 
   return (
-    <div className="bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50">
+    <div
+      className="relative bg-thinkpad-surface border border-neutral-800 shadow-2xl shadow-black/50 transition-shadow duration-700"
+      style={run?.status === 'in_progress' ? {
+        borderLeftColor: 'rgba(106,159,191,0.45)',
+        boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5), -4px 0 18px rgba(106,159,191,0.1)',
+      } : undefined}
+    >
+      {/* Deploy top scan bar */}
+      {run?.status === 'in_progress' && (
+        <div className="absolute top-0 left-0 right-0 h-0.5 overflow-hidden pointer-events-none z-10">
+          <div className="absolute top-0 h-full w-1/4 bg-gradient-to-r from-transparent via-[#6a9fbf]/80 to-transparent animate-deploy-scan" />
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-neutral-800">
@@ -696,6 +752,8 @@ const PipelineVisualizer: React.FC = () => {
                 loading={isLogsLoading}
                 failed={failed && activeStageData.status === 'failure'}
                 stageLabel={`${activeStageData.label} · ${jobs.find(j => j.id === activeStageData.jobId)?.name ?? 'pipeline'}`}
+                runInProgress={run.status === 'in_progress'}
+                stagePending={activeStageData.status === 'pending' || activeStageData.status === 'queued'}
               />
             </div>
           )}
