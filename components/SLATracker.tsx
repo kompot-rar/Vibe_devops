@@ -305,7 +305,7 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                     </div>
 
                     {/* ===== Sekcja 4: Response Time p95 ===== */}
-                    <div className="px-5 py-4 border-b border-neutral-800/60"
+                    <div className="px-5 py-4"
                         title="95. percentyl czasu odpowiedzi. Poniżej 200ms = świetna. Powyżej 500ms = problem.">
                         <span className="font-mono text-xs text-thinkpad-muted uppercase tracking-wider flex items-center gap-1.5 mb-2">
                             <Activity size={10} />
@@ -325,20 +325,6 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             {sla.response_time_p95_ms < 200 ? 'Excellent' : sla.response_time_p95_ms < 500 ? 'Acceptable' : 'Degraded'}
                             {' '}· target &lt;200ms
                         </span>
-                    </div>
-
-                    {/* ===== Footer ===== */}
-                    <div className="px-5 py-3 flex justify-end">
-                        <a
-                            href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/monitoring/"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
-                        >
-                            <span className="text-neutral-700 group-hover:text-[#5a9e85] transition-colors duration-200">{'</>'}</span>
-                            Blackbox Exporter · Prometheus recording rules
-                            <span className="text-neutral-700">↗</span>
-                        </a>
                     </div>
 
                 </div>

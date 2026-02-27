@@ -761,18 +761,6 @@ const ChaosMonkeyWidget: React.FC<{ audit: ChaosMonkeyAudit }> = ({ audit }) => 
 
       </div>
 
-      {/* Footer */}
-      <div className="px-5 py-3 border-t border-neutral-800/60">
-        <a
-          href="/blog/homelab-20-architektura-totalna-od-druku-3d-po-kubernetes"
-          className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
-        >
-          // chaos engineering · k8s self-healing on real hardware ·
-          <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
-          origin story ↗
-        </a>
-      </div>
-
     </div>
   );
 };
@@ -977,20 +965,6 @@ const CloudflareWidget: React.FC<{ data: CloudflareData }> = ({ data }) => {
           </div>
         </div>
 
-      </div>
-
-      {/* Footer */}
-      <div className="px-5 py-3 flex justify-end">
-        <a
-          href="https://developers.cloudflare.com/api/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
-        >
-          <span className="text-neutral-700 group-hover:text-[#f6821f] transition-colors duration-200">{'</>'}</span>
-          Cloudflare Analytics API · 7-day window
-          <span className="text-neutral-700">↗</span>
-        </a>
       </div>
 
     </div>
@@ -1418,6 +1392,18 @@ const Playground: React.FC = () => {
                 </div>
             ))}
           </div>
+          <div className="px-6 py-3 border-t border-neutral-800">
+            <a
+              href="https://github.com/kompot-rar/kubernetes/blob/master/manifests/monitoring/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+            >
+              <span className="text-neutral-700 group-hover:text-[#5a9e85] transition-colors duration-200">{'</>'}</span>
+              Blackbox Exporter · Prometheus recording rules
+              <span className="text-neutral-700">↗</span>
+            </a>
+          </div>
         </div>
 
         {/* Widget 5 — Cloudflare Edge */}
@@ -1435,6 +1421,18 @@ const Playground: React.FC = () => {
                   <AlertTriangle size={13} /> Cloudflare API token not configured
                 </div>
             ))}
+          </div>
+          <div className="px-6 py-3 border-t border-neutral-800">
+            <a
+              href="https://developers.cloudflare.com/api/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+            >
+              <span className="text-neutral-700 group-hover:text-[#f6821f] transition-colors duration-200">{'</>'}</span>
+              Cloudflare Analytics API · 7-day window
+              <span className="text-neutral-700">↗</span>
+            </a>
           </div>
         </div>
 
@@ -1483,6 +1481,16 @@ const Playground: React.FC = () => {
                   <AlertTriangle size={13} /> Chaos Monkey offline — node niedostępny
                 </div>
             ))}
+          </div>
+          <div className="px-6 py-3 border-t border-neutral-800">
+            <a
+              href="/blog/homelab-20-architektura-totalna-od-druku-3d-po-kubernetes"
+              className="font-mono text-xs text-neutral-700 hover:text-neutral-400 transition-colors duration-200 flex items-center gap-1.5 group"
+            >
+              // chaos engineering · k8s self-healing on real hardware ·
+              <span className="text-neutral-700 group-hover:text-thinkpad-red transition-colors duration-200">{'</>'}</span>
+              origin story ↗
+            </a>
           </div>
         </div>
 
