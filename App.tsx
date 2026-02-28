@@ -15,10 +15,18 @@ const About: React.FC = () => (
         <Server className="h-12 w-12 text-white" />
     </div>
     <h2 className="text-2xl font-bold text-white mb-4 font-mono tracking-tighter uppercase">O Projekcie</h2>
-    <p className="text-thinkpad-muted mb-6 leading-relaxed font-mono text-sm">
-      Witaj na moim blogu! Nazywam się Łukasz Mróz i jestem zafascynowany DevOps. 
-      Stworzyłem tę stronę, aby dokumentować moją naukę i dzielić się wiedzą z innymi.
-    </p>
+    <div className="text-thinkpad-muted mb-6 leading-relaxed font-mono text-sm text-left space-y-4">
+      <p>
+        Cześć, tu Łukasz. Moja przygoda z DevOps to ciągła ewolucja – od fizycznego montażu serwerów po 
+        orkiestrację kontenerów. Ten blog dokumentuje budowę mojego homelabu, gdzie każda usługa i każda 
+        linijka kodu przybliża mnie do pełnego zrozumienia tego, jak działają złożone systemy.
+      </p>
+      <p>
+        Skupiam się na automatyzacji i optymalizacji infrastruktury, bo po prostu lubię grzebać w 
+        konfiguracjach i patrzeć, jak wszystko zaczyna działać płynnie. To środowisko rośnie razem 
+        ze mną, stale dążąc do standardów gotowych na produkcyjne wyzwania.
+      </p>
+    </div>
     
     {/* Sekcja ikonek z animacją */}
     <div className="flex justify-center gap-8 mt-8">
