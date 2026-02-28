@@ -1145,14 +1145,19 @@ const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology 
         ))}
 
       {/* Whoami footer */}
-      <div className="pt-3 mt-1 border-t border-neutral-800/60 flex items-center gap-2 font-mono text-xs text-thinkpad-muted flex-wrap">
+      <div className="pt-3 mt-1 border-t border-neutral-800/60 flex items-start gap-2 font-mono text-[10px] sm:text-xs text-thinkpad-muted">
         {myPodName ? (
           <>
-            <span className="relative flex h-1.5 w-1.5 shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
-              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
-            </span>
-            <span>You are reading this page served live by pod <span className="text-white">{myPodName}</span>{myNodeName && <> running on node <span className="text-white">{myNodeName}</span></>}</span>
+            <div className="pt-1.5 shrink-0">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
+              </span>
+            </div>
+            <div className="leading-normal break-words">
+              You are reading this page served live by pod <span className="text-white break-all">{myPodName}</span>
+              {myNodeName && <> running on node <span className="text-white break-all">{myNodeName}</span></>}
+            </div>
           </>
         ) : (
           <span className="text-neutral-700 italic">MY_POD_NAME not injected</span>
