@@ -1152,8 +1152,10 @@ const ClusterTopologyWidget: React.FC<{ topology: TopologyData }> = ({ topology 
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#5a9e85] opacity-75" />
               <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#5a9e85]" />
             </span>
-            served by:&nbsp;<span className="text-white">{myPodName}</span>
-            {myNodeName && <>&nbsp;·&nbsp;node:&nbsp;<span className="text-white">{myNodeName}</span></>}
+            <span>You are reading this page served live by pod</span>
+            &nbsp;<span className="text-white">{myPodName}</span>
+            {myNodeName && <>&nbsp;running on node&nbsp;<span className="text-white">{myNodeName}</span></>}
+            &nbsp;<span className="text-neutral-600">— highlighted above</span>
           </>
         ) : (
           <span className="text-neutral-700 italic">MY_POD_NAME not injected</span>
