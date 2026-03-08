@@ -5,14 +5,14 @@ date: '2026-03-08'
 tags: ['AI', 'MCP', 'FastAPI', 'Docker', 'DevOps', 'Orchestration']
 readTime: '6 min'
 imageUrl: '/hephaestus-banner.png'
-excerpt: 'Hephaestus to mój autorski orkiestrator AI oparty o standard MCP, który rozwiązuje problem "Context Bloat" przy pracy z dużymi repozytoriami kodu. Dowiedz się, jak zautomatyzowałem workflow między IDE a GitHubem.'
+excerpt: 'Hephaestus to mój autorski orkiestrator AI oparty o standard MCP, który rozwiązuje problem "Context Bloat" przy pracy z dużymi repozytoriami.'
 ---
 
 Cześć! Dzisiejszy wpis na blogu to lekkie zboczenie z mojej głównej roadmapy do zostania Junior DevOps Engineerem. Choć projekt, o którym dziś opowiem, to czysty backend połączony z architekturą LLM – był on dla mnie absolutnie krytyczny do stworzenia. Kontekstem powstania tego narzędzia są wieczorne szponty z moim przyjacielem, **Sową**. Sowa jest doświadczonym Tech Leadem – nie dość, że wkręca mnie w świat IT i mentoruje w moich postępach, to regularnie podrzuca wyzwania. Zrozumieliśmy, że aby kiedykolwiek spiąć duży projet z kodem generowanym w większości przez AI nie możemy robić wszystkiego ręcznie. Potrzebujemy narzędzia.
 
-Wszyscy wiemy, że dorzucenie do AI całego kodu potężnego repozytorium to gwarantowany problem - zjawisko to fachowo nazywa się "Context Bloat" albo "Context Rot". Model AI traci wątek, zużywa tony tokenów, halucynuje API, którego nie ma, albo gubi się w zależnościach. Wyobraź sobie pracodawcę, który płaci rachunek za takie operacje lub szarpanie się z oprogramowaniem wdrażanym w potężny system CI/CD, które po każdej pętli zaczyna zachowywać się całkowicie nieprzewidywalnie.
+Wszyscy wiemy, że wrzucenie do AI całego kodu potężnego repozytorium to gwarantowany problem - zjawisko to fachowo nazywa się Context Bloat albo Context Rot. Model AI traci wątek, zużywa tony tokenów, halucynuje API, którego nie ma, albo gubi się w zależnościach. Wyobraź sobie pracodawcę, który płaci rachunek za takie operacje lub szarpanie się z oprogramowaniem wdrażanym w potężny system CI/CD, które po każdej pętli zaczyna zachowywać się całkowicie nieprzewidywalnie.
 
-Z takich wieczornych, przemyśleń nad architekturą i automatyzacją, narodził się **Hephaestus**  – bóg-kowal dla mojego ekosystemu kodu, oparty o specyfikację MCP (Model Context Protocol), relacyjną bazę danych, skrypty Pythona agregujące zależności z nagłówków plików i wykorzystanie API GitHuba (Issues) do rozdzielania zadań.
+Z takich wieczornych, przemyśleń nad architekturą i automatyzacją, narodził się **Hephaestus**  – orkiestrator dla mojego ekosystemu kodu, oparty o specyfikację MCP (Model Context Protocol), relacyjną bazę danych, skrypty Pythona agregujące zależności z nagłówków plików i wykorzystanie API GitHuba (Issues) do rozdzielania zadań.
 
 ## Aplikacja Hephaestus w Pigułce
 
@@ -42,9 +42,11 @@ Taki Orkiestrator rozbija jedno potężne repo na tysiące małych paczek. Ale d
 - **Specyficzne Nagłówki Modułów**: Stworzyłem standard konwencji opisywania każdego z plików informujący o jego przeznaczeniu. Coś na kształt poniższego nagłówka, od razu instruującego model o zawartym kontekście:
 
 ```python
-# @module: hephaestus.backend.mcp_router
-# @depends_on: fastapi, pydantic, hephaestus.models.project
-# @provides: MCP router endpoints, SSE streaming utilities
+# ============================================================
+# Hephaestus — Header Parser
+# @module: header_parser
+# @provides: parse_header, has_module_header, ParsedHeader
+# ============================================================
 ```
 
 - **Dynamiczna Mapa Zależności**: Użycie tych nagłówków buduje graf relacji wewnątrz repozytorium (Dependency Map). AI przed napisaniem nowej warstwy logiki najpierw poznaje "drzewo importów" i dokładnie wie, z czego może skorzystać, a z czego nie - jest to absolutnie kluczowe dla redukcji halucynacji w zewnętrznych bibliotekach lub funkcjach, które w danym module fizycznie nie istnieją.
