@@ -1,6 +1,6 @@
 ---
 id: '21'
-title: 'Hephaestus: Mój autorski AI-Driven DevOps Orchestrator i walka z Context Bloat'
+title: 'Hephaestus: Mój autorski AI-Driven Orchestrator i walka z Context Bloat'
 date: '2026-03-08'
 tags: ['AI', 'MCP', 'FastAPI', 'Docker', 'DevOps', 'Orchestration']
 readTime: '6 min'
