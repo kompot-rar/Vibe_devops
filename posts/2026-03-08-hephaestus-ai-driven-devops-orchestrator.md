@@ -69,7 +69,7 @@ Wdrażając Hephaestusa, budujemy zamknięty workflow dostarczania kodu. Z punkt
 
 1. **Centralny Dashboard**: Mamy jeden panel, który integruje się z API GitHuba, dając bezpośredni podgląd i dostęp do zdefiniowanych tam Issues. Wszystko w jednym miejscu, bez skakania po zakładkach.
 
-![Panel sterowania Hephaestusa z przygotowanym zadaniem](/hephaestus-dashboard.png)
+![Panel sterowania Hephaestusa z przygotowanym zadaniem](/hephaestus-dashboard-v2.png)
 
 2. **Pełna widoczność procesu (Loop 1)**: Dashboard daje bezpośredni wgląd w decyzje architektoniczne podjęte w pierwszej pętli. Widzimy dokładnie wynik pracy "Architekta" – mamy wylistowany *initial prompt*, który powędruje do agenta-programisty, oraz precyzyjną listę wytypowanych modułów i zależności.
 3. **Nadzór (Human-in-the-loop)**: Zanim agent "Coder" w ogóle dotknie kodu, możemy zweryfikować wygenerowany *initial prompt* i listę plików w dashboardzie. Same propozycje zadań (Issues) możemy dowolnie edytować i dostosować do aktualnego stanu projektu.
