@@ -49,3 +49,5 @@ Całość wdrożyłem w 100% z wykorzystaniem podejścia GitOps przy użyciu Arg
 3. **Storage:** Na początek zadeklarowałem skromne 5GB wolumenu z wykorzystaniem `local-path-provisioner`.
 
 Własny serwer Git w homelabie to nie jest tylko sztuka dla sztuki. To świetny poligon doświadczalny, który uczy pokory i uświadamia, jak wiele inżynieryjnej magii dzieje się pod spodem w narzędziach, które na co dzień przyjmujemy za pewnik.
+
+![Forgejo w mojej Kuźni](/forgejo-banner.png)
