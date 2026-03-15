@@ -12,7 +12,7 @@ Cześć! Dzisiejszy wpis na blogu to lekkie zboczenie z mojej głównej roadmapy
 
 Wszyscy wiemy, że wrzucenie do AI całego kodu potężnego repozytorium to gwarantowany problem - zjawisko to fachowo nazywa się Context Bloat albo Context Rot. Model AI traci wątek, zużywa tony tokenów, halucynuje API, którego nie ma, albo gubi się w zależnościach. Wyobraź sobie pracodawcę, który płaci rachunek za takie operacje. 
 
-Z takich wieczornych, przemyśleń nad architekturą i automatyzacją, narodził się **Hephaestus**  – orkiestrator dla mojego ekosystemu kodu, oparty o specyfikację MCP (Model Context Protocol), relacyjną bazę danych, skrypty Pythona agregujące zależności z nagłówków plików i wykorzystanie API GitHuba (Issues) do rozdzielania zadań.
+Z takich wieczornych, przemyśleń nad architekturą i automatyzacją, narodził się **Hephaestus**  – orkiestrator dla mojego ekosystemu kodu, oparty o specyfikację MCP, relacyjną bazę danych, skrypty Pythona agregujące zależności z nagłówków plików i wykorzystanie API GitHuba - Issues do rozdzielania zadań.
 
 ## Aplikacja Hephaestus w Pigułce
 
@@ -49,7 +49,7 @@ Taki Orkiestrator rozbija jedno potężne repo na tysiące małych paczek. Ale d
 # ============================================================
 ```
 
-- **Dynamiczna Mapa Zależności**: Użycie tych nagłówków buduje graf relacji wewnątrz repozytorium (Dependency Map). AI przed napisaniem nowej warstwy logiki najpierw poznaje "drzewo importów" i dokładnie wie, z czego może skorzystać, a z czego nie - jest to absolutnie kluczowe dla redukcji halucynacji w zewnętrznych bibliotekach lub funkcjach, które w danym module fizycznie nie istnieją.
+- **Dynamiczna Mapa Zależności**: Użycie tych nagłówków buduje graf relacji wewnątrz repozytorium. AI przed napisaniem nowej warstwy logiki najpierw poznaje "drzewo importów" i dokładnie wie, z czego może skorzystać, a z czego nie - jest to absolutnie kluczowe dla redukcji halucynacji w zewnętrznych bibliotekach lub funkcjach, które w danym module fizycznie nie istnieją.
 
 ![Dynamiczna mapa zależności modulów w Hephaestus](/hephaestus-graph.png)
 
@@ -60,7 +60,7 @@ Jako przyszły inżynier DevOps uwielbiam operować infrastrukturą jako kod. Ca
 - **Backend**: Cały silnik to **FastAPI**.  Dba o uwierzytelnianie, zarządza projektami w dedykowanym widoku (dashboardzie z szablonami Jinja2) i wystawia asynchroniczne endpointy chwytające Webhooki.
 - **Relacyjna Baza Danych**: Użyłem bazy **SQLite** sterowanej za pomocą **SQLAlchemy** (ORM). Wszystko zautomatyzowane dzięki migracjom bazy robionym z udziałem **Alembica**.
 - **Komunikacja Obustronna z GitHubem**: System intensywnie korzysta z asynchronicznie odpytywanego asystenta **GitHub REST API** (przez bibliotekę `httpx`). Pozwala to nam na uderzanie bezpośrednio z kodem w logikę zakotwiczoną w Issues oraz zaciąganie i pchanie kodu. Dodatkowo system słucha zdefiniowanych GitHub Webhooków.
-- **Model Context Protocol (MCP)**: Nowoczesny standard integracji. Pozwala mojemu IDE oraz CLI łączyć się płynnie z API Hephaestusa poprzez strumieniowanie Server-Sent Events (SSE). 
+- **Model Context Protocol**: Nowoczesny standard integracji. Pozwala mojemu IDE oraz CLI łączyć się płynnie z API Hephaestusa poprzez strumieniowanie Server-Sent Events. 
 - **Konteneryzacja**: Wiadomo - apkę wdrożył **Docker & Docker Compose**. Infrastruktura wstaje u mnie w domu kilkoma klawiszami.
 
 ## Perspektywa DevOps: Co to daje w praktyce?
@@ -77,8 +77,6 @@ Wdrażając Hephaestusa, budujemy zamknięty workflow dostarczania kodu. Z punkt
 
 ## DevOpsowe Lekcje
 
-Technicznie, największym wyzwaniem była inżynieria ruchu sieciowego. Przepychanie strumieni SSE (Server-Sent Events) z lokalnego środowiska przez Cloudflare wymagało odpowiedniej konfiguracji Nginx i wyłączenia buforowania (`proxy_buffering off;`). Do tego doszło zarządzanie bezpieczeństwem – m.in. bezpieczna obsługa tokenów GitHub PAT i Webhooków bez wpisywania ich na sztywno w kod.
+Technicznie, największym wyzwaniem była inżynieria ruchu sieciowego. Przepychanie strumieni SSE z lokalnego środowiska przez Cloudflare wymagało odpowiedniej konfiguracji Nginx i wyłączenia buforowania (`proxy_buffering off;`). Do tego doszło zarządzanie bezpieczeństwem – m.in. bezpieczna obsługa tokenów GitHub PAT i Webhooków bez wpisywania ich na sztywno w kod.
 
-Ten projekt to świetny poligon doświadczalny. Pokazuje, jak w praktyce wygląda budowanie narzędzi optymalizujących pracę (Internal Developer Platform) i jak spinać integrację z zewnętrznymi API w jeden, skalowalny workflow.
-
-![Hephaestus: AI-Driven DevOps Orchestrator](/hephaestus-banner.png)
+Ten projekt to świetny poligon doświadczalny. Pokazuje, jak w praktyce wygląda budowanie narzędzi optymalizujących pracę i jak spinać integrację z zewnętrznymi API w jeden, skalowalny workflow.
