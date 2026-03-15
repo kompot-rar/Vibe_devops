@@ -5,7 +5,7 @@ date: '2026-03-15'
 tags: ['Git', 'Forgejo', 'K3s', 'Self-hosting', 'DevOps', 'ArgoCD']
 readTime: '4 min'
 imageUrl: '/forgejo-banner.png'
-excerpt: 'Postawiłem na swoim domowym klastrze K3s własny serwer Git – Forgejo. Dlaczego nie GitHub? Chodziło o pełną kontrolę nad cyklem życia kodu, niezależność i rynkowe standardy.'
+excerpt: 'Postawiłem na swoim domowym klastrze K3s własny serwer Git – Forgejo. Dlaczego nie GitHub?'
 ---
 
 Cześć! Dzisiaj kolejny krok na mojej drodze do certyfikatu CKA i bycia pełnoprawnym DevOps Engineerem. Zdecydowałem się postawić na moim domowym klastrze K3s własny serwer Git – wybór padł na Forgejo.
