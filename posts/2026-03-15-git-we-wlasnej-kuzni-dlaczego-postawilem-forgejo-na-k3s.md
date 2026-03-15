@@ -1,6 +1,6 @@
 ---
 id: '22'
-title: 'Git we własnej "Kuźni" – Dlaczego postawiłem Forgejo na K3s? 🚀'
+title: 'Git we własnej "Kuźni" – Dlaczego postawiłem Forgejo na K3s?'
 date: '2026-03-15'
 tags: ['Git', 'Forgejo', 'K3s', 'Self-hosting', 'DevOps', 'ArgoCD']
 readTime: '4 min'
