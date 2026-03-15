@@ -5,7 +5,7 @@ date: '2026-03-08'
 tags: ['AI', 'MCP', 'FastAPI', 'Docker', 'DevOps', 'Orchestration']
 readTime: '6 min'
 imageUrl: '/hephaestus-banner.png'
-excerpt: 'Hephaestus to mój autorski orkiestrator AI oparty o standard MCP, który rozwiązuje problem "Context Bloat" przy pracy z dużymi repozytoriami.'
+excerpt: 'Hephaestus: Mój autorski orkiestrator AI oparty o standard MCP, walczący z Context Bloat przy pracy z dużymi repozytoriami.'
 ---
 
 Cześć! Dzisiejszy wpis na blogu to lekkie zboczenie z mojej głównej roadmapy do zostania Junior DevOps Engineerem. Choć projekt, o którym dziś opowiem, to czysty backend połączony z architekturą LLM – był on dla mnie absolutnie krytyczny do stworzenia. Kontekstem powstania tego narzędzia są wieczorne szponty z moim przyjacielem, **Sową**. Sowa jest doświadczonym Tech Leadem – nie dość, że wkręca mnie w świat IT i mentoruje w moich postępach, to regularnie podrzuca wyzwania. Zrozumieliśmy, że aby kiedykolwiek spiąć duży projet z kodem generowanym w większości przez AI nie możemy robić wszystkiego ręcznie. Potrzebujemy narzędzia.
