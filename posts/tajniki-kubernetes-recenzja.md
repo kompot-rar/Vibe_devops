@@ -30,4 +30,4 @@ Czy warto kupować to wydanie dzisiaj? Jeśli szukasz gotowca typu "kopiuj-wklej
 
 Dla mnie to była świetna lekcja a fakt, że to prezent od żony, która wspiera mnie w tej całej DevOpsowej drodze, dodaje tej książce +10 do statystyk motywacji.
 
-Wracam do regularnego nadawania – teraz bogatszy o solidne fundamenty. Następny przystanek: optymalizacja moich operatorów!
+![Tajniki Kubernetes - Gigi Sayfan](/gigi-sayfan-book.jpg)
