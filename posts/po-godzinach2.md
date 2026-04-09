@@ -8,7 +8,7 @@ imageUrl: '/po-godzinach-banner.jpg'
 excerpt: 'Jak pogodzić miłość do technologii z estetyką salonu?'
 ---
 
-Najbardziej gamingowy sprzęt w moim domu nie stoi ani przy telewizorze, ani na biurku. Stoi zamknięty w małej obudowie SFF gdzieś obok całej reszty mojego domowego bałaganu, a ja gram na starym ThinkPadzie.
+Najbardziej gamingowy sprzęt w moim domu nie stoi ani przy telewizorze, ani na biurku. Stoi zamknięty w małej obudowie SFF gdzieś obok całej reszty mojego homelabowego bałaganu, a ja gram na starym ThinkPadzie.
 
 ## Paradoks gracza w dorosłym życiu
 
@@ -24,7 +24,7 @@ A ciężką robotę przerzuciłem do homelabu.
 
 ## Serce systemu: Ryzen 7500F i Moonlight
 
-Postawiłem sobie skrzynkę na Ryzenie 7500F, 32GB RAM-u i RX9070XT, zamkniętą w zgrabnej budzie SFF miniITX. Bez wystawiania tego na środek salonu, bez robienia z pokoju "strefy gracza". To pudełko siedzi sobie grzecznie tam, gdzie jego miejsce — headless, bez wpiętego monitora, budzone jednym pakietem WOL z telefonu albo ThinkPada, kiedy mam na nie ochotę. Łączę się z nim przez Moonlight i Apollo. Efekt? Na ThinkPadzie mam ciszę. Na telewizorze mam granie. Na telefonie mam granie. A opóźnienia, które finalnie udało mi się wyciągnąć w sieci lokalnej, kręcą się u mnie mniej więcej w okolicach 0.5 do 3ms, więc szczerze: szybciej zauważam własny refleks niż laga.
+Postawiłem sobie skrzynkę na Ryzenie 7500F, 32GB RAM-u i RX9070XT, zamkniętą w zgrabnej budzie SFF miniITX. Bez wystawiania tego na środek salonu, bez robienia z pokoju "strefy gracza". To pudełko siedzi sobie grzecznie tam, gdzie jego miejsce - headless, bez wpiętego monitora, budzone jednym pakietem WOL z telefonu albo ThinkPada, kiedy mam na nie ochotę. Łączę się z nim przez Moonlight i Apollo. Efekt? Na ThinkPadzie mam ciszę. Na telewizorze mam granie. Na telefonie mam granie. A opóźnienia, które finalnie udało mi się wyciągnąć w sieci lokalnej, kręcą się u mnie mniej więcej w okolicach 0.5 do 3ms, więc szczerze: szybciej zauważam własny refleks niż laga.
 
 ![Cyberpunk 2077 streamowany przez Moonlight — overlay pokazuje latencję poniżej 1ms](/po-godzinach-latency.png)
 
