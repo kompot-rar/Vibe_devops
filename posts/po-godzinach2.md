@@ -12,7 +12,7 @@ Najbardziej gamingowy sprzęt w moim domu nie stoi ani przy telewizorze, ani na 
 
 ## Paradoks gracza w dorosłym życiu
 
-I to jest właśnie ten paradoks, od którego zaczął się cały temat. Żona nie chciała konsoli w salonie, ja nie chciałem kolejnego świecącego kloca pod TV, a na pewno nie chciałem gamingowego laptopa z Windowsa, który brzmi jak startujący odrzutowiec, kiedy tylko odpalisz coś cięższego niż przeglądarka. Pytanie było proste: jak mieć wydajny sprzęt do grania, renderowania i dłubania po godzinach, ale bez hałasu, bez kompromisu i bez rozwalania estetyki mieszkania?
+I to jest właśnie ten paradoks, od którego zaczął się cały temat. Żona nie chciała konsoli w salonie, ja nie chciałem dodatkowego biurka z kolejnym świecącym klocem, a na pewno nie chciałem gamingowego laptopa z Windowsa, który brzmi jak startujący odrzutowiec, kiedy tylko odpalisz coś cięższego niż przeglądarka. Pytanie było proste: jak mieć wydajny sprzęt do grania, renderowania i dłubania po godzinach, ale bez hałasu, bez kompromisu i bez rozwalania estetyki mieszkania?
 
 Na początku, jak zwykle, próbowałem sobie wmówić, że może przesadzam. Że może laptop gamingowy "nie jest taki zły". Po czym odpaliłem jednego u znajomego i po trzech minutach słyszałem tylko wentylatory. Nie grę. Wentylatory. I wtedy stwierdziłem, że jeśli mam już robić coś po swojemu, to do końca.
 
