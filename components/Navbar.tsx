@@ -78,14 +78,14 @@ const Navbar: React.FC = () => {
                 >
                   {/* {item.live && <EKGLine />} */}
                   {item.name}
-                  {item.live && (
+                  {/* {item.live && (
                     <span
                       aria-hidden="true"
-                      className="pointer-events-none absolute top-0.5 right-0.5 font-mono text-[6px] font-medium tracking-[0.12em] leading-none text-thinkpad-red/55"
+                      className="pointer-events-none absolute -top-0.5 right-0.5 font-mono text-[6px] font-medium tracking-[0.12em] leading-none text-thinkpad-red/55"
                     >
                       LIVE
                     </span>
-                  )}
+                  )} */}
                 </Link>
               ))}
             </div>
@@ -120,14 +120,14 @@ const Navbar: React.FC = () => {
               >
                 {/* {item.live && <EKGLine />} */}
                 {item.name}
-                {item.live && (
+                {/* {item.live && (
                   <span
                     aria-hidden="true"
-                    className="pointer-events-none absolute top-1 right-2 font-mono text-[6px] font-medium tracking-[0.12em] leading-none text-thinkpad-red/55"
+                    className="pointer-events-none absolute top-0 right-2 font-mono text-[6px] font-medium tracking-[0.12em] leading-none text-thinkpad-red/55"
                   >
                     LIVE
                   </span>
-                )}
+                )} */}
               </Link>
             ))}
           </div>
