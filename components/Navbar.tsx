@@ -17,48 +17,27 @@ const Navbar: React.FC = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const EKG_PATH =
-    'M0 7 H8 L10 7 L12 3 L14 10 L16 3.5 L18 7 H32 L34 7 L36 4 L38 9.5 L40 3 L42 7 H58 L60 7 L62 3.5 L64 10 L66 3 L68 7 H84 L86 7 L88 4 L90 9.5 L92 3.5 L94 7 H100';
-
-  const EKGLine: React.FC = () => (
-    <span
-      aria-hidden="true"
-      className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
-    >
-      <span className="flex h-[72%] w-[200%] animate-ekg-scroll opacity-[0.28] [filter:drop-shadow(0_0_1.5px_rgba(255,0,43,0.5))]">
-        <svg
-          viewBox="0 0 100 10"
-          preserveAspectRatio="none"
-          className="h-full w-1/2 shrink-0"
-        >
-          <path
-            d={EKG_PATH}
-            fill="none"
-            stroke="#ff002b"
-            strokeWidth="1.15"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
-        <svg
-          viewBox="0 0 100 10"
-          preserveAspectRatio="none"
-          className="h-full w-1/2 shrink-0"
-        >
-          <path
-            d={EKG_PATH}
-            fill="none"
-            stroke="#ff002b"
-            strokeWidth="1.15"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            vectorEffect="non-scaling-stroke"
-          />
-        </svg>
-      </span>
-    </span>
-  );
+  // --- EKG live-signal pod napisem Playground — na razie wyłączone,
+  //     może wrócimy do tego później (wymaga też .animate-ekg-scroll w index.css).
+  //
+  // const EKG_PATH =
+  //   'M0 7 H8 L10 7 L12 3 L14 10 L16 3.5 L18 7 H32 L34 7 L36 4 L38 9.5 L40 3 L42 7 H58 L60 7 L62 3.5 L64 10 L66 3 L68 7 H84 L86 7 L88 4 L90 9.5 L92 3.5 L94 7 H100';
+  //
+  // const EKGLine: React.FC = () => (
+  //   <span
+  //     aria-hidden="true"
+  //     className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
+  //   >
+  //     <span className="flex h-[72%] w-[200%] animate-ekg-scroll opacity-[0.28] [filter:drop-shadow(0_0_1.5px_rgba(255,0,43,0.5))]">
+  //       <svg viewBox="0 0 100 10" preserveAspectRatio="none" className="h-full w-1/2 shrink-0">
+  //         <path d={EKG_PATH} fill="none" stroke="#ff002b" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+  //       </svg>
+  //       <svg viewBox="0 0 100 10" preserveAspectRatio="none" className="h-full w-1/2 shrink-0">
+  //         <path d={EKG_PATH} fill="none" stroke="#ff002b" strokeWidth="1.15" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" />
+  //       </svg>
+  //     </span>
+  //   </span>
+  // );
 
   return (
     <nav className="sticky top-0 z-50 bg-thinkpad-base/40 backdrop-blur-md border-b border-neutral-800 shadow-md">
@@ -91,14 +70,14 @@ const Navbar: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`relative overflow-hidden px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
+                  className={`px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
                     isActive(item.path)
                       ? 'border-thinkpad-red text-white bg-neutral-900'
                       : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                   }`}
                 >
-                  {item.live && <EKGLine />}
-                  <span className="relative z-10">{item.name}</span>
+                  {/* {item.live && <EKGLine />} */}
+                  {item.name}
                 </Link>
               ))}
             </div>
@@ -125,14 +104,14 @@ const Navbar: React.FC = () => {
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsOpen(false)}
-                className={`relative block overflow-hidden px-3 py-2 rounded-none text-base font-mono border-l-4 ${
+                className={`block px-3 py-2 rounded-none text-base font-mono border-l-4 ${
                   isActive(item.path)
                     ? 'border-thinkpad-red bg-neutral-900 text-white'
                     : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                 }`}
               >
-                {item.live && <EKGLine />}
-                <span className="relative z-10">{item.name}</span>
+                {/* {item.live && <EKGLine />} */}
+                {item.name}
               </Link>
             ))}
           </div>
