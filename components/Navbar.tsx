@@ -70,7 +70,7 @@ const Navbar: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
+                  className={`relative px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
                     isActive(item.path)
                       ? 'border-thinkpad-red text-white bg-neutral-900'
                       : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
@@ -79,7 +79,10 @@ const Navbar: React.FC = () => {
                   {/* {item.live && <EKGLine />} */}
                   {item.name}
                   {item.live && (
-                    <span className="ml-1 align-super font-mono text-[8px] font-semibold tracking-[0.18em] text-thinkpad-red/60">
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none absolute top-0.5 right-0.5 font-mono text-[6px] font-medium tracking-[0.12em] leading-none text-thinkpad-red/55"
+                    >
                       LIVE
                     </span>
                   )}
@@ -109,7 +112,7 @@ const Navbar: React.FC = () => {
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-none text-base font-mono border-l-4 ${
+                className={`relative block px-3 py-2 rounded-none text-base font-mono border-l-4 ${
                   isActive(item.path)
                     ? 'border-thinkpad-red bg-neutral-900 text-white'
                     : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
@@ -118,7 +121,10 @@ const Navbar: React.FC = () => {
                 {/* {item.live && <EKGLine />} */}
                 {item.name}
                 {item.live && (
-                  <span className="ml-1 align-super font-mono text-[8px] font-semibold tracking-[0.18em] text-thinkpad-red/60">
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute top-1 right-2 font-mono text-[6px] font-medium tracking-[0.12em] leading-none text-thinkpad-red/55"
+                  >
                     LIVE
                   </span>
                 )}
