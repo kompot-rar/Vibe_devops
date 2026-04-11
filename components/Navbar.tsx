@@ -18,14 +18,14 @@ const Navbar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const EKG_PATH =
-    'M0 5 H12 L14 5 L16 0.5 L18 9.5 L20 0 L22 5 H44 L46 5 L48 1 L50 9 L52 0.5 L54 5 H76 L78 5 L80 0 L82 10 L84 0.5 L86 5 H100';
+    'M0 7 H8 L10 7 L12 3 L14 10 L16 3.5 L18 7 H32 L34 7 L36 4 L38 9.5 L40 3 L42 7 H58 L60 7 L62 3.5 L64 10 L66 3 L68 7 H84 L86 7 L88 4 L90 9.5 L92 3.5 L94 7 H100';
 
   const EKGLine: React.FC = () => (
     <span
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
     >
-      <span className="flex h-[72%] w-[200%] animate-ekg-scroll opacity-[0.42] [filter:drop-shadow(0_0_2px_rgba(255,0,43,0.55))]">
+      <span className="flex h-[72%] w-[200%] animate-ekg-scroll opacity-[0.28] [filter:drop-shadow(0_0_1.5px_rgba(255,0,43,0.5))]">
         <svg
           viewBox="0 0 100 10"
           preserveAspectRatio="none"
@@ -35,7 +35,7 @@ const Navbar: React.FC = () => {
             d={EKG_PATH}
             fill="none"
             stroke="#ff002b"
-            strokeWidth="1.3"
+            strokeWidth="1.15"
             strokeLinecap="round"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
@@ -50,7 +50,7 @@ const Navbar: React.FC = () => {
             d={EKG_PATH}
             fill="none"
             stroke="#ff002b"
-            strokeWidth="1.3"
+            strokeWidth="1.15"
             strokeLinecap="round"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
