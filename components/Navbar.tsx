@@ -78,6 +78,11 @@ const Navbar: React.FC = () => {
                 >
                   {/* {item.live && <EKGLine />} */}
                   {item.name}
+                  {item.live && (
+                    <span className="ml-1 align-super font-mono text-[8px] font-semibold tracking-[0.18em] text-thinkpad-red/60">
+                      LIVE
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -112,6 +117,11 @@ const Navbar: React.FC = () => {
               >
                 {/* {item.live && <EKGLine />} */}
                 {item.name}
+                {item.live && (
+                  <span className="ml-1 align-super font-mono text-[8px] font-semibold tracking-[0.18em] text-thinkpad-red/60">
+                    LIVE
+                  </span>
+                )}
               </Link>
             ))}
           </div>
