@@ -17,10 +17,46 @@ const Navbar: React.FC = () => {
 
   const isActive = (path: string) => location.pathname === path;
 
-  const LiveDot: React.FC = () => (
-    <span className="relative inline-flex h-2 w-2" aria-label="live">
-      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 animate-live-pulse" />
-      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.75)]" />
+  const EKG_PATH =
+    'M0 5 H14 L16 5 L18 1.5 L20 8.5 L22 3 L24 5 H46 L48 5 L50 2.5 L52 7.5 L54 5 H78 L80 5 L82 1 L84 9 L86 3 L88 5 H100';
+
+  const EKGLine: React.FC = () => (
+    <span
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 -bottom-0.5 mx-auto h-2 w-[85%] overflow-hidden opacity-70"
+    >
+      <span className="flex h-full w-[200%] animate-ekg-scroll [filter:drop-shadow(0_0_1.5px_rgba(52,211,153,0.55))]">
+        <svg
+          viewBox="0 0 100 10"
+          preserveAspectRatio="none"
+          className="h-full w-1/2 shrink-0"
+        >
+          <path
+            d={EKG_PATH}
+            fill="none"
+            stroke="#34d399"
+            strokeWidth="1.1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+        <svg
+          viewBox="0 0 100 10"
+          preserveAspectRatio="none"
+          className="h-full w-1/2 shrink-0"
+        >
+          <path
+            d={EKG_PATH}
+            fill="none"
+            stroke="#34d399"
+            strokeWidth="1.1"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        </svg>
+      </span>
     </span>
   );
 
@@ -55,27 +91,14 @@ const Navbar: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`group relative px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
+                  className={`relative px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
                     isActive(item.path)
                       ? 'border-thinkpad-red text-white bg-neutral-900'
                       : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                   }`}
                 >
-                  <span className="inline-flex items-center gap-2">
-                    {item.name}
-                    {item.live && <LiveDot />}
-                  </span>
-                  {item.live && (
-                    <span
-                      role="tooltip"
-                      className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-sm border border-neutral-700 bg-neutral-950/95 px-2 py-1 font-mono text-[10px] tracking-wider text-thinkpad-muted opacity-0 shadow-lg transition-opacity duration-200 delay-150 group-hover:opacity-100"
-                    >
-                      <span className="text-emerald-400">●</span>
-                      <span className="ml-1.5 text-neutral-300">live</span>
-                      <span className="mx-1.5 text-neutral-600">//</span>
-                      <span>k3s homelab</span>
-                    </span>
-                  )}
+                  {item.name}
+                  {item.live && <EKGLine />}
                 </Link>
               ))}
             </div>
@@ -102,16 +125,14 @@ const Navbar: React.FC = () => {
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsOpen(false)}
-                className={`block px-3 py-2 rounded-none text-base font-mono border-l-4 ${
+                className={`relative block px-3 py-2 rounded-none text-base font-mono border-l-4 ${
                   isActive(item.path)
                     ? 'border-thinkpad-red bg-neutral-900 text-white'
                     : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                 }`}
               >
-                <span className="inline-flex items-center gap-2.5">
-                  {item.name}
-                  {item.live && <LiveDot />}
-                </span>
+                {item.name}
+                {item.live && <EKGLine />}
               </Link>
             ))}
           </div>
