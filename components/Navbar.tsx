@@ -8,14 +8,21 @@ const Navbar: React.FC = () => {
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const location = useLocation();
 
-  const navItems = [
+  const navItems: { name: string; path: string; live?: boolean }[] = [
     { name: 'Blog', path: '/' },
-    { name: 'Playground', path: '/playground' },
+    { name: 'Playground', path: '/playground', live: true },
     { name: 'Roadmapa', path: '/roadmap' },
     { name: 'O Projekcie', path: '/about' },
   ];
 
   const isActive = (path: string) => location.pathname === path;
+
+  const LiveDot: React.FC = () => (
+    <span className="relative inline-flex h-2 w-2" aria-label="live">
+      <span className="absolute inline-flex h-full w-full rounded-full bg-emerald-400 animate-live-pulse" />
+      <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.75)]" />
+    </span>
+  );
 
   return (
     <nav className="sticky top-0 z-50 bg-thinkpad-base/40 backdrop-blur-md border-b border-neutral-800 shadow-md">
@@ -48,13 +55,27 @@ const Navbar: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
+                  className={`group relative px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
                     isActive(item.path)
                       ? 'border-thinkpad-red text-white bg-neutral-900'
                       : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                   }`}
                 >
-                  {item.name}
+                  <span className="inline-flex items-center gap-2">
+                    {item.name}
+                    {item.live && <LiveDot />}
+                  </span>
+                  {item.live && (
+                    <span
+                      role="tooltip"
+                      className="pointer-events-none absolute left-1/2 top-full mt-2 -translate-x-1/2 whitespace-nowrap rounded-sm border border-neutral-700 bg-neutral-950/95 px-2 py-1 font-mono text-[10px] tracking-wider text-thinkpad-muted opacity-0 shadow-lg transition-opacity duration-200 delay-150 group-hover:opacity-100"
+                    >
+                      <span className="text-emerald-400">●</span>
+                      <span className="ml-1.5 text-neutral-300">live</span>
+                      <span className="mx-1.5 text-neutral-600">//</span>
+                      <span>k3s homelab</span>
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -87,7 +108,10 @@ const Navbar: React.FC = () => {
                     : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                 }`}
               >
-                {item.name}
+                <span className="inline-flex items-center gap-2.5">
+                  {item.name}
+                  {item.live && <LiveDot />}
+                </span>
               </Link>
             ))}
           </div>
