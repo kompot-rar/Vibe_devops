@@ -18,14 +18,14 @@ const Navbar: React.FC = () => {
   const isActive = (path: string) => location.pathname === path;
 
   const EKG_PATH =
-    'M0 5 H14 L16 5 L18 1.5 L20 8.5 L22 3 L24 5 H46 L48 5 L50 2.5 L52 7.5 L54 5 H78 L80 5 L82 1 L84 9 L86 3 L88 5 H100';
+    'M0 5 H12 L14 5 L16 0.5 L18 9.5 L20 0 L22 5 H44 L46 5 L48 1 L50 9 L52 0.5 L54 5 H76 L78 5 L80 0 L82 10 L84 0.5 L86 5 H100';
 
   const EKGLine: React.FC = () => (
     <span
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 -bottom-0.5 mx-auto h-2 w-[85%] overflow-hidden opacity-70"
+      className="pointer-events-none absolute inset-0 flex items-center justify-center overflow-hidden"
     >
-      <span className="flex h-full w-[200%] animate-ekg-scroll [filter:drop-shadow(0_0_1.5px_rgba(52,211,153,0.55))]">
+      <span className="flex h-[72%] w-[200%] animate-ekg-scroll opacity-[0.42] [filter:drop-shadow(0_0_2px_rgba(255,0,43,0.55))]">
         <svg
           viewBox="0 0 100 10"
           preserveAspectRatio="none"
@@ -34,8 +34,8 @@ const Navbar: React.FC = () => {
           <path
             d={EKG_PATH}
             fill="none"
-            stroke="#34d399"
-            strokeWidth="1.1"
+            stroke="#ff002b"
+            strokeWidth="1.3"
             strokeLinecap="round"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
@@ -49,8 +49,8 @@ const Navbar: React.FC = () => {
           <path
             d={EKG_PATH}
             fill="none"
-            stroke="#34d399"
-            strokeWidth="1.1"
+            stroke="#ff002b"
+            strokeWidth="1.3"
             strokeLinecap="round"
             strokeLinejoin="round"
             vectorEffect="non-scaling-stroke"
@@ -91,14 +91,14 @@ const Navbar: React.FC = () => {
                 <Link
                   key={item.name}
                   to={item.path}
-                  className={`relative px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
+                  className={`relative overflow-hidden px-4 py-2 rounded-none text-sm font-mono tracking-wide transition-all duration-200 border-b-2 ${
                     isActive(item.path)
                       ? 'border-thinkpad-red text-white bg-neutral-900'
                       : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                   }`}
                 >
-                  {item.name}
                   {item.live && <EKGLine />}
+                  <span className="relative z-10">{item.name}</span>
                 </Link>
               ))}
             </div>
@@ -125,14 +125,14 @@ const Navbar: React.FC = () => {
                 key={item.name}
                 to={item.path}
                 onClick={() => setIsOpen(false)}
-                className={`relative block px-3 py-2 rounded-none text-base font-mono border-l-4 ${
+                className={`relative block overflow-hidden px-3 py-2 rounded-none text-base font-mono border-l-4 ${
                   isActive(item.path)
                     ? 'border-thinkpad-red bg-neutral-900 text-white'
                     : 'border-transparent text-thinkpad-muted hover:bg-neutral-900 hover:text-white hover:border-neutral-700'
                 }`}
               >
-                {item.name}
                 {item.live && <EKGLine />}
+                <span className="relative z-10">{item.name}</span>
               </Link>
             ))}
           </div>
