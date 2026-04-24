@@ -12,13 +12,13 @@ excerpt: 'Jak proste skrypty do oszczędzania energii na Archu stały się proje
 
 Omarchy-power-tools zaczął się od bardzo prostego problemu: Linux na laptopie potrafi topić baterię w absurdalnym tempie, szczególnie kiedy na co dzień używam czegoś cięższego, jak Hyprland.
 
-Z tego wyszedł zestaw skryptów, które robią systemowi mały audyt energetyczny za każdym razem, gdy odpinam zasilacz. Po przejściu na baterię zasilacza ten skrypt nie bawi się w półśrodki. Tnie limity mocy CPU i GPU, wyłącza turbo, odstawia połowę wątków, zbija ekran do 60 Hz i czyści Hyprlanda z całego wizualnego balastu. Do tego ogranicza polling Waybara, próbuje uspokoić SSD i audio, przykręca sieć i peryferia, a na koniec gasi nawet LED-y w ThinkPadzie i robi z Ghostty czarną dziurę bez przezroczystości. Nie jest to subtelne, ale właśnie o to chodzi: po przejściu na baterię laptop ma pracować dłużej, a nie wyglądać ładniej. Cel jest prosty: wyciągnąć z baterii trochę więcej życia.
+Z tego wyszedł zestaw skryptów, które robią systemowi mały audyt energetyczny za każdym razem, gdy odpinam zasilacz. Po przejściu na baterię zasilacza ten skrypt nie bawi się w półśrodki. Tnie limity mocy CPU i GPU, wyłącza turbo, odstawia połowę wątków, zbija ekran do 60 Hz i czyści Hyprlanda z całego wizualnego balastu. Do tego ogranicza polling Waybara, próbuje uspokoić SSD i audio, przykręca sieć i peryferia, a na koniec gasi nawet LED-y w ThinkPadzie i robi z Ghostty czarną dziurę bez przezroczystości. Nie jest to subtelne, ale właśnie o to chodzi: po przejściu na baterię laptop ma pracować dłużej, a nie wyglądać ładniej.
 
 ## Od lokalnego hacka do uniwersalnego rozwiązania
 
 Przez długi czas był to projekt szyty praktycznie tylko pod mój sprzęt. W kodzie siedziały na sztywno nazwy interfejsów sieciowych, konkretne identyfikatory wątków i kilka założeń, które działały u mnie, ale niekoniecznie gdziekolwiek indziej.
 
-## Pierwszy PR: Marcos wkracza do akcji
+## Pierwszy PR
 
 To zmieniło się w momencie, gdy do repo wpadł pierwszy konkretny pull request. Marcos przebudował część logiki tak, żeby skrypt lepiej radził sobie na różnych Ryzenach. Zamiast opierać się na ręcznie wpisanych numerach rdzeni, skrypt sprawdza teraz zasoby maszyny przez nproc i dopiero na tej podstawie ogranicza CPU. Podobnie ogarnięte zostało wykrywanie GPU i nazw interfejsów sieciowych.
 
