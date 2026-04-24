@@ -1,9 +1,9 @@
 ---
 id: '27'
-title: 'Archy Power Tools: Optymalizacja baterii i pierwszy PR'
+title: 'Omarchy Power Tools: pierwszy PR'
 date: '2026-04-24'
-tags: ['Arch Linux', 'Bash', 'Open Source', 'DevOps']
-readTime: '6 min'
+tags: ['Arch Linux', 'Bash', 'Open Source']
+readTime: '2 min'
 imageUrl: '/screenshot-2026-04-24_11-29-44.png'
 excerpt: 'Jak proste skrypty do oszczędzania energii na Archu stały się projektem Open Source.'
 ---
@@ -30,9 +30,6 @@ Największą satysfakcję daje mi to, że komuś chciało się wejść w ten kod
 
 Zmiany są już na masterze, a dokumentacja została zaktualizowana tak, żeby nadążała za nową wersją projektu. Lubię takie momenty, bo przypominają, że nawet małe repo może przestać być prywatnym skryptem i zamienić się w coś, przy czym zaczyna się prawdziwa współpraca.
 
-## Podsumowanie
-
-To niby mały projekt, ale właśnie takie rzeczy najlepiej pokazują, ile można się nauczyć, kiedy wrzucisz swój kod do świata i przestaniesz pisać tylko pod własną maszynę.
 
 Repozytorium projektu: [omarchy-power-tools](https://github.com/kompot-rar/omarchy-power-tools)
 
