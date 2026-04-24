@@ -8,7 +8,7 @@ imageUrl: '/screenshot-2026-04-24_11-29-44.png'
 excerpt: 'Jak proste skrypty do oszczędzania energii na Archu stały się projektem Open Source.'
 ---
 
-# Archy Power Tools: Optymalizacja baterii i pierwszy PR
+# Omarchy Power Tools: Optymalizacja baterii i pierwszy PR
 
 Omarchy-power-tools zaczął się od bardzo prostego problemu: Linux na laptopie potrafi topić baterię w absurdalnym tempie, szczególnie kiedy na co dzień używam czegoś cięższego, jak Hyprland.
 
