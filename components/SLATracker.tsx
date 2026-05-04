@@ -154,8 +154,17 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
     const todayDate = new Date();
     const windowStartDate = new Date(todayDate);
     windowStartDate.setDate(todayDate.getDate() - 29);
-    const leftLabel = formatDayLabel(toLocalDateStr(todayDate));
-    const rightLabel = formatDayLabel(toLocalDateStr(windowStartDate));
+    const leftLabel = formatDayLabel(toLocalDateStr(windowStartDate));
+    const rightLabel = formatDayLabel(toLocalDateStr(todayDate));
+
+    // Generujemy tablicę 30 dni od lewej (najstarszy) do prawej (dziś)
+    const daysToRender = Array.from({ length: 30 }, (_, i) => {
+        const d = new Date(windowStartDate);
+        d.setDate(d.getDate() + i);
+        const dateStr = toLocalDateStr(d);
+        const dayData = sla.daily.find(x => x.date === dateStr);
+        return { dateStr, dayData };
+    });
 
     return (
         <div className="border border-[#5a9e85]/20 bg-[#5a9e85]/[0.02]">
@@ -257,14 +266,12 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             </span>
                         </div>
 
-                        {/* Heatmap grid — zawsze 30 kolumn, dane wyrównane do lewej (dziś = pozycja 0) */}
+                        {/* Heatmap grid — zawsze 30 kolumn, dni najstarsze po lewej, najnowsze po prawej */}
                         <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(30, 1fr)` }}>
-                            {Array.from({ length: 30 }, (_, i) => {
-                                const dataIndex = sla.daily.length - 1 - i;
-                                const day = dataIndex >= 0 ? sla.daily[dataIndex] : null;
-                                return day
-                                    ? <DayCell key={day.date} day={day} />
-                                    : <div key={i} className="w-full aspect-square rounded-[2px] bg-[#1e2028]" />;
+                            {daysToRender.map(({ dateStr, dayData }) => {
+                                return dayData
+                                    ? <DayCell key={dateStr} day={dayData} />
+                                    : <div key={dateStr} className="w-full aspect-square rounded-[2px] bg-[#1e2028]" title={`${formatDayLabel(dateStr)}\nNo data`} />;
                             })}
                         </div>
 
