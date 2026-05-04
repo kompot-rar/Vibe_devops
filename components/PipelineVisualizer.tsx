@@ -595,8 +595,8 @@ const PipelineVisualizer: React.FC = () => {
 
   const lt = run
     ? run.status === 'completed'
-      ? leadTime(run.head_commit.timestamp, run.updated_at)
-      : leadTime(run.head_commit.timestamp, new Date().toISOString())
+      ? leadTime(run.created_at, run.updated_at)
+      : leadTime(run.created_at, new Date().toISOString())
     : '—';
 
   const activeStageData = stages[activeStage];
