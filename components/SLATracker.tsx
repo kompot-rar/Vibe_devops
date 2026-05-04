@@ -154,16 +154,31 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
     const todayDate = new Date();
     const windowStartDate = new Date(todayDate);
     windowStartDate.setDate(todayDate.getDate() - 29);
-    const leftLabel = formatDayLabel(toLocalDateStr(windowStartDate));
-    const rightLabel = formatDayLabel(toLocalDateStr(todayDate));
+    const leftLabel = formatDayLabel(toLocalDateStr(todayDate));
+    const rightLabel = formatDayLabel(toLocalDateStr(windowStartDate));
 
-    // Generujemy tablicę 30 dni od lewej (najstarszy) do prawej (dziś)
+    // Generujemy tablicę 30 dni od lewej (dziś) do prawej (29 dni temu)
     const daysToRender = Array.from({ length: 30 }, (_, i) => {
-        const d = new Date(windowStartDate);
-        d.setDate(d.getDate() + i);
-        const dateStr = toLocalDateStr(d);
-        const dayData = sla.daily.find(x => x.date === dateStr);
-        return { dateStr, dayData };
+        const d = new Date(todayDate);
+        d.setDate(todayDate.getDate() - i);
+        const targetDateStr = toLocalDateStr(d);
+        
+        const dayData = sla.daily.find(x => {
+            if (!x.date) return false;
+            // Szybkie sprawdzenie prefiksu, np. jeśli API zwraca "2026-05-04T00:00..."
+            if (x.date.startsWith(targetDateStr) || targetDateStr.startsWith(x.date)) return true;
+            
+            // Fallback: próba sparsowania daty zwracanej przez API na format lokalny YYYY-MM-DD
+            try {
+                const apiDate = new Date(x.date);
+                if (!isNaN(apiDate.getTime())) {
+                    return toLocalDateStr(apiDate) === targetDateStr;
+                }
+            } catch (e) {}
+            return false;
+        });
+        
+        return { dateStr: targetDateStr, dayData };
     });
 
     return (
@@ -266,7 +281,7 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             </span>
                         </div>
 
-                        {/* Heatmap grid — zawsze 30 kolumn, dni najstarsze po lewej, najnowsze po prawej */}
+                        {/* Heatmap grid — zawsze 30 kolumn, dane wyrównane do lewej (dziś = pozycja 0) */}
                         <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(30, 1fr)` }}>
                             {daysToRender.map(({ dateStr, dayData }) => {
                                 return dayData
@@ -275,7 +290,7 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
                             })}
                         </div>
 
-                        {/* Labels — 29 dni temu → dziś */}
+                        {/* Labels — dziś → 29 dni temu */}
                         <div className="flex justify-between mt-2">
                             <span className="font-mono text-[10px] text-neutral-700">
                                 {leftLabel}
