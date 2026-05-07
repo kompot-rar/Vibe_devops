@@ -4,7 +4,7 @@ title: 'Prometheus na małym dysku? Było wiadomo, że kiedyś wybuchnie'
 date: '2026-05-07'
 tags: ['Kubernetes', 'Prometheus', 'NFS', 'Storage', 'Migration']
 readTime: '5 min'
-imageUrl: '/nfs-migration-banner.png'
+imageUrl: '/nfs-migracja-banner.png'
 excerpt: 'Jak przenieść TSDB Prometheusa na NFS i nie oszaleć – od walki z uprawnieniami po rozwiązywanie problemów z WAL i mmap.'
 ---
 
