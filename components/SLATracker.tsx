@@ -157,6 +157,30 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
     const leftLabel = formatDayLabel(toLocalDateStr(todayDate));
     const rightLabel = formatDayLabel(toLocalDateStr(windowStartDate));
 
+    // Generujemy tablicę 30 dni od lewej (dziś) do prawej (29 dni temu)
+    const daysToRender = Array.from({ length: 30 }, (_, i) => {
+        const d = new Date(todayDate);
+        d.setDate(todayDate.getDate() - i);
+        const targetDateStr = toLocalDateStr(d);
+        
+        const dayData = sla.daily.find(x => {
+            if (!x.date) return false;
+            // Szybkie sprawdzenie prefiksu, np. jeśli API zwraca "2026-05-04T00:00..."
+            if (x.date.startsWith(targetDateStr) || targetDateStr.startsWith(x.date)) return true;
+            
+            // Fallback: próba sparsowania daty zwracanej przez API na format lokalny YYYY-MM-DD
+            try {
+                const apiDate = new Date(x.date);
+                if (!isNaN(apiDate.getTime())) {
+                    return toLocalDateStr(apiDate) === targetDateStr;
+                }
+            } catch (e) {}
+            return false;
+        });
+        
+        return { dateStr: targetDateStr, dayData };
+    });
+
     return (
         <div className="border border-[#5a9e85]/20 bg-[#5a9e85]/[0.02]">
 
@@ -259,16 +283,14 @@ const SLATracker: React.FC<SLATrackerProps> = ({ sla }) => {
 
                         {/* Heatmap grid — zawsze 30 kolumn, dane wyrównane do lewej (dziś = pozycja 0) */}
                         <div className="grid gap-[3px]" style={{ gridTemplateColumns: `repeat(30, 1fr)` }}>
-                            {Array.from({ length: 30 }, (_, i) => {
-                                const dataIndex = sla.daily.length - 1 - i;
-                                const day = dataIndex >= 0 ? sla.daily[dataIndex] : null;
-                                return day
-                                    ? <DayCell key={day.date} day={day} />
-                                    : <div key={i} className="w-full aspect-square rounded-[2px] bg-[#1e2028]" />;
+                            {daysToRender.map(({ dateStr, dayData }) => {
+                                return dayData
+                                    ? <DayCell key={dateStr} day={dayData} />
+                                    : <div key={dateStr} className="w-full aspect-square rounded-[2px] bg-[#1e2028]" title={`${formatDayLabel(dateStr)}\nNo data`} />;
                             })}
                         </div>
 
-                        {/* Labels — 29 dni temu → dziś */}
+                        {/* Labels — dziś → 29 dni temu */}
                         <div className="flex justify-between mt-2">
                             <span className="font-mono text-[10px] text-neutral-700">
                                 {leftLabel}
