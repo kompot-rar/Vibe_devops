@@ -49,6 +49,6 @@ Do tego dochodzą testy A/B, które chcę rozwijać choćby przy silniku ekstrak
 
 Im dłużej rozwijam Fishky, tym mocniej widzę, że zbudowałem sobie coś więcej niż aplikację do nauki. Zbudowałem przestrzeń, w której mogę uczyć się backendu, Kubernetesa, zarządzania bazą, sekretami, rolloutami, integracjami i architekturą pod chmurę w sposób, który ma sens. Każda funkcja na froncie pcha mnie głębiej w infrastrukturę. Każdy nowy użytkownik podnosi poprzeczkę. Każda decyzja zostawia ślad.
 
-I właśnie dlatego ten projekt jest dla mnie ważny - przez drogę, którą wymusił. Od aplikacji, która miała pomagać robić fiszki, do projektu, na którym uczę się budować i utrzymywać coś prawdziwego.
+Właśnie dlatego ten projekt jest dla mnie ważny - przez drogę, którą wymusił. Od aplikacji, która miała pomagać robić fiszki, do projektu, na którym uczę się budować i utrzymywać coś prawdziwego.
 
 *Aplikacja Fishky jest dostępna w Google Play:* [Pobierz z Play Store](https://play.google.com/store/apps/details?id=fishky.mrozy)
