@@ -51,5 +51,4 @@ Im dłużej rozwijam Fishky, tym mocniej widzę, że zbudowałem sobie coś wię
 
 I właśnie dlatego ten projekt jest dla mnie ważny - przez drogę, którą wymusił. Od aplikacji, która miała pomagać robić fiszki, do projektu, na którym uczę się budować i utrzymywać coś prawdziwego.
 
----
 *Aplikacja Fishky jest dostępna w Google Play:* [Pobierz z Play Store](https://play.google.com/store/apps/details?id=fishky.mrozy)
